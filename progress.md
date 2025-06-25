@@ -12,4 +12,8 @@
   ## 24/06/25  
   - Created Github repo  
   - Collected learning materials
+
+  ## 25/06/25
+  - Recall python basics
+    - scource: ```https://youtu.be/VchuKL44s6E```
 </details>
