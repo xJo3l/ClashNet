@@ -14,7 +14,7 @@
   - Collected learning materials
 
   ## 25/06/25
-  - Recall Python Basics
+  - Recall Python Basics [1]
     - scource: ```https://youtu.be/VchuKL44s6E```
 
   ## 26/06/25
