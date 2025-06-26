@@ -14,6 +14,11 @@
   - Collected learning materials
 
   ## 25/06/25
-  - Recall python basics
+  - Recall Python Basics
     - scource: ```https://youtu.be/VchuKL44s6E```
+
+  ## 26/06/25
+  - Participate in AWS summit India
+  - Recall Python Basic [2]
+    - source: ```https://youtu.be/VchuKL44s6E```
 </details>
