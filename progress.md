@@ -21,4 +21,9 @@
   - Participate in AWS summit India
   - Recall Python Basic [2]
     - source: ```https://youtu.be/VchuKL44s6E```
+   
+  ## 27/06/25
+
+  ## 28/06/25
+  -practice python
 </details>
