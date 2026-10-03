@@ -1,98 +1,142 @@
 import React, { useState } from 'react';
-import { Menu, X, Shield, LogIn } from 'lucide-react';
 
-interface NavbarProps {
-  onOpenAuth: () => void;
+interface NavItem {
+  name: string;
+  href: string;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('home');
+const NAV_ITEMS: NavItem[] = [
+  { name: 'HOME', href: '#home' },
+  { name: 'CREATORS', href: '#creators' },
+  { name: 'EVENTS', href: '#events' },
+  { name: 'TOOLS', href: '#tools' },
+];
 
-  const navItems = [
-    { id: 'home', label: 'Home', href: '#home' },
-    { id: 'events', label: 'Events', href: '#events' },
-    { id: 'creator', label: 'Creator', href: '#creator' },
-    { id: 'tools', label: 'Tools', href: '#tools' },
-  ];
+export const Navbar: React.FC = () => {
+  const [activeItem, setActiveItem] = useState<string>('HOME');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-[#0a0b10]/85 backdrop-blur-md border-b border-white/10 transition-all duration-300">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
-        {/* Logo */}
-        <a 
-          href="#home" 
-          className="flex items-center gap-3 text-white group"
-          onClick={() => setActiveTab('home')}
-        >
-          <div className="w-9 h-9 flex items-center justify-center filter drop-shadow-[0_0_10px_rgba(255,71,87,0.5)] transition-transform duration-300 group-hover:rotate-[-6deg] group-hover:scale-108">
-            <Shield className="w-8 h-8 text-rose-500 fill-rose-500/20" />
-          </div>
-          <span className="font-cinzel text-xl font-black tracking-wider">
-            CLASH<span className="text-rose-500 drop-shadow-[0_0_12px_rgba(255,71,87,0.6)]">NET</span>
-          </span>
-        </a>
+    <nav className="fixed top-0 left-0 w-full h-[86px] z-50 font-montserrat select-none">
+      {/* Subtle dark gradient overlay for text readability without a solid bar */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/35 to-transparent pointer-events-none" />
 
-        {/* Desktop Menu */}
-        <ul className="hidden md:flex items-center gap-8">
-          {navItems.map((item) => (
-            <li key={item.id}>
-              <a
-                href={item.href}
-                onClick={() => setActiveTab(item.id)}
-                className={`relative py-1 text-sm font-medium tracking-wide transition-colors ${
-                  activeTab === item.id ? 'text-white' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                {item.label}
-                {activeTab === item.id && (
-                  <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-rose-500 to-orange-500 rounded-full" />
-                )}
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        {/* Action Button & Mobile Toggle */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={onOpenAuth}
-            className="flex items-center gap-2 bg-gradient-to-r from-rose-500/15 to-orange-500/15 text-white border border-rose-500/40 px-5 py-2 rounded-full text-sm font-semibold hover:from-rose-500 hover:to-orange-500 hover:border-transparent transition-all shadow-[0_0_15px_rgba(255,71,87,0.15)] hover:shadow-[0_0_25px_rgba(255,71,87,0.5)] hover:-translate-y-0.5"
+      {/* Main Navbar container */}
+      <div className="relative w-full h-full px-6 md:px-10 flex items-center justify-between">
+        {/* Left: Logo and Brand Name */}
+        <div className="flex items-center min-w-[160px] z-10">
+          <a
+            href="#home"
+            className="flex items-center space-x-1.5 group transition-transform duration-300 hover:scale-105"
+            onClick={() => setActiveItem('HOME')}
           >
-            <LogIn className="w-4 h-4 text-rose-400 group-hover:text-white" />
-            <span>Login / Sign Up</span>
+            <img
+              src="/images/logo.png"
+              alt="ClashNet Logo"
+              className="h-9 md:h-11 w-auto object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
+            />
+            <span className="text-white font-montserrat font-bold text-base md:text-lg tracking-[0.2em] uppercase">
+              clashnet
+            </span>
+          </a>
+        </div>
+
+        {/* Center: Desktop Navigation Links */}
+        <div className="hidden md:flex flex-1 justify-center items-center">
+          <ul className="flex items-center space-x-12">
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeItem === item.name;
+              return (
+                <li key={item.name}>
+                  <a
+                    href={item.href}
+                    onClick={() => setActiveItem(item.name)}
+                    className={`relative inline-block py-1 text-xs md:text-sm font-bold uppercase tracking-[0.22em] transition-all duration-300 ease-out transform ${
+                      isActive
+                        ? 'text-white'
+                        : 'text-white/80 hover:text-white hover:-translate-y-[2px]'
+                    }
+                    after:content-[''] after:absolute after:bottom-[-6px] after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:bg-white after:transition-all after:duration-300 after:ease-out
+                    ${isActive ? 'after:w-full' : 'after:w-0 hover:after:w-full'}
+                    `}
+                  >
+                    {item.name}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        {/* Right: Login button & Mobile toggle */}
+        <div className="flex items-center justify-end space-x-4 min-w-[160px] z-10">
+          <button
+            className="relative px-6 py-2 rounded-full border border-white/40 hover:border-white/90 text-white text-xs md:text-sm font-bold uppercase tracking-[0.18em] transition-all duration-200 ease-out hover:bg-white/15 active:scale-95"
+            onClick={() => {
+              // Future auth modal trigger
+            }}
+          >
+            LOGIN
           </button>
 
+          {/* Hamburger button for mobile screens */}
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden text-gray-300 hover:text-white focus:outline-none p-1"
-            aria-label="Toggle Navigation Menu"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden text-white/90 hover:text-white focus:outline-none p-1.5 transition-colors"
+            aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              {isMobileMenuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
           </button>
         </div>
-      </nav>
+      </div>
 
-      {/* Mobile Menu Dropdown */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-[#0a0b10]/95 backdrop-blur-xl border-b border-white/10 px-6 py-6 flex flex-direction-col space-y-4">
-          {navItems.map((item) => (
-            <a
-              key={item.id}
-              href={item.href}
-              onClick={() => {
-                setActiveTab(item.id);
-                setMobileMenuOpen(false);
-              }}
-              className={`block text-lg font-medium ${
-                activeTab === item.id ? 'text-rose-500' : 'text-slate-300 hover:text-white'
-              }`}
-            >
-              {item.label}
-            </a>
-          ))}
+      {/* Mobile Navigation Drawer */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden relative bg-black/85 backdrop-blur-md border-b border-white/10 px-6 py-6 transition-all duration-300 animate-fadeIn">
+          <ul className="flex flex-col space-y-5 text-center">
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeItem === item.name;
+              return (
+                <li key={item.name}>
+                  <a
+                    href={item.href}
+                    onClick={() => {
+                      setActiveItem(item.name);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`inline-block py-1 text-sm font-bold uppercase tracking-[0.22em] transition-all duration-200 ${
+                      isActive ? 'text-white border-b-2 border-white' : 'text-white/80 hover:text-white'
+                    }`}
+                  >
+                    {item.name}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       )}
-    </header>
+    </nav>
   );
 };
