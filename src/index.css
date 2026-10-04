@@ -32,3 +32,22 @@
 .animate-pulse-glow {
   animation: pulse-glow 2s infinite;
 }
+
+@keyframes cloud-float-slow {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-18px); }
+}
+
+@keyframes cloud-float-fast {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(22px); }
+}
+
+.animate-cloud-slow {
+  animation: cloud-float-slow 20s ease-in-out infinite;
+}
+
+.animate-cloud-fast {
+  animation: cloud-float-fast 14s ease-in-out infinite;
+}
+
