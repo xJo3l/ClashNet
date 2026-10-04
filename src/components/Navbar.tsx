@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface NavItem {
   name: string;
@@ -12,12 +12,62 @@ const NAV_ITEMS: NavItem[] = [
   { name: 'TOOLS', href: '#tools' },
 ];
 
+/** How far (px) the user must scroll in one direction before the bar toggles. */
+const TOGGLE_DISTANCE = 40;
+
+/** The bar always stays visible while the page is this close to the very top. */
+const TOP_OFFSET = 12;
+
 export const Navbar: React.FC = () => {
   const [activeItem, setActiveItem] = useState<string>('HOME');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isHidden, setIsHidden] = useState<boolean>(false);
+  const lastScrollY = useRef<number>(0);
+  const scrollAccumulator = useRef<number>(0);
+
+  // Hide the bar on scroll down (slides up off-screen), reveal it on scroll up.
+  useEffect(() => {
+    lastScrollY.current = window.scrollY;
+
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      const delta = currentY - lastScrollY.current;
+      lastScrollY.current = currentY;
+
+      // Always fully visible at the top of the page.
+      if (currentY <= TOP_OFFSET) {
+        scrollAccumulator.current = 0;
+        setIsHidden(false);
+        return;
+      }
+
+      // Ignore sub-pixel jitter; restart the accumulator when direction flips.
+      if (Math.abs(delta) < 0.5) return;
+      if (Math.sign(delta) !== Math.sign(scrollAccumulator.current)) {
+        scrollAccumulator.current = 0;
+      }
+      scrollAccumulator.current += delta;
+
+      if (scrollAccumulator.current > TOGGLE_DISTANCE) {
+        scrollAccumulator.current = 0;
+        setIsMobileMenuOpen(false);
+        setIsHidden(true);
+      } else if (scrollAccumulator.current < -TOGGLE_DISTANCE) {
+        scrollAccumulator.current = 0;
+        setIsHidden(false);
+      }
+    };
+
+    // Lenis drives real window scrolling, so native scroll events fire every frame.
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <nav className="fixed top-0 left-0 w-full h-[86px] z-50 font-montserrat select-none">
+    <nav
+      className={`fixed top-0 left-0 w-full h-[86px] z-50 font-montserrat select-none transition-transform duration-500 ease-out will-change-transform ${isHidden ? '-translate-y-full' : 'translate-y-0'
+        }`}
+    >
       {/* Subtle dark gradient overlay for text readability without a solid bar */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/35 to-transparent pointer-events-none" />
 
@@ -51,11 +101,10 @@ export const Navbar: React.FC = () => {
                   <a
                     href={item.href}
                     onClick={() => setActiveItem(item.name)}
-                    className={`relative inline-block py-1 text-xs md:text-sm font-bold uppercase tracking-[0.22em] transition-all duration-300 ease-out transform ${
-                      isActive
-                        ? 'text-white'
-                        : 'text-white/80 hover:text-white hover:-translate-y-[2px]'
-                    }
+                    className={`relative inline-block py-1 text-xs md:text-sm font-bold uppercase tracking-[0.22em] transition-all duration-300 ease-out transform ${isActive
+                      ? 'text-white'
+                      : 'text-white/80 hover:text-white hover:-translate-y-[2px]'
+                      }
                     after:content-[''] after:absolute after:bottom-[-6px] after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:bg-white after:transition-all after:duration-300 after:ease-out
                     ${isActive ? 'after:w-full' : 'after:w-0 hover:after:w-full'}
                     `}
@@ -125,9 +174,8 @@ export const Navbar: React.FC = () => {
                       setActiveItem(item.name);
                       setIsMobileMenuOpen(false);
                     }}
-                    className={`inline-block py-1 text-sm font-bold uppercase tracking-[0.22em] transition-all duration-200 ${
-                      isActive ? 'text-white border-b-2 border-white' : 'text-white/80 hover:text-white'
-                    }`}
+                    className={`inline-block py-1 text-sm font-bold uppercase tracking-[0.22em] transition-all duration-200 ${isActive ? 'text-white border-b-2 border-white' : 'text-white/80 hover:text-white'
+                      }`}
                   >
                     {item.name}
                   </a>

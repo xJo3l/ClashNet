@@ -10,6 +10,7 @@ export const Hero: React.FC = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const cloud1Ref = useRef<HTMLDivElement>(null);
   const cloud2Ref = useRef<HTMLDivElement>(null);
+  const aboutRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!heroRef.current) return;
@@ -39,10 +40,10 @@ export const Hero: React.FC = () => {
           // Cloud 2 (main dense cloud bank, rises to top of screen and blankets viewport in white)
           const cloud2End = isMobile ? -100 : -105;
           // DISCOVER text: drifts gently upward as clouds rise
-          const textEnd = isMobile ? -50 : isTablet ? -70 : -85;
+          const textEnd = isMobile ? -50 : isTablet ? -70 : -385;
 
-          // Explicitly initialize cloud positions off-screen below the viewport
-          gsap.set([cloud1Ref.current, cloud2Ref.current], {
+          // Explicitly initialize cloud and about positions off-screen below the viewport
+          gsap.set([cloud1Ref.current, cloud2Ref.current, aboutRef.current], {
             yPercent: 100,
             y: 0,
             force3D: true,
@@ -58,7 +59,7 @@ export const Hero: React.FC = () => {
             },
           });
 
-          // "DISCOVER" text scrolls upward gently
+          // "DISCOVER" text: scrolls upward and blurs as it reaches the middle
           if (contentRef.current) {
             tl.fromTo(
               contentRef.current,
@@ -66,13 +67,25 @@ export const Hero: React.FC = () => {
               { yPercent: textEnd, y: 0, ease: 'none', force3D: true, duration: 0.95 },
               0
             );
+
+            // Reaches blur around middle of scroll (0.5), then blurs more as it enters clouds
+            tl.fromTo(
+              contentRef.current,
+              { filter: 'blur(0px)' },
+              { filter: 'blur(8px)', ease: 'power1.inOut', duration: 0.5 },
+              0
+            );
+            tl.to(
+              contentRef.current,
+              { filter: 'blur(14px)', ease: 'none', duration: 0.45 },
+              0.5
+            );
           }
 
-          // Cloud 2 (background cloud bank): rises from bottom until clouds reach top of screen
-          // and solid white base fills the entire viewport (matching Image 2)
+          // Cloud 2 & About section: rise from bottom until solid white base fills the screen
           if (cloud2Ref.current) {
             tl.fromTo(
-              cloud2Ref.current,
+              [cloud2Ref.current, aboutRef.current],
               { yPercent: 100, y: 0 },
               { yPercent: cloud2End, y: 0, ease: 'none', force3D: true, duration: 0.95 },
               0
@@ -123,6 +136,7 @@ export const Hero: React.FC = () => {
           className="relative z-10 mx-auto text-center leading-none select-none pointer-events-none flex justify-center items-end"
           style={{
             width: `${((1847 - 328) / 1919) * 100}%`,
+            willChange: 'transform, filter',
           }}
         >
           <svg
@@ -137,7 +151,7 @@ export const Hero: React.FC = () => {
               fillOpacity="0.90"
               className="font-bebas"
               style={{
-                fontFamily: "'Bebas Neue', sans-serif",
+                fontFamily: "'Oswald', 'Bebas Neue', sans-serif",
                 fontSize: '240px',
                 letterSpacing: '0.04em',
               }}
@@ -172,10 +186,8 @@ export const Hero: React.FC = () => {
             style={{ transform: 'translateZ(0)' }}
             draggable={false}
           />
-          {/* About section directly under the cloud (overlapped by 3px to eliminate subpixel seam) */}
-          <div className="absolute top-[calc(100%-3px)] left-0 w-full pointer-events-auto">
-            <About />
-          </div>
+          {/* White extension below the clouds */}
+          <div className="absolute top-[calc(100%-3px)] left-0 w-full h-[200vh] bg-white pointer-events-none" />
         </div>
 
         {/* Cloud 1 (foreground cloud wisps, faster parallax) */}
@@ -194,6 +206,14 @@ export const Hero: React.FC = () => {
             style={{ transform: 'translateZ(0)' }}
             draggable={false}
           />
+        </div>
+
+        {/* About section - z-40 (IN FRONT of all clouds, adjust top-[...] to move higher/lower) */}
+        <div
+          ref={aboutRef}
+          className="absolute top-[90%] left-0 w-full z-40 pointer-events-auto will-change-transform"
+        >
+          <About />
         </div>
       </div>
     </section>

@@ -2,8 +2,107 @@ import React from 'react';
 
 export const About: React.FC = () => {
   return (
-    <section id="about" className="relative w-full min-h-[200vh] bg-[#ffffff]">
-      {/* Content for About section */}
+    <section id="about" className="relative w-full min-h-[200vh] bg-transparent text-[#182337] selection:bg-rose-500 selection:text-white">
+      {/* Main About content container - moved higher with reduced top padding */}
+      <div className="relative w-full pt-10 pb-36 md:pt-14 md:pb-48 lg:pt-16 lg:pb-60">
+        {/* Desktop Layout: starts on the right side of 644px grid line and spans to 1591px */}
+        <div
+          className="hidden lg:flex flex-col items-start gap-8"
+          style={{
+            marginLeft: `${(644 / 1919) * 100}%`,
+            width: `${((1591 - 644) / 1919) * 100}%`,
+          }}
+        >
+          {/* Small label: ClashNet on the right side of the 644px grid line */}
+          <div className="relative inline-flex items-center justify-center px-6 py-2 select-none -ml-4">
+            {/* Hand-drawn sketchy elliptical loop SVG */}
+            <svg
+              viewBox="0 0 190 60"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="absolute -inset-x-8 -inset-y-3 w-[calc(100%+4rem)] h-[calc(100%+1.5rem)] pointer-events-none overflow-visible"
+            >
+              {/* Entry sketch line from left */}
+              <path
+                d="M2 42 C 28 42, 54 39, 82 34"
+                stroke="#94a3b8"
+                strokeWidth="0.85"
+                strokeLinecap="round"
+              />
+              {/* Main tilted ellipse loop */}
+              <ellipse
+                cx="102"
+                cy="30"
+                rx="78"
+                ry="21"
+                transform="rotate(-11 102 30)"
+                stroke="#94a3b8"
+                strokeWidth="0.85"
+              />
+              {/* Secondary overlapping orbit trace */}
+              <path
+                d="M26 20 C 40 8, 142 10, 172 26 C 182 32, 164 46, 126 49 C 84 52, 34 42, 25 31"
+                stroke="#94a3b8"
+                strokeWidth="0.75"
+              />
+            </svg>
+
+            <span className="relative z-10 font-cormorant italic font-normal text-base xl:text-lg text-[#182337] tracking-wider">
+              ClashNet
+            </span>
+          </div>
+
+          {/* Main Statement: spans from 644px to 1591px */}
+          <h2 className="font-cormorant font-normal text-[#182337] uppercase tracking-[0.025em] leading-[1.22] text-[2.1rem] xl:text-[2.65rem] 2xl:text-[3rem]">
+            {/* Indented first line matching the editorial reference */}
+            <span className="inline-block w-[14%] xl:w-[18%]" />
+            A PLACE FOR CLASHERS TO DISCOVER WHAT’S NEW, FOLLOW THE META, FIND THE BEST BASES, AND STAY CONNECTED TO THE COMMUNITY.
+          </h2>
+        </div>
+
+        {/* Mobile & Tablet Layout */}
+        <div className="lg:hidden w-full px-6 sm:px-12 md:px-16 flex flex-col items-start gap-8">
+          {/* Label with sketch loop */}
+          <div className="relative inline-flex items-center justify-center px-6 py-2 select-none self-start">
+            <svg
+              viewBox="0 0 190 60"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="absolute -inset-x-8 -inset-y-3 w-[calc(100%+4rem)] h-[calc(100%+1.5rem)] pointer-events-none overflow-visible"
+            >
+              <path
+                d="M2 42 C 28 42, 54 39, 82 34"
+                stroke="#94a3b8"
+                strokeWidth="0.85"
+                strokeLinecap="round"
+              />
+              <ellipse
+                cx="102"
+                cy="30"
+                rx="78"
+                ry="21"
+                transform="rotate(-11 102 30)"
+                stroke="#94a3b8"
+                strokeWidth="0.85"
+              />
+              <path
+                d="M26 20 C 40 8, 142 10, 172 26 C 182 32, 164 46, 126 49 C 84 52, 34 42, 25 31"
+                stroke="#94a3b8"
+                strokeWidth="0.75"
+              />
+            </svg>
+            <span className="relative z-10 font-cormorant italic font-normal text-base text-[#182337] tracking-wider">
+              ClashNet
+            </span>
+          </div>
+
+          {/* Statement */}
+          <h2 className="font-cormorant font-normal text-[#182337] uppercase tracking-[0.025em] leading-[1.28] text-2xl sm:text-3xl md:text-4xl max-w-2xl">
+            <span className="inline-block w-[14%] sm:w-[18%]" />
+            A PLACE FOR CLASHERS TO DISCOVER WHAT’S NEW, FOLLOW THE META, FIND THE BEST BASES, AND STAY CONNECTED TO THE COMMUNITY.
+          </h2>
+        </div>
+      </div>
     </section>
   );
 };

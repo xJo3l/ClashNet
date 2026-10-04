@@ -18,6 +18,7 @@ export default {
       },
       fontFamily: {
         cinzel: ['Cinzel', 'serif'],
+        cormorant: ['"Cormorant Garamond"', 'Cinzel', 'serif'],
         outfit: ['Outfit', 'sans-serif'],
         montserrat: ['Montserrat', 'sans-serif'],
         bebas: ['"Bebas Neue"', 'sans-serif'],

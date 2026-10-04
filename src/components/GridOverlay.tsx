@@ -23,12 +23,12 @@ export const GridOverlay: React.FC = () => {
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-0 pointer-events-none z-20 w-full h-full overflow-hidden"
+      className="fixed inset-0 pointer-events-none z-[60] w-full h-full overflow-hidden"
     >
       {VERTICAL_LINE_PERCENTAGES.map((percent, index) => (
         <div
           key={index}
-          className="absolute top-0 bottom-0 w-[1px] bg-white/[0.08]"
+          className="absolute top-0 bottom-0 w-[1px] bg-neutral-400/40"
           style={{ left: `${percent}%` }}
         />
       ))}
