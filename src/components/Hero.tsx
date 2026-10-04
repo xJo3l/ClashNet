@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { About } from './About';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -150,11 +151,20 @@ export const Hero: React.FC = () => {
             Start below visible viewport via gsap.set,
             rise upward over the still hero image until the clouds reach the top of the screen */}
 
-        {/* Cloud 2 (main dense cloud bank + white extension) */}
+        {/* Cloud 2 (main dense cloud bank + About section) */}
         <div
           ref={cloud2Ref}
           className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none will-change-transform"
         >
+          {/* Smooth, dense white backing gradient to completely blend away dark background */}
+          <div
+            className="absolute inset-x-0 bottom-0 w-full h-[85%] pointer-events-none"
+            style={{
+              background:
+                'linear-gradient(to top, #ffffff 0%, #ffffff 55%, rgba(255, 255, 255, 0.95) 70%, rgba(255, 255, 255, 0.6) 82%, transparent 100%)',
+            }}
+          />
+
           <img
             src="/images/cloud-2-full.png"
             alt="Clouds overlay background"
@@ -162,14 +172,20 @@ export const Hero: React.FC = () => {
             style={{ transform: 'translateZ(0)' }}
             draggable={false}
           />
-          {/* White extension fills everything below the cloud */}
-          <div className="absolute top-full left-0 w-full h-[200vh] bg-white" />
+          {/* About section directly under the cloud (overlapped by 3px to eliminate subpixel seam) */}
+          <div className="absolute top-[calc(100%-3px)] left-0 w-full pointer-events-auto">
+            <About />
+          </div>
         </div>
 
         {/* Cloud 1 (foreground cloud wisps, faster parallax) */}
         <div
           ref={cloud1Ref}
           className="absolute top-0 left-0 w-full h-full z-30 pointer-events-none will-change-transform"
+          style={{
+            WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 98%)',
+            maskImage: 'linear-gradient(to bottom, black 70%, transparent 98%)',
+          }}
         >
           <img
             src="/images/cloud-1-cropped.png"
@@ -178,8 +194,6 @@ export const Hero: React.FC = () => {
             style={{ transform: 'translateZ(0)' }}
             draggable={false}
           />
-          {/* White extension fills everything below the cloud */}
-          <div className="absolute top-full left-0 w-full h-[200vh] bg-white" />
         </div>
       </div>
     </section>

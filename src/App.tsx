@@ -5,7 +5,6 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
-import { About } from './components/About';
 import { GridOverlay } from './components/GridOverlay';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -46,7 +45,6 @@ export const App: React.FC = () => {
       {/* Main content */}
       <main>
         <Hero />
-        <About />
       </main>
     </div>
   );
