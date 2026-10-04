@@ -32,19 +32,22 @@ export const Hero: React.FC = () => {
 
           if (reduceMotion) return;
 
-          // White-desert uses data-scroll-speed="-80%" for cloud-1 and "-10%" for cloud-2.
-          // That means cloud-1 moves UP at 80% of scroll speed (very fast parallax),
-          // and cloud-2 moves UP at 10% of scroll speed (gentle parallax).
-          // With scrub over the hero section (200vh), we translate that into yPercent targets.
+          // Parallax speeds:
+          // Cloud 1 (foreground wisps, faster parallax rise)
+          const cloud1End = isMobile ? -120 : isTablet ? -135 : -150;
+          // Cloud 2 (main dense cloud bank, rises to top of screen and blankets viewport in white)
+          const cloud2End = isMobile ? -100 : -105;
+          // DISCOVER text: drifts gently upward as clouds rise
+          const textEnd = isMobile ? -50 : isTablet ? -70 : -85;
 
-          // Cloud 1 (foreground, fast): rises from translateY(100%) to well above center
-          const cloud1End = isMobile ? -60 : isTablet ? -70 : -80;
-          // Cloud 2 (background, slow): rises from translateY(100%) gently
-          const cloud2End = isMobile ? -5 : isTablet ? -8 : -10;
-          // DISCOVER text: moves up gently
-          const textEnd = isMobile ? -30 : isTablet ? -50 : -60;
+          // Explicitly initialize cloud positions off-screen below the viewport
+          gsap.set([cloud1Ref.current, cloud2Ref.current], {
+            yPercent: 100,
+            y: 0,
+            force3D: true,
+          });
 
-          // ScrollTrigger scrub over the full 200vh hero section
+          // ScrollTrigger scrub over the full 300vh hero section (giving 200vh of scroll runway)
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: heroRef.current,
@@ -54,34 +57,39 @@ export const Hero: React.FC = () => {
             },
           });
 
-          // "DISCOVER" text scrolls upward
+          // "DISCOVER" text scrolls upward gently
           if (contentRef.current) {
-            tl.to(
+            tl.fromTo(
               contentRef.current,
-              { yPercent: textEnd, ease: 'none', force3D: true },
+              { yPercent: 0, y: 0 },
+              { yPercent: textEnd, y: 0, ease: 'none', force3D: true, duration: 0.95 },
               0
             );
           }
 
-          // Cloud 2 (background cloud, slow rise like -10% scroll speed)
-          // Starts at translateY(100%) via CSS, animates to slightly above resting position
+          // Cloud 2 (background cloud bank): rises from bottom until clouds reach top of screen
+          // and solid white base fills the entire viewport (matching Image 2)
           if (cloud2Ref.current) {
-            tl.to(
+            tl.fromTo(
               cloud2Ref.current,
-              { yPercent: cloud2End, ease: 'none', force3D: true },
+              { yPercent: 100, y: 0 },
+              { yPercent: cloud2End, y: 0, ease: 'none', force3D: true, duration: 0.95 },
               0
             );
           }
 
-          // Cloud 1 (foreground cloud, fast rise like -80% scroll speed)
-          // Starts at translateY(100%) via CSS, animates way up
+          // Cloud 1 (foreground cloud wisps): rises faster across the screen for 3D parallax depth
           if (cloud1Ref.current) {
-            tl.to(
+            tl.fromTo(
               cloud1Ref.current,
-              { yPercent: cloud1End, ease: 'none', force3D: true },
+              { yPercent: 100, y: 0 },
+              { yPercent: cloud1End, y: 0, ease: 'none', force3D: true, duration: 0.95 },
               0
             );
           }
+
+          // Timeline pad so 0.95-1.0 is pure white buffer before page transitions into About section
+          tl.set({}, {}, 1);
         }
       );
     }, heroRef);
@@ -93,13 +101,13 @@ export const Hero: React.FC = () => {
     <section
       ref={heroRef}
       className="relative w-full"
-      style={{ height: '200vh' }}
+      style={{ height: '300vh' }}
     >
-      {/* Background image: fixed to the first 100vh, stays still */}
+      {/* Background image: stays completely still in sticky viewport */}
       <div
         className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-end items-center"
       >
-        {/* Background layer */}
+        {/* Background layer: completely stationary */}
         <div
           className="absolute inset-0 w-full h-full pointer-events-none bg-cover bg-center"
           style={{ backgroundImage: "url('/images/hero-coc.webp')" }}
@@ -138,15 +146,14 @@ export const Hero: React.FC = () => {
           </svg>
         </div>
 
-        {/* Cloud layers — exactly like white-desert.com:
-            position: absolute, top: 0, height: 100vh, translateY(100%)
-            They sit just below the visible viewport and rise up on scroll */}
+        {/* Cloud layers:
+            Start below visible viewport via gsap.set,
+            rise upward over the still hero image until the clouds reach the top of the screen */}
 
-        {/* Cloud 2 (background cloud bank, slow parallax — like data-scroll-speed="-10%") */}
+        {/* Cloud 2 (main dense cloud bank + white extension) */}
         <div
           ref={cloud2Ref}
           className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none will-change-transform"
-          style={{ transform: 'translateY(100%)' }}
         >
           <img
             src="/images/cloud-2-full.png"
@@ -156,14 +163,13 @@ export const Hero: React.FC = () => {
             draggable={false}
           />
           {/* White extension fills everything below the cloud */}
-          <div className="absolute top-full left-0 w-full h-[100vh] bg-white" />
+          <div className="absolute top-full left-0 w-full h-[200vh] bg-white" />
         </div>
 
-        {/* Cloud 1 (foreground cloud wisps, fast parallax — like data-scroll-speed="-80%") */}
+        {/* Cloud 1 (foreground cloud wisps, faster parallax) */}
         <div
           ref={cloud1Ref}
           className="absolute top-0 left-0 w-full h-full z-30 pointer-events-none will-change-transform"
-          style={{ transform: 'translateY(100%)' }}
         >
           <img
             src="/images/cloud-1-cropped.png"
@@ -173,7 +179,7 @@ export const Hero: React.FC = () => {
             draggable={false}
           />
           {/* White extension fills everything below the cloud */}
-          <div className="absolute top-full left-0 w-full h-[100vh] bg-white" />
+          <div className="absolute top-full left-0 w-full h-[200vh] bg-white" />
         </div>
       </div>
     </section>
