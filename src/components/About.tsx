@@ -52,8 +52,8 @@ export const About: React.FC = () => {
             </span>
           </div>
 
-          {/* Main Statement: spans from 644px to 1591px */}
-          <h2 className="font-cormorant font-normal text-[#182337] uppercase tracking-[0.025em] leading-[1.22] text-[2.1rem] xl:text-[2.65rem] 2xl:text-[3rem]">
+          {/* Main Statement: spans from 644px to 1591px in luxury Italiana editorial serif */}
+          <h2 className="font-italiana font-normal text-[#182337] uppercase tracking-[0.035em] leading-[1.24] text-[2.3rem] xl:text-[2.85rem] 2xl:text-[3.25rem]">
             {/* Indented first line matching the editorial reference */}
             <span className="inline-block w-[14%] xl:w-[18%]" />
             A PLACE FOR CLASHERS TO DISCOVER WHAT’S NEW, FOLLOW THE META, FIND THE BEST BASES, AND STAY CONNECTED TO THE COMMUNITY.
@@ -97,7 +97,7 @@ export const About: React.FC = () => {
           </div>
 
           {/* Statement */}
-          <h2 className="font-cormorant font-normal text-[#182337] uppercase tracking-[0.025em] leading-[1.28] text-2xl sm:text-3xl md:text-4xl max-w-2xl">
+          <h2 className="font-italiana font-normal text-[#182337] uppercase tracking-[0.035em] leading-[1.28] text-2xl sm:text-3xl md:text-4xl max-w-2xl">
             <span className="inline-block w-[14%] sm:w-[18%]" />
             A PLACE FOR CLASHERS TO DISCOVER WHAT’S NEW, FOLLOW THE META, FIND THE BEST BASES, AND STAY CONNECTED TO THE COMMUNITY.
           </h2>
