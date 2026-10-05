@@ -123,6 +123,28 @@ export const HorizontalScroll: React.FC = () => {
         );
       }
 
+      // WHAT'S NEW title shrinks from 1.24 down to 0.55 starting as it enters the viewport (top bottom)
+      // and finishing exactly when the text exits and slit transition begins (+2.2 innerHeight)
+      if (mountainTitleRef.current) {
+        gsap.fromTo(
+          mountainTitleRef.current,
+          { scale: 1.24, autoAlpha: 1 },
+          {
+            scale: () => (window.innerWidth >= 1280 ? 0.55 : 1),
+            autoAlpha: 1,
+            ease: 'none',
+            force3D: true,
+            scrollTrigger: {
+              trigger: outer,
+              start: 'top bottom',
+              end: () => `+=${window.innerHeight * 2.2}`,
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          }
+        );
+      }
+
       // ── Main Master Timeline (Single ScrollTrigger for zero-hitch execution) ──
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -133,21 +155,6 @@ export const HorizontalScroll: React.FC = () => {
           invalidateOnRefresh: true,
         },
       });
-
-      // 0.00 – 0.25: WHAT'S NEW title shrinks to final size in sync with text rise
-      if (mountainTitleRef.current) {
-        tl.fromTo(
-          mountainTitleRef.current,
-          { scale: 1.24 },
-          {
-            scale: () => (window.innerWidth >= 1280 ? 0.55 : 1),
-            ease: 'none',
-            duration: 0.25,
-            force3D: true,
-          },
-          0
-        );
-      }
 
       // Opening scene subtle depth drift
       if (mountainImageRef.current) {
@@ -305,8 +312,7 @@ export const HorizontalScroll: React.FC = () => {
               className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
               draggable={false}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/25 pointer-events-none" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-black/60 via-black/25 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
 
             {/* "WHAT'S NEW" centered title */}
             <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none">
@@ -363,7 +369,6 @@ export const HorizontalScroll: React.FC = () => {
               />
             </div>
           ))}
-          <div className="absolute inset-0 bg-black/20 pointer-events-none" />
         </div>
 
         {/* ── Layer D: Horizontal Card Track (frames 4 & 5) ──────────── */}
