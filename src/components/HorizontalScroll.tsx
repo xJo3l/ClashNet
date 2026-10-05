@@ -42,17 +42,19 @@ const CAMPS: CampCard[] = [
   },
 ];
 
-// ── MORE TO DISCOVER ANIMATION SETTINGS ─────────────────────────────
-// 1. Trigger Start: When the text starts rising into view:
-//    - "top 95%" or "top bottom" -> Triggers very early as section enters screen
-//    - "top 75%"                 -> Triggers slightly later
-//    - "top top"                 -> Triggers only once section is pinned at top
-const MORE_TO_DISCOVER_START = "top 75%";
+// ── SLIT REVEAL CONFIGURATION ─────────────────────────────────────────
+// Exactly 3 openings based on the 1919px grid, opening exclusively to the LEFT:
+// 1. Far Left:  0px to 644px (33.56% width)
+// 2. Middle:    644px to 1275px (32.88% width)
+// 3. Far Right: 1275px to 100% (33.56% width)
+const SLITS = [
+  { initial: 'inset(0% 66.44% 0% 33.56%)', final: 'inset(0% 66.44% 0% 0%)', duration: 0.32 },
+  { initial: 'inset(0% 33.56% 0% 66.44%)', final: 'inset(0% 33.56% 0% 33.56%)', duration: 0.31 },
+  { initial: 'inset(0% 0% 0% 100%)', final: 'inset(0% 0% 0% 66.44%)', duration: 0.32 },
+];
 
-// 2. Scroll Duration: How much scroll distance it takes to rise (higher = slower rise):
-//    - Increase (e.g. 3.5, 4.0) -> Slower rise
-//    - Decrease (e.g. 1.8, 2.2) -> Faster rise
-const MORE_TO_DISCOVER_DURATION_VH = 3.5;
+// Section Height Runway (controls overall scroll pacing)
+const SECTION_HEIGHT = "580vh";
 
 export const HorizontalScroll: React.FC = () => {
   const outerRef = useRef<HTMLDivElement>(null);
@@ -63,7 +65,10 @@ export const HorizontalScroll: React.FC = () => {
   const mountainImageRef = useRef<HTMLImageElement>(null);
   const mountainTitleRef = useRef<HTMLHeadingElement>(null);
   const polarTextRef = useRef<HTMLDivElement>(null);
-  const iceBgRef = useRef<HTMLDivElement>(null);
+  
+  // Slit Reveal
+  const slitsContainerRef = useRef<HTMLDivElement>(null);
+  const slitElementsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   // Cards
   const trackRef = useRef<HTMLDivElement>(null);
@@ -77,14 +82,27 @@ export const HorizontalScroll: React.FC = () => {
     const track = trackRef.current;
     if (!outer || !sticky || !track) return;
 
+    // Preload & pre-decode a.jpg into GPU VRAM to prevent on-the-fly texture allocation hitch
+    const preImg = new Image();
+    preImg.src = '/images/a.jpg';
+    if (preImg.decode) {
+      preImg.decode().catch(() => {});
+    }
+
     const ctx = gsap.context(() => {
       // ── Initial States ──────────────────────────────────────────────
-      gsap.set(iceBgRef.current, { autoAlpha: 0 });
+      gsap.set(slitsContainerRef.current, { autoAlpha: 1, transformOrigin: 'center center', force3D: true });
+      slitElementsRef.current.forEach((el, i) => {
+        if (el && SLITS[i]) gsap.set(el, { clipPath: SLITS[i].initial, force3D: true });
+      });
+
       // Track starts completely off-screen to the right
       gsap.set(track, { x: '100vw', force3D: true });
+      if (polarTextRef.current) {
+        gsap.set(polarTextRef.current, { y: () => window.innerHeight * 0.92, force3D: true });
+      }
 
-      // Expand the opening scene as the section rises into the viewport,
-      // completing the full-screen frame as the sticky sequence begins.
+      // Expand the opening scene as the section rises into the viewport
       if (mountainRef.current) {
         gsap.fromTo(
           mountainRef.current,
@@ -104,76 +122,69 @@ export const HorizontalScroll: React.FC = () => {
           }
         );
       }
-      if (mountainTitleRef.current) {
-        const titleTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: outer,
-            start: 'top bottom',
-            end: () => `+=${window.innerHeight * 2.19}`,
-            scrub: true,
-            invalidateOnRefresh: true,
-          },
-        });
-        titleTl.fromTo(
-          mountainTitleRef.current,
-          { scale: 1.24, autoAlpha: 1 },
-          {
-            scale: () => window.innerWidth >= 1280 ? 0.55 : 1,
-            autoAlpha: 1,
-            ease: 'none',
-            duration: 2.19,
-          },
-          0
-        );
-      }
-      if (polarTextRef.current) {
-        gsap.fromTo(
-          polarTextRef.current,
-          { autoAlpha: 1, y: () => window.innerHeight * 0.95 },
-          {
-            autoAlpha: 1,
-            y: () => -window.innerHeight * 1.15,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: outer,
-              start: MORE_TO_DISCOVER_START,
-              end: () => `+=${window.innerHeight * MORE_TO_DISCOVER_DURATION_VH}`,
-              scrub: true,
-              invalidateOnRefresh: true,
-            },
-          }
-        );
-      }
 
-      // ── Main Timeline ────────────────────────────────────────────────
+      // ── Main Master Timeline (Single ScrollTrigger for zero-hitch execution) ──
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: outer,
           start: 'top top',
           end: 'bottom bottom',
-          scrub: 1.5,
+          scrub: 0.7,
           invalidateOnRefresh: true,
         },
       });
 
-      // Opening mountain scene reveal (animation layer only).
+      // 0.00 – 0.25: WHAT'S NEW title shrinks to final size in sync with text rise
+      if (mountainTitleRef.current) {
+        tl.fromTo(
+          mountainTitleRef.current,
+          { scale: 1.24 },
+          {
+            scale: () => (window.innerWidth >= 1280 ? 0.55 : 1),
+            ease: 'none',
+            duration: 0.25,
+            force3D: true,
+          },
+          0
+        );
+      }
+
+      // Opening scene subtle depth drift
       if (mountainImageRef.current) {
         tl.fromTo(
           mountainImageRef.current,
           { scale: 1.02 },
-          { scale: 1, ease: 'none', duration: 0.14 },
+          { scale: 1, ease: 'none', duration: 0.25, force3D: true },
           0
         );
       }
-      if (mountainTitleRef.current) {
-        tl.to(mountainTitleRef.current, { autoAlpha: 0, y: -8, ease: 'power1.in', duration: 0.1 }, 0.34);
+
+      // 0.00 – 0.25: "MORE TO DISCOVER" smoothly rises all the way up and cleanly exits top of viewport
+      if (polarTextRef.current) {
+        tl.fromTo(
+          polarTextRef.current,
+          { y: () => window.innerHeight * 0.92 },
+          { y: () => -window.innerHeight * 0.36, ease: 'none', duration: 0.25, force3D: true },
+          0
+        );
       }
 
-      // Background fades in, mountain fades out
-      tl.to(iceBgRef.current, { autoAlpha: 1, duration: 0.14 }, 0.34);
-      tl.to(mountainRef.current, { autoAlpha: 0, duration: 0.14 }, 0.34);
+      // 0.25 – 0.57: Slits continuously expand leftward at constant speed IMMEDIATELY as text exits
+      const OPENING_START = 0.25;
+      const OPENING_DURATION = 0.32;
+      SLITS.forEach((slit, i) => {
+        const el = slitElementsRef.current[i];
+        if (!el) return;
+        tl.fromTo(
+          el,
+          { clipPath: slit.initial },
+          { clipPath: slit.final, ease: 'none', duration: slit.duration },
+          OPENING_START
+        );
+      });
 
-      // 0.40 – 1.00: Card track slides from right to left
+      // As the far right slit crosses ~1400px (progress ~0.508), the card track slides in
+      const cardTriggerPoint = OPENING_START + OPENING_DURATION * 0.806;
       tl.to(
         track,
         {
@@ -184,10 +195,10 @@ export const HorizontalScroll: React.FC = () => {
             return -(totalW - vw + vw * 0.08);
           },
           ease: 'none',
-          duration: 0.6,
+          duration: 1.0 - cardTriggerPoint,
           force3D: true,
         },
-        0.40
+        cardTriggerPoint
       );
       const horizontalTrackTween = tl
         .getChildren(false, true, false)
@@ -272,7 +283,7 @@ export const HorizontalScroll: React.FC = () => {
       id="whats-new"
       aria-label="What's New"
       className="relative w-full"
-      style={{ height: '450vh' }}
+      style={{ height: SECTION_HEIGHT }}
     >
       {/* ── Sticky Viewport ──────────────────────────────────────────── */}
       <div
@@ -326,17 +337,32 @@ export const HorizontalScroll: React.FC = () => {
           </div>
         </div>
 
-        {/* ── Layer B: Full Background (frames 4 & 5) ────────────── */}
+        {/* ── Layer B: Multi-Column Slit Reveal (a.jpg) ────────────── */}
         <div
-          ref={iceBgRef}
-          className="absolute inset-0 z-[15] pointer-events-none will-change-auto"
+          ref={slitsContainerRef}
+          className="absolute inset-0 z-20 pointer-events-none overflow-hidden will-change-transform"
+          style={{ transform: 'translateZ(0)' }}
         >
-          <img
-            src="/images/a.jpg"
-            alt="Background"
-            className="w-full h-full object-cover object-center select-none pointer-events-none"
-            draggable={false}
-          />
+          {SLITS.map((slit, i) => (
+            <div
+              key={i}
+              ref={(el) => { slitElementsRef.current[i] = el; }}
+              className="absolute inset-0 w-full h-full overflow-hidden will-change-[clip-path]"
+              style={{
+                clipPath: slit.initial,
+                transform: 'translateZ(0)',
+                backfaceVisibility: 'hidden',
+              }}
+            >
+              <img
+                src="/images/a.jpg"
+                alt="Revealed background"
+                className="w-full h-full object-cover object-center select-none pointer-events-none"
+                style={{ transform: 'translateZ(0)' }}
+                draggable={false}
+              />
+            </div>
+          ))}
           <div className="absolute inset-0 bg-black/20 pointer-events-none" />
         </div>
 
