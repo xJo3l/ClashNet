@@ -65,7 +65,7 @@ export const HorizontalScroll: React.FC = () => {
   const mountainImageRef = useRef<HTMLImageElement>(null);
   const mountainTitleRef = useRef<HTMLHeadingElement>(null);
   const polarTextRef = useRef<HTMLDivElement>(null);
-  
+
   // Slit Reveal
   const slitsContainerRef = useRef<HTMLDivElement>(null);
   const slitElementsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -86,7 +86,7 @@ export const HorizontalScroll: React.FC = () => {
     const preImg = new Image();
     preImg.src = '/images/a.jpg';
     if (preImg.decode) {
-      preImg.decode().catch(() => {});
+      preImg.decode().catch(() => { });
     }
 
     const ctx = gsap.context(() => {
@@ -99,7 +99,7 @@ export const HorizontalScroll: React.FC = () => {
       // Track starts completely off-screen to the right
       gsap.set(track, { x: '100vw', force3D: true });
       if (polarTextRef.current) {
-        gsap.set(polarTextRef.current, { y: () => window.innerHeight * 0.92, force3D: true });
+        gsap.set(polarTextRef.current, { y: () => window.innerHeight * 0.88, force3D: true });
       }
 
       // Expand the opening scene as the section rises into the viewport
@@ -145,6 +145,27 @@ export const HorizontalScroll: React.FC = () => {
         );
       }
 
+      // MORE TO DISCOVER text starts rising as section enters the viewport (top 75%)
+      // and cleanly exits the top edge at the exact moment slit transition begins (+1.95 innerHeight)
+      if (polarTextRef.current) {
+        gsap.fromTo(
+          polarTextRef.current,
+          { y: () => window.innerHeight * 0.88 },
+          {
+            y: () => -window.innerHeight * 0.36,
+            ease: 'none',
+            force3D: true,
+            scrollTrigger: {
+              trigger: outer,
+              start: 'top 75%',
+              end: () => `+=${window.innerHeight * 1.95}`,
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          }
+        );
+      }
+
       // ── Main Master Timeline (Single ScrollTrigger for zero-hitch execution) ──
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -162,16 +183,6 @@ export const HorizontalScroll: React.FC = () => {
           mountainImageRef.current,
           { scale: 1.02 },
           { scale: 1, ease: 'none', duration: 0.25, force3D: true },
-          0
-        );
-      }
-
-      // 0.00 – 0.25: "MORE TO DISCOVER" smoothly rises all the way up and cleanly exits top of viewport
-      if (polarTextRef.current) {
-        tl.fromTo(
-          polarTextRef.current,
-          { y: () => window.innerHeight * 0.92 },
-          { y: () => -window.innerHeight * 0.36, ease: 'none', duration: 0.25, force3D: true },
           0
         );
       }
@@ -329,8 +340,9 @@ export const HorizontalScroll: React.FC = () => {
             {/* Editorial text block */}
             <div
               ref={polarTextRef}
-              className="absolute top-[8%] right-[3%] max-w-[280px] md:max-w-[340px] min-[1280px]:left-[70.5%]
-                         min-[1280px]:right-auto min-[1280px]:top-[10%] min-[1280px]:w-[19.5%] min-[1280px]:max-w-none text-white
+              className="absolute top-[8%] right-[3%] max-w-[280px] md:max-w-[340px]
+                         min-[1280px]:left-[72.5%] min-[1280px]:right-auto min-[1280px]:top-[10%]
+                         min-[1280px]:w-[18%] min-[1280px]:max-w-none text-white
                          drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]"
             >
               <p className="font-montserrat font-bold text-[10px] md:text-[11px] uppercase tracking-[0.28em] mb-2 text-white">
