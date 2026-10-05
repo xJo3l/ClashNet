@@ -30,49 +30,61 @@ export const Navbar: React.FC = () => {
   useEffect(() => {
     lastScrollY.current = window.scrollY;
 
-    const checkAboutSection = () => {
+    const checkTheme = () => {
       const aboutEl = document.getElementById('about');
+      const whatsNewEl = document.getElementById('whats-new') || document.getElementById('camps');
+
       if (aboutEl) {
-        const rect = aboutEl.getBoundingClientRect();
-        // Trigger theme switch when About section reaches the navbar (86px)
-        setIsAboutSection(rect.top <= 550);
+        const aboutRect = aboutEl.getBoundingClientRect();
+        const whatsNewRect = whatsNewEl ? whatsNewEl.getBoundingClientRect() : null;
+
+        // Navbar is black/dark theme ONLY while scrolling through the white About section.
+        // Once What's New (whats-new / camps) reaches the top, navbar switches back to full white.
+        const isPastAboutTop = aboutRect.top <= 120;
+        const isPastWhatsNewTop = whatsNewRect ? whatsNewRect.top <= 86 : false;
+
+        setIsAboutSection(isPastAboutTop && !isPastWhatsNewTop);
       }
     };
+
+    let ticking = false;
 
     const handleScroll = () => {
       const currentY = window.scrollY;
       const delta = currentY - lastScrollY.current;
       lastScrollY.current = currentY;
 
-      checkAboutSection();
-
       // Always fully visible at the top of the page.
       if (currentY <= TOP_OFFSET) {
         scrollAccumulator.current = 0;
         setIsHidden(false);
-        return;
+      } else if (Math.abs(delta) >= 0.5) {
+        if (Math.sign(delta) !== Math.sign(scrollAccumulator.current)) {
+          scrollAccumulator.current = 0;
+        }
+        scrollAccumulator.current += delta;
+
+        if (scrollAccumulator.current > TOGGLE_DISTANCE) {
+          scrollAccumulator.current = 0;
+          setIsMobileMenuOpen(false);
+          setIsHidden(true);
+        } else if (scrollAccumulator.current < -TOGGLE_DISTANCE) {
+          scrollAccumulator.current = 0;
+          setIsHidden(false);
+        }
       }
 
-      // Ignore sub-pixel jitter; restart the accumulator when direction flips.
-      if (Math.abs(delta) < 0.5) return;
-      if (Math.sign(delta) !== Math.sign(scrollAccumulator.current)) {
-        scrollAccumulator.current = 0;
-      }
-      scrollAccumulator.current += delta;
-
-      if (scrollAccumulator.current > TOGGLE_DISTANCE) {
-        scrollAccumulator.current = 0;
-        setIsMobileMenuOpen(false);
-        setIsHidden(true);
-      } else if (scrollAccumulator.current < -TOGGLE_DISTANCE) {
-        scrollAccumulator.current = 0;
-        setIsHidden(false);
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          checkTheme();
+          ticking = false;
+        });
       }
     };
 
-    checkAboutSection();
+    checkTheme();
 
-    // Lenis drives real window scrolling, so native scroll events fire every frame.
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);

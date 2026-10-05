@@ -43,21 +43,29 @@ export const VariableFontCursorProximity: React.FC<VariableFontCursorProximityPr
 
     const fromMap = parseVariationSettings(fromFontVariationSettings);
     const toMap = parseVariationSettings(toFontVariationSettings);
-
     const glyphs = Array.from(text.querySelectorAll<HTMLElement>('[data-glyph]'));
-    let frame = 0;
-    let pointer = { x: -10000, y: -10000 };
+    let frameId: number | null = null;
+    let isHovering = false;
 
-    const render = () => {
+    const defaultSettings = Object.keys(fromMap)
+      .map((axis) => `'${axis}' ${(fromMap[axis] ?? 0).toFixed(2)}`)
+      .join(', ');
+
+    const updateGlyphs = (clientX: number, clientY: number) => {
       glyphs.forEach((glyph) => {
         const rect = glyph.getBoundingClientRect();
-        const dx = pointer.x - (rect.left + rect.width / 2);
-        const dy = pointer.y - (rect.top + rect.height / 2);
+        const dx = clientX - (rect.left + rect.width / 2);
+        const dy = clientY - (rect.top + rect.height / 2);
         const distance = Math.hypot(dx, dy);
+
+        if (distance > radius) {
+          glyph.style.fontVariationSettings = defaultSettings;
+          return;
+        }
+
         const proximity = Math.max(0, 1 - distance / radius);
         const eased = proximity * proximity * (3 - 2 * proximity);
 
-        // Build interpolated font-variation-settings
         const axes = Object.keys(fromMap);
         const interpolated = axes
           .map((axis) => {
@@ -70,20 +78,39 @@ export const VariableFontCursorProximity: React.FC<VariableFontCursorProximityPr
 
         glyph.style.fontVariationSettings = interpolated;
       });
-      frame = requestAnimationFrame(render);
+    };
+
+    const resetGlyphs = () => {
+      glyphs.forEach((glyph) => {
+        glyph.style.fontVariationSettings = defaultSettings;
+      });
     };
 
     const onMove = (event: PointerEvent) => {
-      if (event.pointerType !== 'touch') pointer = { x: event.clientX, y: event.clientY };
-    };
-    const onLeave = () => { pointer = { x: -10000, y: -10000 }; };
+      if (event.pointerType === 'touch') return;
+      isHovering = true;
+      const { clientX, clientY } = event;
 
-    container.addEventListener('pointermove', onMove);
-    container.addEventListener('pointerleave', onLeave);
-    frame = requestAnimationFrame(render);
+      if (frameId) cancelAnimationFrame(frameId);
+      frameId = requestAnimationFrame(() => {
+        if (isHovering) updateGlyphs(clientX, clientY);
+      });
+    };
+
+    const onLeave = () => {
+      isHovering = false;
+      if (frameId) {
+        cancelAnimationFrame(frameId);
+        frameId = null;
+      }
+      resetGlyphs();
+    };
+
+    container.addEventListener('pointermove', onMove, { passive: true });
+    container.addEventListener('pointerleave', onLeave, { passive: true });
 
     return () => {
-      cancelAnimationFrame(frame);
+      if (frameId) cancelAnimationFrame(frameId);
       container.removeEventListener('pointermove', onMove);
       container.removeEventListener('pointerleave', onLeave);
     };

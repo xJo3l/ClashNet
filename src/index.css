@@ -113,3 +113,38 @@
     transition: none !important;
   }
 }
+
+/* ------------------------------------------------------------- */
+/* Horizontal Scroll Section Styles                             */
+/* ------------------------------------------------------------- */
+.horizontal-scroll_outer {
+  position: relative;
+  width: 100%;
+}
+
+.horizontal-scroll_wrapper {
+  will-change: transform;
+}
+
+.horizontal-scroll_container {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.horizontal-scroll_panel {
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+}
+
+.horizontal-scroll_img-wrap {
+  will-change: transform;
+}
+
+.horizontal-scroll_clip-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
