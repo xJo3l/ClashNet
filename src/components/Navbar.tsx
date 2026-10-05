@@ -89,6 +89,37 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleScrollToTop = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    setActiveItem('HOME');
+    setIsMobileMenuOpen(false);
+    const lenis = (window as any).__lenis;
+    if (lenis) {
+      lenis.scrollTo(0);
+    } else {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleNavClick = (e: React.MouseEvent, href: string, name: string) => {
+    if (href === '#home' || name === 'HOME') {
+      handleScrollToTop(e);
+      return;
+    }
+    setActiveItem(name);
+    setIsMobileMenuOpen(false);
+    const lenis = (window as any).__lenis;
+    const target = document.querySelector(href);
+    if (target) {
+      if (e) e.preventDefault();
+      if (lenis) {
+        lenis.scrollTo(target);
+      } else {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <nav
       className={`fixed top-0 left-0 w-full h-[86px] z-50 font-montserrat select-none transition-transform duration-500 ease-out will-change-transform ${isHidden ? '-translate-y-full' : 'translate-y-0'
@@ -107,7 +138,7 @@ export const Navbar: React.FC = () => {
           <a
             href="#home"
             className="flex items-center space-x-2 group transition-transform duration-300 hover:scale-105"
-            onClick={() => setActiveItem('HOME')}
+            onClick={handleScrollToTop}
           >
             <img
               src="/images/logo.png"
@@ -135,7 +166,7 @@ export const Navbar: React.FC = () => {
                 <li key={item.name}>
                   <a
                     href={item.href}
-                    onClick={() => setActiveItem(item.name)}
+                    onClick={(e) => handleNavClick(e, item.href, item.name)}
                     className={`relative inline-block py-1 text-xs md:text-sm font-bold uppercase tracking-[0.22em] transition-all duration-300 ease-out transform ${isAboutSection
                       ? isActive
                         ? 'text-black'
@@ -219,10 +250,7 @@ export const Navbar: React.FC = () => {
                 <li key={item.name}>
                   <a
                     href={item.href}
-                    onClick={() => {
-                      setActiveItem(item.name);
-                      setIsMobileMenuOpen(false);
-                    }}
+                    onClick={(e) => handleNavClick(e, item.href, item.name)}
                     className={`inline-block py-1 text-sm font-bold uppercase tracking-[0.22em] transition-all duration-200 ${isAboutSection
                       ? isActive
                         ? 'text-black border-b-2 border-black'

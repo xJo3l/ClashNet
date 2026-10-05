@@ -113,6 +113,7 @@ export const Hero: React.FC = () => {
 
   return (
     <section
+      id="home"
       ref={heroRef}
       className="relative w-full"
       style={{ height: '300vh' }}

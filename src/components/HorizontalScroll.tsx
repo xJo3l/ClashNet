@@ -4,41 +4,44 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface CampCard {
+interface FeatureCard {
   id: string;
   name: string;
+  tag: string;
   subtitle: string;
   image: string;
-  coordinates: string;
+  actionText?: string;
+  isComingSoon?: boolean;
 }
 
-const CAMPS: CampCard[] = [
+const CARDS: FeatureCard[] = [
   {
-    id: 'whichaway',
-    name: 'WHICHAWAY',
+    id: 'events',
+    name: 'EVENTS',
+    tag: 'ESPORTS & CWL',
     subtitle:
-      'Our original camp, newly reimagined. Rare exposed rock and freshwater lakes — this is a side of the Clash world seldom seen.',
-    image:
-      'https://images.unsplash.com/photo-1587061949409-02df41d5e562?auto=format&fit=crop&w=1600&q=85',
-    coordinates: "[ 70° 48' 00\" S, 11° 23' 00\" E ]",
+      'Live tournament coverage, CWL brackets, and competitive clash war leagues with real-time match tracking and world championship standings.',
+    image: '/images/card-events.jpg',
+    actionText: 'View Events',
   },
   {
-    id: 'echo',
-    name: 'ECHO',
+    id: 'creators',
+    name: 'CREATORS',
+    tag: 'COMMANDERS',
     subtitle:
-      'Inspired by champions, used by veterans. As close as you can get to the top of the ladder.',
-    image:
-      'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1600&q=85',
-    coordinates: "[ 71° 32' 47\" S, 8° 50' 11\" E ]",
+      "Discover creator boost codes, exclusive base links, live streams, and tactical attack breakdowns from the world's best Clash commanders.",
+    image: '/images/card-creators.jpg',
+    actionText: 'Meet Creators',
   },
   {
-    id: 'wolfs-fang',
-    name: "WOLF'S FANG",
+    id: 'tools',
+    name: 'TOOLS',
+    tag: 'WAR MATRIX',
     subtitle:
-      'Set against dramatic formations rising from the battlefield. For those seeking the ultimate challenge.',
-    image:
-      'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1600&q=85',
-    coordinates: "[ 71° 31' 36\" S, 8° 48' 00\" E ]",
+      'Next-gen base builder analyzers, war attack path planning matrix, and hero equipment upgrade planners — releasing soon.',
+    image: '/images/card-tools.jpg',
+    actionText: 'Coming Soon',
+    isComingSoon: true,
   },
 ];
 
@@ -241,8 +244,8 @@ export const HorizontalScroll: React.FC = () => {
           scrollTrigger: {
             trigger: panel,
             containerAnimation: horizontalTrackTween,
-            start: 'left 92%',
-            end: 'right 8%',
+            start: 'left 95%',
+            end: 'right 5%',
             scrub: 0.7,
             invalidateOnRefresh: true,
           },
@@ -250,34 +253,21 @@ export const HorizontalScroll: React.FC = () => {
 
         panelTl.fromTo(
           photo,
-          { clipPath: 'inset(0 14% 0 0)', scale: 1.035, opacity: 0.8 },
-          { clipPath: 'inset(0 0% 0 0)', scale: 1, opacity: 1, ease: 'none', duration: 0.58 },
+          { clipPath: 'inset(0 14% 0 0)', scale: 1.035 },
+          { clipPath: 'inset(0 0% 0 0)', scale: 1, ease: 'none', duration: 0.58 },
           0
         );
         panelTl.fromTo(
           content,
-          { autoAlpha: 0, y: 14 },
+          { y: 12 },
           {
-            autoAlpha: 1,
             y: 0,
             ease: 'power1.out',
             duration: 0.2,
-            stagger: 0.055,
+            stagger: 0.04,
           },
           0.08
         );
-        panelTl.to(
-          content,
-          {
-            autoAlpha: 0,
-            y: -8,
-            ease: 'power1.in',
-            duration: 0.18,
-            stagger: 0.025,
-          },
-          0.78
-        );
-        panelTl.to(photo, { opacity: 0.72, ease: 'none', duration: 0.2 }, 0.8);
       });
 
       // Inner image parallax (images move slightly less than the card = depth effect)
@@ -399,14 +389,15 @@ export const HorizontalScroll: React.FC = () => {
             display: 'flex',
           }}
         >
-          {CAMPS.map((camp, index) => (
+          {CARDS.map((card, index) => (
             <div
-              key={camp.id}
+              key={card.id}
+              id={card.id}
               ref={(el) => { panelRefs.current[index] = el; }}
               className="horizontal-scroll_panel relative flex-shrink-0 overflow-hidden rounded-sm
                          shadow-[0_24px_60px_rgba(0,0,0,0.55)]
                          flex flex-col justify-between
-                         p-8 md:p-10 text-white group"
+                         p-8 md:p-10 text-white group opacity-100"
               style={{
                 width: 'clamp(340px, 42vw, 660px)',
                 height: 'clamp(420px, 72vh, 720px)',
@@ -421,54 +412,61 @@ export const HorizontalScroll: React.FC = () => {
                 >
                   <img
                     ref={(el) => { photoRefs.current[index] = el; }}
-                    src={camp.image}
-                    alt={camp.name}
-                    className="w-full h-full object-cover object-center will-change-transform"
+                    src={card.image}
+                    alt={card.name}
+                    className="w-full h-full object-cover object-center will-change-transform opacity-100"
                     draggable={false}
                   />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/50 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/50 pointer-events-none" />
               </div>
 
               {/* Top: name + subtitle */}
               <div className="relative z-10">
                 <p
                   data-panel-label
-                  className="font-montserrat font-semibold text-[9px] md:text-[10px] uppercase tracking-[0.24em] text-white/70 mb-3"
+                  className="font-montserrat font-semibold text-[9px] md:text-[10px] uppercase tracking-[0.24em] text-amber-400 mb-3"
                 >
-                  REMOTE CAMP&nbsp; / &nbsp;0{index + 1}
+                  CLASHNET&nbsp; / &nbsp;0{index + 1}
                 </p>
                 <h3
                   data-panel-heading
                   className="font-cormorant font-normal uppercase text-white tracking-[0.05em] leading-none mb-3
                              text-4xl md:text-5xl lg:text-6xl drop-shadow-md"
                 >
-                  {camp.name}
+                  {card.name}
                 </h3>
-                <p data-panel-copy className="font-outfit text-[11px] md:text-xs text-white/85 leading-relaxed max-w-[85%]">
-                  {camp.subtitle}
+                <p data-panel-copy className="font-outfit text-[11px] md:text-xs text-white/90 leading-relaxed max-w-[90%]">
+                  {card.subtitle}
                 </p>
               </div>
 
-              {/* Middle: Learn More CTA */}
+              {/* Middle: CTA / Status */}
               <div data-panel-action className="relative z-10 self-start">
-                <a
-                  href={`#${camp.id}`}
-                  className="inline-flex items-center gap-2 font-montserrat font-bold text-[11px] tracking-[0.22em]
-                             uppercase text-white hover:text-amber-300 transition-colors duration-200"
-                >
-                  Learn More
-                  <span className="text-amber-400 text-sm font-normal">+</span>
-                </a>
+                {card.isComingSoon ? (
+                  <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/20 border border-amber-400/40 backdrop-blur-sm font-montserrat font-bold text-[10px] tracking-[0.22em] uppercase text-amber-300">
+                    Coming Soon
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  </span>
+                ) : (
+                  <a
+                    href={`#${card.id}`}
+                    className="inline-flex items-center gap-2 font-montserrat font-bold text-[11px] tracking-[0.22em]
+                               uppercase text-white hover:text-amber-300 transition-colors duration-200"
+                  >
+                    {card.actionText || 'Learn More'}
+                    <span className="text-amber-400 text-sm font-normal">+</span>
+                  </a>
+                )}
               </div>
 
-              {/* Bottom: coordinates + counter */}
+              {/* Bottom: tag + counter (removed degree coordinates) */}
               <div data-panel-footer className="relative z-10 flex items-end justify-between border-t border-white/20 pt-4">
-                <span className="font-mono text-[9px] md:text-[10px] tracking-[0.18em] text-white/70 uppercase">
-                  {camp.coordinates}
+                <span className="font-montserrat text-[9px] md:text-[10px] font-semibold tracking-[0.2em] text-white/70 uppercase">
+                  {card.tag}
                 </span>
-                <span className="font-montserrat text-[9px] md:text-[10px] font-semibold tracking-widest text-amber-400 uppercase">
-                  0{index + 1}&nbsp;/&nbsp;0{CAMPS.length}
+                <span className="font-montserrat text-[9px] md:text-[10px] font-bold tracking-widest text-amber-400 uppercase">
+                  0{index + 1}&nbsp;/&nbsp;0{CARDS.length}
                 </span>
               </div>
             </div>

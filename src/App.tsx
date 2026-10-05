@@ -28,7 +28,11 @@ export const App: React.FC = () => {
     gsap.ticker.add(updateTicker);
     gsap.ticker.lagSmoothing(0);
 
+    // Expose lenis instance globally for smooth navigation
+    (window as any).__lenis = lenis;
+
     return () => {
+      (window as any).__lenis = null;
       gsap.ticker.remove(updateTicker);
       lenis.destroy();
     };
