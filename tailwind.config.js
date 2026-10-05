@@ -20,6 +20,7 @@ export default {
         cinzel: ['Cinzel', 'serif'],
         cormorant: ['"Cormorant Garamond"', 'Cinzel', 'serif'],
         italiana: ['Italiana', '"Cormorant Garamond"', 'serif'],
+        editorial: ['"Playfair Display"', 'serif'],
         bellefair: ['Bellefair', 'serif'],
         prata: ['Prata', 'serif'],
         outfit: ['Outfit', 'sans-serif'],

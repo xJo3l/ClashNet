@@ -75,3 +75,41 @@
 .animate-cloud-fast {
   animation: cloud-float-fast 14s ease-in-out infinite;
 }
+
+.about-proximity {
+  font-family: 'Cormorant Garamond', serif;
+  font-variation-settings: 'wght' 300;
+  font-synthesis: none;
+  letter-spacing: 0.012em;
+  cursor: default;
+}
+
+.about-proximity-glyph {
+  display: inline-block;
+  font-family: 'Cormorant Garamond', serif;
+  font-synthesis: none;
+  will-change: font-variation-settings;
+}
+
+.about-proximity-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.about-statement {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+}
+
+@media (hover: none),
+(pointer: coarse) {
+  .about-proximity {
+    font-variation-settings: 'wght' 300;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-proximity-glyph {
+    transition: none !important;
+  }
+}

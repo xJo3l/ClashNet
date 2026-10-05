@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { VariableFontCursorProximity } from './ui/variable-font-cursor-proximity';
 
 export const About: React.FC = () => {
+  const aboutDesktopRef = useRef<HTMLDivElement>(null);
   return (
-    <section id="about" className="relative w-full min-h-[200vh] bg-transparent text-[#182337] selection:bg-rose-500 selection:text-white">
+    <section id="about" className="relative w-full min-h-[60vh] bg-transparent text-[#182337] selection:bg-rose-500 selection:text-white">
       {/* Main About content container - moved higher with reduced top padding */}
-      <div className="relative w-full pt-10 pb-36 md:pt-14 md:pb-48 lg:pt-16 lg:pb-60">
+      <div className="relative w-full pt-10 pb-20 md:pt-14 md:pb-32 lg:pt-16 lg:pb-40">
         {/* Desktop Layout: starts on the right side of 644px grid line and spans to 1591px */}
         <div
-          className="hidden lg:flex flex-col items-start gap-8"
+          ref={aboutDesktopRef}
+          className="relative z-10 hidden lg:flex flex-col items-start gap-8"
           style={{
             marginLeft: `${(644 / 1919) * 100}%`,
             width: `${((1591 - 644) / 1919) * 100}%`,
@@ -47,16 +50,24 @@ export const About: React.FC = () => {
               />
             </svg>
 
-            <span className="relative z-10 font-cormorant italic font-normal text-base xl:text-lg text-[#182337] tracking-wider">
+            <span className="relative z-10 font-cormorant italic font-normal text-base xl:text-lg text-black tracking-wider">
               ClashNet
             </span>
           </div>
 
           {/* Main Statement: spans from 644px to 1591px in luxury Italiana editorial serif */}
-          <h2 className="font-italiana font-normal text-[#182337] uppercase tracking-[0.035em] leading-[1.24] text-[2.3rem] xl:text-[2.85rem] 2xl:text-[3.25rem]">
+          <h2 className="about-statement font-editorial font-normal text-[#182337] uppercase tracking-[0.012em] leading-[0.96] text-[2.1rem] xl:text-[2.6rem] 2xl:text-[3rem]">
             {/* Indented first line matching the editorial reference */}
             <span className="inline-block w-[14%] xl:w-[18%]" />
-            A PLACE FOR CLASHERS TO DISCOVER WHAT’S NEW, FOLLOW THE META, FIND THE BEST BASES, AND STAY CONNECTED TO THE COMMUNITY.
+            <VariableFontCursorProximity
+              className="about-proximity"
+              containerRef={aboutDesktopRef}
+              fromFontVariationSettings="'wght' 300"
+              radius={120}
+              toFontVariationSettings="'wght' 700"
+            >
+              A PLACE FOR CLASHERS TO DISCOVER WHAT’S NEW, FOLLOW THE META, FIND THE BEST BASES, AND STAY CONNECTED TO THE COMMUNITY.
+            </VariableFontCursorProximity>
           </h2>
         </div>
 
@@ -91,13 +102,13 @@ export const About: React.FC = () => {
                 strokeWidth="0.75"
               />
             </svg>
-            <span className="relative z-10 font-cormorant italic font-normal text-base text-[#182337] tracking-wider">
+            <span className="relative z-10 font-cormorant italic font-normal text-base text-black tracking-wider">
               ClashNet
             </span>
           </div>
 
           {/* Statement */}
-          <h2 className="font-italiana font-normal text-[#182337] uppercase tracking-[0.035em] leading-[1.28] text-2xl sm:text-3xl md:text-4xl max-w-2xl">
+          <h2 className="about-statement font-editorial font-normal text-[#182337] uppercase tracking-[0.012em] leading-[0.98] text-2xl sm:text-3xl md:text-4xl max-w-2xl">
             <span className="inline-block w-[14%] sm:w-[18%]" />
             A PLACE FOR CLASHERS TO DISCOVER WHAT’S NEW, FOLLOW THE META, FIND THE BEST BASES, AND STAY CONNECTED TO THE COMMUNITY.
           </h2>
