@@ -57,7 +57,8 @@ const SLITS = [
 ];
 
 // Section Height Runway (controls overall scroll pacing)
-const SECTION_HEIGHT = "580vh";
+// Section Height Runway (controls overall scroll pacing)
+const SECTION_HEIGHT = "600vh";
 
 export const HorizontalScroll: React.FC = () => {
   const outerRef = useRef<HTMLDivElement>(null);
@@ -73,6 +74,10 @@ export const HorizontalScroll: React.FC = () => {
   const slitsContainerRef = useRef<HTMLDivElement>(null);
   const slitElementsRef = useRef<(HTMLDivElement | null)[]>([]);
 
+  // Goblin Season Full Background behind Tools Card
+  const goblinBgRef = useRef<HTMLDivElement>(null);
+  const goblinBgImgRef = useRef<HTMLImageElement>(null);
+
   // Cards
   const trackRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -85,12 +90,14 @@ export const HorizontalScroll: React.FC = () => {
     const track = trackRef.current;
     if (!outer || !sticky || !track) return;
 
-    // Preload & pre-decode a.jpg into GPU VRAM to prevent on-the-fly texture allocation hitch
-    const preImg = new Image();
-    preImg.src = '/images/a.jpg';
-    if (preImg.decode) {
-      preImg.decode().catch(() => { });
-    }
+    // Preload & pre-decode images into GPU VRAM to prevent on-the-fly texture allocation hitch
+    const preImg1 = new Image();
+    preImg1.src = '/images/a.jpg';
+    if (preImg1.decode) preImg1.decode().catch(() => { });
+
+    const preImg2 = new Image();
+    preImg2.src = '/images/Clash_of_Clans_July_2023_Loading_Screen_Goblin_Season_part_2.png';
+    if (preImg2.decode) preImg2.decode().catch(() => { });
 
     const ctx = gsap.context(() => {
       // ── Initial States ──────────────────────────────────────────────
@@ -98,6 +105,11 @@ export const HorizontalScroll: React.FC = () => {
       slitElementsRef.current.forEach((el, i) => {
         if (el && SLITS[i]) gsap.set(el, { clipPath: SLITS[i].initial, force3D: true });
       });
+
+      // Goblin season full background starts off-screen to the right
+      if (goblinBgRef.current) {
+        gsap.set(goblinBgRef.current, { x: '100vw', force3D: true });
+      }
 
       // Track starts completely off-screen to the right
       gsap.set(track, { x: '100vw', force3D: true });
@@ -205,28 +217,89 @@ export const HorizontalScroll: React.FC = () => {
       });
 
       // As the far right slit crosses ~1400px (progress ~0.508), the card track slides in
-      const cardTriggerPoint = OPENING_START + OPENING_DURATION * 0.806;
+      // ── Card Track Animation ──────────────────────────────────────────
+      // Stage 1 (0.508 -> 0.75): Track scrolls until the TOOLS card settles on the left side (as in screenshot)
+      // Stage 2 (0.75 -> 0.88): Holds / sticks firmly in place with Goblin Season artwork spanning behind it
+      // Stage 3 (0.88 -> 1.00): TOOLS card accelerates faster off the left edge, revealing 100% full-screen art
+      const STICK_START = 0.75;
+      const STICK_END = 0.88;
+
+      tl.to(
+        track,
+        {
+          x: () => {
+            const lastPanel = panelRefs.current[2];
+            if (lastPanel && track) {
+              const panelLeft = lastPanel.offsetLeft;
+              const vw = window.innerWidth;
+              // Align the Tools card cleanly on the left (8vw margin)
+              return -(panelLeft - vw * 0.08);
+            }
+            const totalW = track.scrollWidth;
+            const vw = window.innerWidth;
+            return -(totalW - vw + vw * 0.08);
+          },
+          ease: 'power1.out',
+          duration: STICK_START - cardTriggerPoint,
+          force3D: true,
+        },
+        cardTriggerPoint
+      );
+
+      // Fast exit off the left edge starting after the sticky hold
       tl.to(
         track,
         {
           x: () => {
             const totalW = track.scrollWidth;
-            const vw = window.innerWidth;
-            // End position: last card right edge aligns with right viewport edge (minus margin)
-            return -(totalW - vw + vw * 0.08);
+            return -(totalW + window.innerWidth * 0.1);
           },
-          ease: 'none',
-          duration: 1.0 - cardTriggerPoint,
+          ease: 'power2.in',
+          duration: 1.0 - STICK_END,
           force3D: true,
         },
-        cardTriggerPoint
+        STICK_END
       );
+
+      // Goblin Season background slides in horizontally as Tools arrives,
+      // locks at full-screen (0vw) by 75% scroll, and stays full-screen through the hold and fast exit
+      if (goblinBgRef.current) {
+        const bgStart = cardTriggerPoint + (STICK_START - cardTriggerPoint) * 0.40;
+        const bgDuration = STICK_START - bgStart;
+
+        tl.fromTo(
+          goblinBgRef.current,
+          { x: '100vw' },
+          {
+            x: '0vw',
+            ease: 'none',
+            duration: bgDuration,
+            force3D: true,
+          },
+          bgStart
+        );
+
+        if (goblinBgImgRef.current) {
+          tl.fromTo(
+            goblinBgImgRef.current,
+            { scale: 1.06, xPercent: 6 },
+            {
+              scale: 1,
+              xPercent: 0,
+              ease: 'none',
+              duration: bgDuration,
+              force3D: true,
+            },
+            bgStart
+          );
+        }
+      }
+
       const horizontalTrackTween = tl
         .getChildren(false, true, false)
         .find((tween) => tween.targets().includes(track))!;
 
-      // Layered panel reveals follow the existing horizontal track tween.
-      // The track's x, duration, start point, and ScrollTrigger remain unchanged.
+      // Layered panel reveals for cards
       panelRefs.current.forEach((panel, index) => {
         const photo = photoRefs.current[index];
         if (!panel || !photo) return;
@@ -373,11 +446,22 @@ export const HorizontalScroll: React.FC = () => {
           ))}
         </div>
 
-        {/* ── Layer D: Horizontal Card Track (frames 4 & 5) ──────────── */}
-        {/*
-          The sticky wrapper has overflow:hidden so anything outside the viewport is clipped.
-          Track starts at x=100vw (fully off-screen right), slides left as scroll progresses.
-        */}
+        {/* ── Layer C: Goblin Season Full Background ─────────────────────── */}
+        <div
+          ref={goblinBgRef}
+          className="absolute inset-0 pointer-events-none overflow-hidden will-change-transform"
+          style={{ zIndex: 25, transform: 'translate3d(100vw, 0, 0)' }}
+        >
+          <img
+            ref={goblinBgImgRef}
+            src="/images/Clash_of_Clans_July_2023_Loading_Screen_Goblin_Season_part_2.png"
+            alt="Goblin Season Background"
+            className="w-full h-full object-cover object-center select-none pointer-events-none will-change-transform"
+            draggable={false}
+          />
+        </div>
+
+        {/* ── Layer D: Horizontal Card Track ─────────────────────────── */}
         <div
           ref={trackRef}
           className="absolute top-0 left-0 h-full z-30 flex items-center will-change-transform"
@@ -460,7 +544,7 @@ export const HorizontalScroll: React.FC = () => {
                 )}
               </div>
 
-              {/* Bottom: tag + counter (removed degree coordinates) */}
+              {/* Bottom: tag + counter */}
               <div data-panel-footer className="relative z-10 flex items-end justify-between border-t border-white/20 pt-4">
                 <span className="font-montserrat text-[9px] md:text-[10px] font-semibold tracking-[0.2em] text-white/70 uppercase">
                   {card.tag}
@@ -478,3 +562,4 @@ export const HorizontalScroll: React.FC = () => {
 };
 
 export default HorizontalScroll;
+
