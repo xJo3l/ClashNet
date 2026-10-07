@@ -221,6 +221,7 @@ export const HorizontalScroll: React.FC = () => {
       // Stage 1 (0.508 -> 0.75): Track scrolls until the TOOLS card settles on the left side (as in screenshot)
       // Stage 2 (0.75 -> 0.88): Holds / sticks firmly in place with Goblin Season artwork spanning behind it
       // Stage 3 (0.88 -> 1.00): TOOLS card accelerates faster off the left edge, revealing 100% full-screen art
+      const cardTriggerPoint = 0.508;
       const STICK_START = 0.75;
       const STICK_END = 0.88;
 
