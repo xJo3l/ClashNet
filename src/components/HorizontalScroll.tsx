@@ -57,8 +57,7 @@ const SLITS = [
 ];
 
 // Section Height Runway (controls overall scroll pacing)
-// Section Height Runway (controls overall scroll pacing)
-const SECTION_HEIGHT = "600vh";
+const SECTION_HEIGHT = "620vh";
 
 export const HorizontalScroll: React.FC = () => {
   const outerRef = useRef<HTMLDivElement>(null);
@@ -74,15 +73,14 @@ export const HorizontalScroll: React.FC = () => {
   const slitsContainerRef = useRef<HTMLDivElement>(null);
   const slitElementsRef = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Goblin Season Full Background behind Tools Card
-  const goblinBgRef = useRef<HTMLDivElement>(null);
-  const goblinBgImgRef = useRef<HTMLImageElement>(null);
-
   // Cards
   const trackRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const imgRefs = useRef<(HTMLDivElement | null)[]>([]);
   const photoRefs = useRef<(HTMLImageElement | null)[]>([]);
+
+  // Static full-screen background image behind a.jpg (no movement, no shadows)
+  const nextImageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const outer = outerRef.current;
@@ -91,9 +89,9 @@ export const HorizontalScroll: React.FC = () => {
     if (!outer || !sticky || !track) return;
 
     // Preload & pre-decode images into GPU VRAM to prevent on-the-fly texture allocation hitch
-    const preImg1 = new Image();
-    preImg1.src = '/images/a.jpg';
-    if (preImg1.decode) preImg1.decode().catch(() => { });
+    const preImg = new Image();
+    preImg.src = '/images/a.jpg';
+    if (preImg.decode) preImg.decode().catch(() => { });
 
     const preImg2 = new Image();
     preImg2.src = '/images/Clash_of_Clans_July_2023_Loading_Screen_Goblin_Season_part_2.png';
@@ -101,14 +99,14 @@ export const HorizontalScroll: React.FC = () => {
 
     const ctx = gsap.context(() => {
       // ── Initial States ──────────────────────────────────────────────
-      gsap.set(slitsContainerRef.current, { autoAlpha: 1, transformOrigin: 'center center', force3D: true });
+      gsap.set(slitsContainerRef.current, { x: 0, autoAlpha: 1, transformOrigin: 'center center', force3D: true });
       slitElementsRef.current.forEach((el, i) => {
         if (el && SLITS[i]) gsap.set(el, { clipPath: SLITS[i].initial, force3D: true });
       });
 
-      // Goblin season full background starts off-screen to the right
-      if (goblinBgRef.current) {
-        gsap.set(goblinBgRef.current, { x: '100vw', force3D: true });
+      // Next image stays stationary behind a.jpg; initially hidden so mountain scene is visible
+      if (nextImageRef.current) {
+        gsap.set(nextImageRef.current, { autoAlpha: 0, force3D: true });
       }
 
       // Track starts completely off-screen to the right
@@ -217,83 +215,80 @@ export const HorizontalScroll: React.FC = () => {
       });
 
       // As the far right slit crosses ~1400px (progress ~0.508), the card track slides in
-      // ── Card Track Animation ──────────────────────────────────────────
-      // Stage 1 (0.508 -> 0.75): Track scrolls until the TOOLS card settles on the left side (as in screenshot)
-      // Stage 2 (0.75 -> 0.88): Holds / sticks firmly in place with Goblin Season artwork spanning behind it
-      // Stage 3 (0.88 -> 1.00): TOOLS card accelerates faster off the left edge, revealing 100% full-screen art
-      const cardTriggerPoint = 0.508;
-      const STICK_START = 0.75;
-      const STICK_END = 0.88;
+      const cardTriggerPoint = OPENING_START + OPENING_DURATION * 0.806;
+      const TRACK_END = 0.92;
 
-      tl.to(
+      // ══════════════════════════════════════════════════════════════════
+      // ── Transition & Speed Controls (Adjust manually here) ────────────
+      // ══════════════════════════════════════════════════════════════════
+
+      // 1. START POINT: When the background transition begins (adjust multiplier e.g. 0.45, 0.47, 0.55):
+      const REVEAL_START = cardTriggerPoint + (TRACK_END - cardTriggerPoint) * 0.47;
+
+      // 2. Base duration for a.jpg to cross the screen (100vw):
+      const totalTrackDist = track.scrollWidth + window.innerWidth * 1.1;
+      const bgDuration = (window.innerWidth / totalTrackDist) * (TRACK_END - cardTriggerPoint);
+
+      // 3. BOOST POSITION: When speed increase triggers (0.50 = middle of screen, 0.40 = earlier, 0.60 = later):
+      const BOOST_POSITION = 0.50;
+      const SPEED_BOOST_TIME = REVEAL_START + bgDuration * BOOST_POSITION;
+
+      // 4. SPEED BOOST FACTOR:
+      // Controls how much the card speeds up from BOOST_POSITION:
+      // 1.25 - 1.4 = smooth, controlled speed-up (recommended)
+      // 1.5 - 1.8 = faster speed-up
+      const SPEED_BOOST = 1.50;
+
+      // Calculation of durations to ensure seamless, continuous movement without stopping:
+      const trackNormalSpeed = totalTrackDist / (TRACK_END - cardTriggerPoint);
+      const stage1Duration = SPEED_BOOST_TIME - cardTriggerPoint;
+      const stage1Distance = trackNormalSpeed * stage1Duration;
+      const stage2RemainingDistance = totalTrackDist - stage1Distance;
+      const stage2Duration = stage2RemainingDistance / (trackNormalSpeed * SPEED_BOOST);
+      const midPointX = window.innerWidth - stage1Distance;
+
+      // Stage 1 (cardTriggerPoint -> SPEED_BOOST_TIME): steady speed matching the background
+      tl.fromTo(
         track,
+        { x: () => window.innerWidth },
         {
-          x: () => {
-            const lastPanel = panelRefs.current[2];
-            if (lastPanel && track) {
-              const panelLeft = lastPanel.offsetLeft;
-              const vw = window.innerWidth;
-              // Align the Tools card cleanly on the left (8vw margin)
-              return -(panelLeft - vw * 0.08);
-            }
-            const totalW = track.scrollWidth;
-            const vw = window.innerWidth;
-            return -(totalW - vw + vw * 0.08);
-          },
-          ease: 'power1.out',
-          duration: STICK_START - cardTriggerPoint,
+          x: () => midPointX,
+          ease: 'none',
+          duration: stage1Duration,
           force3D: true,
         },
         cardTriggerPoint
       );
 
-      // Fast exit off the left edge starting after the sticky hold
-      tl.to(
+      // Stage 2 (SPEED_BOOST_TIME -> exit): directly transitions into boosted speed (NO zero-velocity freeze)
+      tl.fromTo(
         track,
+        { x: () => midPointX },
         {
-          x: () => {
-            const totalW = track.scrollWidth;
-            return -(totalW + window.innerWidth * 0.1);
-          },
-          ease: 'power2.in',
-          duration: 1.0 - STICK_END,
+          x: () => -(track.scrollWidth + window.innerWidth * 0.1),
+          ease: 'none', // linear boosted speed so the card never stops or delays
+          duration: stage2Duration,
           force3D: true,
         },
-        STICK_END
+        SPEED_BOOST_TIME
       );
 
-      // Goblin Season background slides in horizontally as Tools arrives,
-      // locks at full-screen (0vw) by 75% scroll, and stays full-screen through the hold and fast exit
-      if (goblinBgRef.current) {
-        const bgStart = cardTriggerPoint + (STICK_START - cardTriggerPoint) * 0.40;
-        const bgDuration = STICK_START - bgStart;
+      // Background transition: slides from 0 to -100vw, completing after cards have left
+      if (nextImageRef.current) {
+        tl.set(nextImageRef.current, { autoAlpha: 1 }, REVEAL_START);
+      }
 
-        tl.fromTo(
-          goblinBgRef.current,
-          { x: '100vw' },
+      if (slitsContainerRef.current) {
+        tl.to(
+          slitsContainerRef.current,
           {
-            x: '0vw',
+            x: () => -window.innerWidth,
             ease: 'none',
             duration: bgDuration,
             force3D: true,
           },
-          bgStart
+          REVEAL_START
         );
-
-        if (goblinBgImgRef.current) {
-          tl.fromTo(
-            goblinBgImgRef.current,
-            { scale: 1.06, xPercent: 6 },
-            {
-              scale: 1,
-              xPercent: 0,
-              ease: 'none',
-              duration: bgDuration,
-              force3D: true,
-            },
-            bgStart
-          );
-        }
       }
 
       const horizontalTrackTween = tl
@@ -419,6 +414,20 @@ export const HorizontalScroll: React.FC = () => {
           </div>
         </div>
 
+        {/* ── Layer Next Image: Goblin Season Full Screen Image (stays stationary behind a.jpg, no shadows) ── */}
+        <div
+          ref={nextImageRef}
+          className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden"
+          style={{ zIndex: 15, visibility: 'hidden' }}
+        >
+          <img
+            src="/images/Clash_of_Clans_July_2023_Loading_Screen_Goblin_Season_part_2.png"
+            alt="Goblin Season Loading Screen"
+            className="w-full h-full object-cover object-center select-none pointer-events-none"
+            draggable={false}
+          />
+        </div>
+
         {/* ── Layer B: Multi-Column Slit Reveal (a.jpg) ────────────── */}
         <div
           ref={slitsContainerRef}
@@ -447,22 +456,11 @@ export const HorizontalScroll: React.FC = () => {
           ))}
         </div>
 
-        {/* ── Layer C: Goblin Season Full Background ─────────────────────── */}
-        <div
-          ref={goblinBgRef}
-          className="absolute inset-0 pointer-events-none overflow-hidden will-change-transform"
-          style={{ zIndex: 25, transform: 'translate3d(100vw, 0, 0)' }}
-        >
-          <img
-            ref={goblinBgImgRef}
-            src="/images/Clash_of_Clans_July_2023_Loading_Screen_Goblin_Season_part_2.png"
-            alt="Goblin Season Background"
-            className="w-full h-full object-cover object-center select-none pointer-events-none will-change-transform"
-            draggable={false}
-          />
-        </div>
-
-        {/* ── Layer D: Horizontal Card Track ─────────────────────────── */}
+        {/* ── Layer D: Horizontal Card Track (frames 4 & 5) ──────────── */}
+        {/*
+          The sticky wrapper has overflow:hidden so anything outside the viewport is clipped.
+          Track starts at x=100vw (fully off-screen right), slides left as scroll progresses.
+        */}
         <div
           ref={trackRef}
           className="absolute top-0 left-0 h-full z-30 flex items-center will-change-transform"
