@@ -56,8 +56,12 @@ const SLITS = [
   { initial: 'inset(0% 0% 0% 100%)', final: 'inset(0% 0% 0% 66.44%)', duration: 0.32 },
 ];
 
-// Section Height Runway (controls overall scroll pacing)
-const SECTION_HEIGHT = "620vh";
+// Scroll pacing runway:
+// OPENING_RUNWAY_VH: Physical runway for intro & slit reveal (keeps it at current speed)
+// CARD_RUNWAY_VH: Physical runway for horizontal card scroll (increase = cards move slower)
+const OPENING_RUNWAY_VH = 315;
+const CARD_RUNWAY_VH = 600;
+const SECTION_HEIGHT = `${OPENING_RUNWAY_VH + CARD_RUNWAY_VH}vh`;
 
 export const HorizontalScroll: React.FC = () => {
   const outerRef = useRef<HTMLDivElement>(null);
@@ -81,6 +85,9 @@ export const HorizontalScroll: React.FC = () => {
 
   // Static full-screen background image behind a.jpg (no movement, no shadows)
   const nextImageRef = useRef<HTMLDivElement>(null);
+
+  // Vertical quote over the final image
+  const finalQuoteRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const outer = outerRef.current;
@@ -107,6 +114,10 @@ export const HorizontalScroll: React.FC = () => {
       // Next image stays stationary behind a.jpg; initially hidden so mountain scene is visible
       if (nextImageRef.current) {
         gsap.set(nextImageRef.current, { autoAlpha: 0, force3D: true });
+      }
+
+      if (finalQuoteRef.current) {
+        gsap.set(finalQuoteRef.current, { x: '100vw', force3D: true });
       }
 
       // Track starts completely off-screen to the right
@@ -190,33 +201,36 @@ export const HorizontalScroll: React.FC = () => {
         },
       });
 
+      // Pacing ratios (maintains opening scene at exact original speed, while stretching card scroll)
+      const OPENING_RATIO = OPENING_RUNWAY_VH / (OPENING_RUNWAY_VH + CARD_RUNWAY_VH);
+      const OPENING_START = OPENING_RATIO * (0.25 / 0.508);
+      const OPENING_DURATION = OPENING_RATIO * (0.32 / 0.508);
+
       // Opening scene subtle depth drift
       if (mountainImageRef.current) {
         tl.fromTo(
           mountainImageRef.current,
           { scale: 1.02 },
-          { scale: 1, ease: 'none', duration: 0.25, force3D: true },
+          { scale: 1, ease: 'none', duration: OPENING_START, force3D: true },
           0
         );
       }
 
-      // 0.25 – 0.57: Slits continuously expand leftward at constant speed IMMEDIATELY as text exits
-      const OPENING_START = 0.25;
-      const OPENING_DURATION = 0.32;
+      // Slits expand leftward at constant speed immediately as text exits
       SLITS.forEach((slit, i) => {
         const el = slitElementsRef.current[i];
         if (!el) return;
         tl.fromTo(
           el,
           { clipPath: slit.initial },
-          { clipPath: slit.final, ease: 'none', duration: slit.duration },
+          { clipPath: slit.final, ease: 'none', duration: OPENING_DURATION },
           OPENING_START
         );
       });
 
-      // As the far right slit crosses ~1400px (progress ~0.508), the card track slides in
+      // As the far right slit crosses ~1400px, the card track slides in
       const cardTriggerPoint = OPENING_START + OPENING_DURATION * 0.806;
-      const TRACK_END = 0.92;
+      const TRACK_END = 1.0;
 
       // ══════════════════════════════════════════════════════════════════
       // ── Transition & Speed Controls (Adjust manually here) ────────────
@@ -225,21 +239,24 @@ export const HorizontalScroll: React.FC = () => {
       // 1. START POINT: When the background transition begins (adjust multiplier e.g. 0.45, 0.47, 0.55):
       const REVEAL_START = cardTriggerPoint + (TRACK_END - cardTriggerPoint) * 0.47;
 
-      // 2. Base duration for a.jpg to cross the screen (100vw):
-      const totalTrackDist = track.scrollWidth + window.innerWidth * 1.1;
-      const bgDuration = (window.innerWidth / totalTrackDist) * (TRACK_END - cardTriggerPoint);
+      // 2. Duration for a.jpg to cross the screen (completes at 1.0, eliminating all dead scroll at the end):
+      const bgDuration = TRACK_END - REVEAL_START;
 
       // 3. BOOST POSITION: When speed increase triggers (0.50 = middle of screen, 0.40 = earlier, 0.60 = later):
       const BOOST_POSITION = 0.50;
       const SPEED_BOOST_TIME = REVEAL_START + bgDuration * BOOST_POSITION;
 
       // 4. SPEED BOOST FACTOR:
-      // Controls how much the card speeds up from BOOST_POSITION:
-      // 1.25 - 1.4 = smooth, controlled speed-up (recommended)
-      // 1.5 - 1.8 = faster speed-up
+      // Controls how much the card speeds up from BOOST_POSITION (linear, never stops):
       const SPEED_BOOST = 1.50;
 
+      // 5. TEXT START POSITION: When the vertical quote begins entering from the right
+      // (0.28 = earlier entry when ~28% of background has wiped, 0.40 = later):
+      const TEXT_START_FRACTION = 0.28;
+      const TEXT_START_TIME = REVEAL_START + bgDuration * TEXT_START_FRACTION;
+
       // Calculation of durations to ensure seamless, continuous movement without stopping:
+      const totalTrackDist = track.scrollWidth + window.innerWidth * 1.1;
       const trackNormalSpeed = totalTrackDist / (TRACK_END - cardTriggerPoint);
       const stage1Duration = SPEED_BOOST_TIME - cardTriggerPoint;
       const stage1Distance = trackNormalSpeed * stage1Duration;
@@ -288,6 +305,22 @@ export const HorizontalScroll: React.FC = () => {
             force3D: true,
           },
           REVEAL_START
+        );
+      }
+
+      // Vertical quote: begins sliding earlier (TEXT_START_TIME),
+      // arriving dead center as the image reaches full screen (TRACK_END)
+      if (finalQuoteRef.current) {
+        tl.fromTo(
+          finalQuoteRef.current,
+          { x: '100vw' },
+          {
+            x: '0vw',
+            ease: 'power1.out',
+            duration: TRACK_END - TEXT_START_TIME,
+            force3D: true,
+          },
+          TEXT_START_TIME
         );
       }
 
@@ -426,6 +459,20 @@ export const HorizontalScroll: React.FC = () => {
             className="w-full h-full object-cover object-center select-none pointer-events-none"
             draggable={false}
           />
+
+          {/* ── Vertical Quote: EAT SLEEP CLASH REPEAT (glides from right to center) ── */}
+          <div
+            ref={finalQuoteRef}
+            className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-10 will-change-transform"
+            style={{ transform: 'translate3d(100vw, 0, 0)' }}
+          >
+            <div className="font-cormorant font-bold uppercase text-white leading-[0.88] drop-shadow-[0_8px_36px_rgba(0,0,0,0.95)] text-6xl sm:text-7xl md:text-8xl lg:text-9xl tracking-[0.06em] flex flex-col items-center text-center">
+              <span>EAT</span>
+              <span>SLEEP</span>
+              <span className="text-amber-400">CLASH</span>
+              <span>REPEAT</span>
+            </div>
+          </div>
         </div>
 
         {/* ── Layer B: Multi-Column Slit Reveal (a.jpg) ────────────── */}
