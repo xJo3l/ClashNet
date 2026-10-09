@@ -120,14 +120,24 @@ export const HorizontalScroll: React.FC = () => {
         gsap.set(polarTextRef.current, { y: () => window.innerHeight * 0.88, force3D: true });
       }
 
-      // Expand the opening scene as the section rises into the viewport
+      // Expand the opening scene as the section rises into the viewport;
+      // transitions smoothly from padded frame to true 100% full-screen once it reaches top top.
       if (mountainRef.current) {
         gsap.fromTo(
           mountainRef.current,
-          { scaleX: 0.96, scaleY: 0.96 },
           {
-            scaleX: () => window.innerWidth / (window.innerWidth * 0.92),
-            scaleY: () => window.innerHeight / (window.innerHeight - window.innerWidth * 0.06),
+            paddingTop: '3vw',
+            paddingBottom: '3vw',
+            paddingLeft: '4vw',
+            paddingRight: '4vw',
+            scale: 0.96,
+          },
+          {
+            paddingTop: 0,
+            paddingBottom: 0,
+            paddingLeft: 0,
+            paddingRight: 0,
+            scale: 1,
             ease: 'none',
             force3D: true,
             scrollTrigger: {
@@ -195,17 +205,21 @@ export const HorizontalScroll: React.FC = () => {
         },
       });
 
-      // Pacing ratios (maintains opening scene at exact original speed, while stretching card scroll)
+      // ── Slit Reveal Trigger & Timing Controls ────────────────────────
+      // SLIT_START_FACTOR: Controls when the slit reveal begins.
+      // Decrease this number to trigger earlier (e.g. 0.14, 0.18); increase to delay (default was 0.25):
+      const SLIT_START_FACTOR = 0.22;
+
       const OPENING_RATIO = OPENING_RUNWAY_VH / (OPENING_RUNWAY_VH + CARD_RUNWAY_VH);
-      const OPENING_START = OPENING_RATIO * (0.25 / 0.508);
+      const OPENING_START = OPENING_RATIO * (SLIT_START_FACTOR / 0.508);
       const OPENING_DURATION = OPENING_RATIO * (0.32 / 0.508);
 
       // Opening scene subtle depth drift
       if (mountainImageRef.current) {
         tl.fromTo(
           mountainImageRef.current,
-          { scale: 1.02 },
-          { scale: 1, ease: 'none', duration: OPENING_START, force3D: true },
+          { scale: 1.03 },
+          { scale: 1.01, ease: 'none', duration: OPENING_START, force3D: true },
           0
         );
       }
@@ -330,16 +344,15 @@ export const HorizontalScroll: React.FC = () => {
       {/* ── Sticky Viewport ──────────────────────────────────────────── */}
       <div
         ref={stickyRef}
-        className="sticky top-0 h-screen w-full overflow-hidden"
+        className="sticky top-0 h-screen w-full overflow-hidden bg-white"
         style={{ background: '#ffffff' }}
       >
         {/* ── Layer A: Mountain Hero (frames 1 & 2) ──────────────────── */}
         <div
           ref={mountainRef}
-          className="absolute inset-0 z-10 will-change-transform"
-          style={{ padding: '3vw 4vw' }}
+          className="absolute inset-0 z-10 will-change-[padding,transform]"
         >
-          <div className="relative w-full h-full overflow-hidden bg-white">
+          <div className="relative w-full h-full overflow-hidden">
             <img
               ref={mountainImageRef}
               src="/images/whats-new-background.jpg"
