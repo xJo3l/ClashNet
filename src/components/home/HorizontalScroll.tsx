@@ -51,9 +51,9 @@ const CARDS: FeatureCard[] = [
 // 2. Middle:    644px to 1275px (32.88% width)
 // 3. Far Right: 1275px to 100% (33.56% width)
 const SLITS = [
-  { initial: 'inset(0% 66.44% 0% 33.56%)', final: 'inset(0% 66.44% 0% 0%)', duration: 0.32 },
-  { initial: 'inset(0% 33.56% 0% 66.44%)', final: 'inset(0% 33.56% 0% 33.56%)', duration: 0.31 },
-  { initial: 'inset(0% 0% 0% 100%)', final: 'inset(0% 0% 0% 66.44%)', duration: 0.32 },
+  { initial: 'inset(0% 66.44% 0% 33.56%)', final: 'inset(0% 66.2% 0% 0%)', duration: 0.32 },
+  { initial: 'inset(0% 33.56% 0% 66.44%)', final: 'inset(0% 33.3% 0% 33.3%)', duration: 0.31 },
+  { initial: 'inset(0% 0% 0% 100%)', final: 'inset(0% 0% 0% 66.2%)', duration: 0.32 },
 ];
 
 // Scroll pacing runway:
@@ -79,15 +79,10 @@ export const HorizontalScroll: React.FC = () => {
 
   // Cards
   const trackRef = useRef<HTMLDivElement>(null);
-  const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const imgRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const photoRefs = useRef<(HTMLImageElement | null)[]>([]);
 
-  // Static full-screen background image behind a.jpg (no movement, no shadows)
+  // Static full-screen white background behind a.jpg
   const nextImageRef = useRef<HTMLDivElement>(null);
-
-  // Vertical quote over the final image
-  const finalQuoteRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const outer = outerRef.current;
@@ -100,9 +95,12 @@ export const HorizontalScroll: React.FC = () => {
     preImg.src = '/images/a.jpg';
     if (preImg.decode) preImg.decode().catch(() => { });
 
-    const preImg2 = new Image();
-    preImg2.src = '/images/Clash_of_Clans_July_2023_Loading_Screen_Goblin_Season_part_2.png';
-    if (preImg2.decode) preImg2.decode().catch(() => { });
+    // Pre-decode all card images so they don't hitch the GPU when sliding into the viewport
+    CARDS.forEach((card) => {
+      const cImg = new Image();
+      cImg.src = card.image;
+      if (cImg.decode) cImg.decode().catch(() => { });
+    });
 
     const ctx = gsap.context(() => {
       // ── Initial States ──────────────────────────────────────────────
@@ -111,13 +109,9 @@ export const HorizontalScroll: React.FC = () => {
         if (el && SLITS[i]) gsap.set(el, { clipPath: SLITS[i].initial, force3D: true });
       });
 
-      // Next image stays stationary behind a.jpg; initially hidden so mountain scene is visible
+      // White background stays behind a.jpg; initially hidden so mountain scene is visible
       if (nextImageRef.current) {
-        gsap.set(nextImageRef.current, { autoAlpha: 0, force3D: true });
-      }
-
-      if (finalQuoteRef.current) {
-        gsap.set(finalQuoteRef.current, { x: '100vw', force3D: true });
+        gsap.set(nextImageRef.current, { opacity: 0 });
       }
 
       // Track starts completely off-screen to the right
@@ -230,7 +224,7 @@ export const HorizontalScroll: React.FC = () => {
 
       // As the far right slit crosses ~1400px, the card track slides in
       const cardTriggerPoint = OPENING_START + OPENING_DURATION * 0.806;
-      const TRACK_END = 1.0;
+      const TRACK_END = 0.94;
 
       // ══════════════════════════════════════════════════════════════════
       // ── Transition & Speed Controls (Adjust manually here) ────────────
@@ -239,7 +233,7 @@ export const HorizontalScroll: React.FC = () => {
       // 1. START POINT: When the background transition begins (adjust multiplier e.g. 0.45, 0.47, 0.55):
       const REVEAL_START = cardTriggerPoint + (TRACK_END - cardTriggerPoint) * 0.47;
 
-      // 2. Duration for a.jpg to cross the screen (completes at 1.0, eliminating all dead scroll at the end):
+      // 2. Duration for a.jpg to cross the screen:
       const bgDuration = TRACK_END - REVEAL_START;
 
       // 3. BOOST POSITION: When speed increase triggers (0.50 = middle of screen, 0.40 = earlier, 0.60 = later):
@@ -249,11 +243,6 @@ export const HorizontalScroll: React.FC = () => {
       // 4. SPEED BOOST FACTOR:
       // Controls how much the card speeds up from BOOST_POSITION (linear, never stops):
       const SPEED_BOOST = 1.50;
-
-      // 5. TEXT START POSITION: When the vertical quote begins entering from the right
-      // (0.28 = earlier entry when ~28% of background has wiped, 0.40 = later):
-      const TEXT_START_FRACTION = 0.28;
-      const TEXT_START_TIME = REVEAL_START + bgDuration * TEXT_START_FRACTION;
 
       // Calculation of durations to ensure seamless, continuous movement without stopping:
       const totalTrackDist = track.scrollWidth + window.innerWidth * 1.1;
@@ -273,14 +262,14 @@ export const HorizontalScroll: React.FC = () => {
           ease: 'none',
           duration: stage1Duration,
           force3D: true,
+          immediateRender: false,
         },
         cardTriggerPoint
       );
 
       // Stage 2 (SPEED_BOOST_TIME -> exit): directly transitions into boosted speed (NO zero-velocity freeze)
-      tl.fromTo(
+      tl.to(
         track,
-        { x: () => midPointX },
         {
           x: () => -(track.scrollWidth + window.innerWidth * 0.1),
           ease: 'none', // linear boosted speed so the card never stops or delays
@@ -290,9 +279,9 @@ export const HorizontalScroll: React.FC = () => {
         SPEED_BOOST_TIME
       );
 
-      // Background transition: slides from 0 to -100vw, completing after cards have left
+      // Activate pure white background behind a.jpg ahead of the wipe
       if (nextImageRef.current) {
-        tl.set(nextImageRef.current, { autoAlpha: 1 }, REVEAL_START);
+        tl.set(nextImageRef.current, { opacity: 1 }, REVEAL_START - 0.05);
       }
 
       if (slitsContainerRef.current) {
@@ -308,69 +297,7 @@ export const HorizontalScroll: React.FC = () => {
         );
       }
 
-      // Vertical quote: begins sliding earlier (TEXT_START_TIME),
-      // arriving dead center as the image reaches full screen (TRACK_END)
-      if (finalQuoteRef.current) {
-        tl.fromTo(
-          finalQuoteRef.current,
-          { x: '100vw' },
-          {
-            x: '0vw',
-            ease: 'power1.out',
-            duration: TRACK_END - TEXT_START_TIME,
-            force3D: true,
-          },
-          TEXT_START_TIME
-        );
-      }
 
-      const horizontalTrackTween = tl
-        .getChildren(false, true, false)
-        .find((tween) => tween.targets().includes(track))!;
-
-      // Layered panel reveals for cards
-      panelRefs.current.forEach((panel, index) => {
-        const photo = photoRefs.current[index];
-        if (!panel || !photo) return;
-
-        const label = panel.querySelector<HTMLElement>('[data-panel-label]');
-        const heading = panel.querySelector<HTMLElement>('[data-panel-heading]');
-        const supportingText = panel.querySelector<HTMLElement>('[data-panel-copy]');
-        const action = panel.querySelector<HTMLElement>('[data-panel-action]');
-        const footer = panel.querySelector<HTMLElement>('[data-panel-footer]');
-        const content = [label, heading, supportingText, action, footer].filter(
-          (element): element is HTMLElement => Boolean(element)
-        );
-
-        const panelTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: panel,
-            containerAnimation: horizontalTrackTween,
-            start: 'left 95%',
-            end: 'right 5%',
-            scrub: 0.7,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        panelTl.fromTo(
-          photo,
-          { clipPath: 'inset(0 14% 0 0)', scale: 1.035 },
-          { clipPath: 'inset(0 0% 0 0)', scale: 1, ease: 'none', duration: 0.58 },
-          0
-        );
-        panelTl.fromTo(
-          content,
-          { y: 12 },
-          {
-            y: 0,
-            ease: 'power1.out',
-            duration: 0.2,
-            stagger: 0.04,
-          },
-          0.08
-        );
-      });
 
       // Inner image parallax (images move slightly less than the card = depth effect)
       imgRefs.current.forEach((imgWrap) => {
@@ -378,8 +305,13 @@ export const HorizontalScroll: React.FC = () => {
         tl.fromTo(
           imgWrap,
           { xPercent: -8 },
-          { xPercent: 8, ease: 'none', duration: 0.6 },
-          0.40
+          {
+            xPercent: 8,
+            ease: 'none',
+            duration: TRACK_END - cardTriggerPoint,
+            immediateRender: false,
+          },
+          cardTriggerPoint
         );
       });
     }, outer);
@@ -447,33 +379,12 @@ export const HorizontalScroll: React.FC = () => {
           </div>
         </div>
 
-        {/* ── Layer Next Image: Goblin Season Full Screen Image (stays stationary behind a.jpg, no shadows) ── */}
+        {/* ── Final Background: Pure White Screen (revealed behind a.jpg) ── */}
         <div
           ref={nextImageRef}
-          className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden"
-          style={{ zIndex: 15, visibility: 'hidden' }}
-        >
-          <img
-            src="/images/Clash_of_Clans_July_2023_Loading_Screen_Goblin_Season_part_2.png"
-            alt="Goblin Season Loading Screen"
-            className="w-full h-full object-cover object-center select-none pointer-events-none"
-            draggable={false}
-          />
-
-          {/* ── Vertical Quote: EAT SLEEP CLASH REPEAT (glides from right to center) ── */}
-          <div
-            ref={finalQuoteRef}
-            className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-10 will-change-transform"
-            style={{ transform: 'translate3d(100vw, 0, 0)' }}
-          >
-            <div className="font-cormorant font-bold uppercase text-white leading-[0.88] drop-shadow-[0_8px_36px_rgba(0,0,0,0.95)] text-6xl sm:text-7xl md:text-8xl lg:text-9xl tracking-[0.06em] flex flex-col items-center text-center">
-              <span>EAT</span>
-              <span>SLEEP</span>
-              <span className="text-amber-400">CLASH</span>
-              <span>REPEAT</span>
-            </div>
-          </div>
-        </div>
+          className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden bg-white"
+          style={{ zIndex: 15, opacity: 0 }}
+        />
 
         {/* ── Layer B: Multi-Column Slit Reveal (a.jpg) ────────────── */}
         <div
@@ -523,7 +434,6 @@ export const HorizontalScroll: React.FC = () => {
             <div
               key={card.id}
               id={card.id}
-              ref={(el) => { panelRefs.current[index] = el; }}
               className="horizontal-scroll_panel relative flex-shrink-0 overflow-hidden rounded-sm
                          shadow-[0_24px_60px_rgba(0,0,0,0.55)]
                          flex flex-col justify-between
@@ -541,7 +451,6 @@ export const HorizontalScroll: React.FC = () => {
                   style={{ inset: '-10% -15%', width: 'calc(100% + 30%)', height: 'calc(100% + 20%)' }}
                 >
                   <img
-                    ref={(el) => { photoRefs.current[index] = el; }}
                     src={card.image}
                     alt={card.name}
                     className="w-full h-full object-cover object-center will-change-transform opacity-100"
@@ -574,7 +483,7 @@ export const HorizontalScroll: React.FC = () => {
               {/* Middle: CTA / Status */}
               <div data-panel-action className="relative z-10 self-start">
                 {card.isComingSoon ? (
-                  <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/20 border border-amber-400/40 backdrop-blur-sm font-montserrat font-bold text-[10px] tracking-[0.22em] uppercase text-amber-300">
+                  <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-950/40 border border-amber-400/40 font-montserrat font-bold text-[10px] tracking-[0.22em] uppercase text-amber-300">
                     Coming Soon
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                   </span>
