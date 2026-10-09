@@ -4,8 +4,7 @@ import 'lenis/dist/lenis.css';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { HorizontalScroll } from './components/HorizontalScroll';
+import { Hero, HorizontalScroll } from './components/home';
 
 gsap.registerPlugin(ScrollTrigger);
 

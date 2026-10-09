@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { VariableFontCursorProximity } from './ui/variable-font-cursor-proximity';
+import { VariableFontCursorProximity } from '../ui/variable-font-cursor-proximity';
 
 export const About: React.FC = () => {
   const aboutDesktopRef = useRef<HTMLDivElement>(null);
