@@ -31,6 +31,15 @@ export const Navbar: React.FC = () => {
     lastScrollY.current = window.scrollY;
 
     const checkTheme = () => {
+      const footerEl = document.querySelector('footer');
+      if (footerEl) {
+        const footerRect = footerEl.getBoundingClientRect();
+        if (footerRect.top <= 86) {
+          setIsAboutSection(false);
+          return;
+        }
+      }
+
       const contactEl = document.getElementById('contact') || document.getElementById('text-section');
       if (contactEl) {
         const contactRect = contactEl.getBoundingClientRect();

@@ -146,9 +146,9 @@ const SLITS = [
 
 // Scroll pacing runway:
 // OPENING_RUNWAY_VH: Physical runway for intro & slit reveal (keeps it at current speed)
-// CARD_RUNWAY_VH: Physical runway for horizontal card scroll (increase = cards move slower)
+// CARD_RUNWAY_VH: Physical runway for horizontal card scroll (keeps it at current speed)
 const OPENING_RUNWAY_VH = 315;
-const CARD_RUNWAY_VH = 720;
+const CARD_RUNWAY_VH = 841;
 const SECTION_HEIGHT = `${OPENING_RUNWAY_VH + CARD_RUNWAY_VH}vh`;
 
 export const HorizontalScroll: React.FC = () => {
@@ -177,6 +177,13 @@ export const HorizontalScroll: React.FC = () => {
 
   // Vertical scroll canvas ref (holds Memories on Screen 1 and ClashNet on Screen 2)
   const verticalCanvasRef = useRef<HTMLDivElement>(null);
+
+  // ClashNet title ref (drifts upward during scroll)
+  const clashnetTitleRef = useRef<HTMLHeadingElement>(null);
+
+  // ClashNet cloud transition refs (rises synchronously with ClashNet title upward drift)
+  const cloud1Ref = useRef<HTMLDivElement>(null);
+  const cloud2Ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const outer = outerRef.current;
@@ -216,6 +223,14 @@ export const HorizontalScroll: React.FC = () => {
       if (verticalCanvasRef.current) {
         gsap.set(verticalCanvasRef.current, { y: 0, force3D: true });
       }
+
+      // Initialize ClashNet title state (0 blur, 0 yPercent) matching Hero's DISCOVER
+      if (clashnetTitleRef.current) {
+        gsap.set(clashnetTitleRef.current, { yPercent: 0, y: 0, filter: 'blur(0px)', force3D: true });
+      }
+
+      // Initialize clouds off-screen below the viewport
+      gsap.set([cloud1Ref.current, cloud2Ref.current], { autoAlpha: 0, yPercent: 82, force3D: true });
 
       // Memories layer starts off-screen to the right inside the vertical canvas
       if (memoriesLayerRef.current) {
@@ -318,7 +333,10 @@ export const HorizontalScroll: React.FC = () => {
       // Decrease this number to trigger earlier (e.g. 0.14, 0.18); increase to delay (default was 0.25):
       const SLIT_START_FACTOR = 0.22;
 
-      const OPENING_RATIO = OPENING_RUNWAY_VH / (OPENING_RUNWAY_VH + CARD_RUNWAY_VH);
+      // Ratio to preserve exact physical pixel pacing of opening, cards, and memories:
+      const SCROLL_SCALE = 1050 / (OPENING_RUNWAY_VH + CARD_RUNWAY_VH - 100);
+
+      const OPENING_RATIO = (OPENING_RUNWAY_VH / (OPENING_RUNWAY_VH + CARD_RUNWAY_VH)) * SCROLL_SCALE;
       const OPENING_START = OPENING_RATIO * (SLIT_START_FACTOR / 0.508);
       const OPENING_DURATION = OPENING_RATIO * (0.32 / 0.508);
 
@@ -346,7 +364,7 @@ export const HorizontalScroll: React.FC = () => {
 
       // As the far right slit crosses ~1400px, the card track slides in
       const cardTriggerPoint = OPENING_START + OPENING_DURATION * 0.806;
-      const TRACK_END = 0.70;
+      const TRACK_END = 0.70 * SCROLL_SCALE;
 
       // ══════════════════════════════════════════════════════════════════
       // ── Transition & Speed Controls (Adjust manually here) ────────────
@@ -440,9 +458,9 @@ export const HorizontalScroll: React.FC = () => {
       }
 
       // ── Natural vertical scroll down to ClashNet (1:1 speed matching website scroll) ──
-      const VERTICAL_SCROLL_START = 0.76;
-      const VERTICAL_SCROLL_DURATION = 0.096; // 100vh travel / 100vh physical scroll = 1:1 speed
-      const TIMELINE_END = 0.896;
+      const VERTICAL_SCROLL_START = 0.72 * SCROLL_SCALE;
+      const VERTICAL_SCROLL_DURATION = 0.095 * SCROLL_SCALE; // 100vh travel / 100vh physical scroll = 1:1 speed
+      const TIMELINE_END = 1.0;
 
       if (verticalCanvasRef.current) {
         tl.fromTo(
@@ -457,6 +475,80 @@ export const HorizontalScroll: React.FC = () => {
           VERTICAL_SCROLL_START
         );
         tl.set({}, {}, TIMELINE_END);
+      }
+
+      // ClashNet title & clouds transition matching Hero's DISCOVER exactly
+      const clashnetArrival = VERTICAL_SCROLL_START + VERTICAL_SCROLL_DURATION;
+      const transitionDuration = TIMELINE_END - clashnetArrival;
+
+      // "CLASHNET" title: drifts upward and blurs progressively into the clouds, exactly matching Hero's DISCOVER
+      if (clashnetTitleRef.current) {
+        tl.fromTo(
+          clashnetTitleRef.current,
+          { yPercent: 0, y: 0 },
+          {
+            yPercent: -65,
+            y: 0,
+            ease: 'none',
+            duration: transitionDuration,
+            force3D: true,
+          },
+          clashnetArrival
+        );
+
+        // Progressive cloud blur matching Hero's DISCOVER
+        tl.fromTo(
+          clashnetTitleRef.current,
+          { filter: 'blur(0px)' },
+          {
+            filter: 'blur(8px)',
+            ease: 'power1.inOut',
+            duration: transitionDuration * 0.5,
+          },
+          clashnetArrival
+        );
+        tl.to(
+          clashnetTitleRef.current,
+          {
+            filter: 'blur(14px)',
+            ease: 'none',
+            duration: transitionDuration * 0.45,
+          },
+          clashnetArrival + transitionDuration * 0.5
+        );
+      }
+
+      // Cloud layers reveal and rise over ClashNet matching Hero cloud speeds
+      tl.set([cloud1Ref.current, cloud2Ref.current], { autoAlpha: 1 }, clashnetArrival);
+
+      if (cloud2Ref.current) {
+        tl.fromTo(
+          cloud2Ref.current,
+          { yPercent: 82, y: 0 },
+          {
+            yPercent: -105,
+            y: 0,
+            ease: 'none',
+            duration: transitionDuration,
+            force3D: true,
+          },
+          clashnetArrival
+        );
+      }
+
+      if (cloud1Ref.current) {
+        tl.fromTo(
+          cloud1Ref.current,
+          { yPercent: 82, y: 0 },
+          {
+            yPercent: -150,
+            y: 0,
+            ease: 'none',
+            duration: transitionDuration,
+            force3D: true,
+          },
+          clashnetArrival
+        );
       }
 
 
@@ -678,12 +770,60 @@ export const HorizontalScroll: React.FC = () => {
             className="absolute top-[100vh] left-0 w-full h-screen pointer-events-none overflow-hidden flex items-center justify-center select-none"
           >
             <h2
+              ref={clashnetTitleRef}
               className="font-bebas font-normal uppercase text-white/[0.28] tracking-[0.03em] leading-none text-center select-none
-                         text-[18vw] sm:text-[19vw] md:text-[20vw] lg:text-[21vw] w-full"
+                         text-[18vw] sm:text-[19vw] md:text-[20vw] lg:text-[21vw] w-full will-change-[transform,filter]"
             >
               CLASHNET
             </h2>
           </div>
+        </div>
+
+        {/* ── Layer C2: ClashNet Cloud Transition Layers (synchronized with ClashNet title) ── */}
+        {/* Cloud 2 (main dense cloud bank with organic billowy silhouettes matching Hero) */}
+        <div
+          ref={cloud2Ref}
+          className="absolute inset-0 w-full h-full pointer-events-none will-change-transform"
+          style={{ zIndex: 28 }}
+        >
+          {/* Smooth white base backing strictly at the bottom */}
+          <div
+            className="absolute inset-x-0 bottom-0 w-full h-[35%] pointer-events-none"
+            style={{
+              background:
+                'linear-gradient(to top, #ffffff 0%, #ffffff 40%, rgba(255, 255, 255, 0.8) 70%, transparent 100%)',
+            }}
+          />
+
+          <img
+            src="/images/cloud-2-full.png"
+            alt="Clouds overlay background"
+            className="absolute top-0 left-0 w-full h-full object-cover object-top select-none pointer-events-none"
+            style={{ transform: 'translateZ(0)' }}
+            draggable={false}
+          />
+
+          {/* White extension below clouds seamlessly continuing pure white into Contact */}
+          <div className="absolute top-[calc(100%-2px)] left-0 w-full h-[150vh] bg-white pointer-events-none" />
+        </div>
+
+        {/* Cloud 1 (foreground cloud wisps with parallax depth matching Hero) */}
+        <div
+          ref={cloud1Ref}
+          className="absolute inset-0 w-full h-full pointer-events-none will-change-transform"
+          style={{
+            zIndex: 29,
+            WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 98%)',
+            maskImage: 'linear-gradient(to bottom, black 70%, transparent 98%)',
+          }}
+        >
+          <img
+            src="/images/cloud-1-cropped.png"
+            alt="Clouds overlay foreground"
+            className="absolute top-0 left-0 w-full h-full object-cover object-top select-none pointer-events-none"
+            style={{ transform: 'translateZ(0)' }}
+            draggable={false}
+          />
         </div>
 
         {/* ── Layer D: Horizontal Card Track (frames 4 & 5) ──────────── */}

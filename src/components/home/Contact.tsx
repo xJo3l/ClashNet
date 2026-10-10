@@ -23,11 +23,11 @@ export const Contact: React.FC = () => {
   return (
     <section
       id="contact"
-      className="relative w-full min-h-screen bg-white text-slate-900 flex items-center justify-center px-6 sm:px-10 md:px-16 lg:px-24 py-24 md:py-32 selection:bg-rose-500 selection:text-white overflow-hidden"
+      className="relative w-full bg-white text-slate-900 z-30 flex flex-col items-center justify-start px-6 sm:px-10 md:px-16 lg:px-24 pt-0 md:pt-2 pb-16 md:pb-24 -mt-44 md:-mt-64 lg:-mt-72 selection:bg-rose-500 selection:text-white"
     >
-      <div className="max-w-6xl w-full mx-auto relative z-10">
+      <div className="max-w-6xl w-full mx-auto relative z-40">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          {/* Left Column: Heading, Subtext & Donate Space */}
+          {/* Left Column: Heading, Subtext & Coffee Space */}
           <div className="lg:col-span-5 flex flex-col justify-between">
             <div>
               {/* Badge */}
@@ -47,11 +47,10 @@ export const Contact: React.FC = () => {
               </p>
             </div>
 
-            {/* Support / Cup of tea space */}
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 sm:p-6 transition-all duration-300 hover:border-amber-300 hover:bg-slate-50 hover:shadow-sm">
+            {/* Support / Coffee space - matched to clean pure white surface */}
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 transition-all duration-300 hover:border-amber-300 hover:shadow-md shadow-sm">
               <div className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-xl bg-amber-100/90 border border-amber-200/70 flex items-center justify-center flex-shrink-0 text-amber-700">
-                  {/* Cup of Tea SVG */}
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -98,10 +97,10 @@ export const Contact: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: Name & Message Form Box */}
+          {/* Right Column: Name, Email & Message Form Box */}
           <div className="lg:col-span-7">
             <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 md:p-10 shadow-[0_16px_48px_rgba(0,0,0,0.05)]">
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 {/* Name Box */}
                 <div>
                   <label
@@ -154,7 +153,7 @@ export const Contact: React.FC = () => {
                     id="message"
                     name="message"
                     required
-                    rows={6}
+                    rows={5}
                     placeholder="Write your message here..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
@@ -166,7 +165,7 @@ export const Contact: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitted}
-                  className={`w-full py-4 rounded-xl font-montserrat font-bold text-xs uppercase tracking-[0.22em] transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.99] flex items-center justify-center gap-2 ${
+                  className={`w-full py-3.5 rounded-xl font-montserrat font-bold text-xs uppercase tracking-[0.22em] transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.99] flex items-center justify-center gap-2 ${
                     isSubmitted
                       ? 'bg-emerald-600 text-white cursor-default'
                       : 'bg-slate-900 hover:bg-black text-white'

@@ -4,6 +4,7 @@ import 'lenis/dist/lenis.css';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from './components/Navbar';
+import { Footer } from './components/Footer';
 import { Hero, HorizontalScroll, Contact } from './components/home';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -51,6 +52,9 @@ export const App: React.FC = () => {
         {/* Contact area with white background under ClashNet */}
         <Contact />
       </main>
+
+      {/* Dark Footer */}
+      <Footer />
     </div>
   );
 };
