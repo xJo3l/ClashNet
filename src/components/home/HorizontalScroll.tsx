@@ -57,92 +57,80 @@ const MEMORY_GALLERY: MemoryItem[] = [
   {
     id: 1,
     image: 'https://yt3.ggpht.com/vdbD_yhCOrZpa_M1FrsYZ0ke9wIclz3F6n5L_N4rnLYMQVji4FPdfErKQx7WsP1Y66737bm-6u9i=s640-c-fcrop64=1,00000000ffff9fff-rw-nd-v1',
-    className: 'top-[11%] left-[43%] w-[140px] md:w-[170px] lg:w-[205px] -rotate-[14deg] z-10 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
+    className: 'top-[11%] left-[49%] w-[140px] md:w-[170px] lg:w-[205px] -rotate-[14deg] z-10 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
     alt: 'Tournament clash',
   },
   // top-middle -> creator (dipped down towards center)
   {
     id: 2,
     image: 'https://yt3.ggpht.com/ZPNgmBDptzkU8TsYnb9Z5GBLCg2E5IFzRiqC3ntst2VPkHAULxsBqFCndhadT5H9zaq0_EyiPRwX=s640-c-fcrop64=1,38000000c7ffffff-rw-nd-v1',
-    className: 'top-[18%] left-[58%] w-[160px] md:w-[195px] lg:w-[235px] rotate-[13deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
+    className: 'top-[18%] left-[63%] w-[160px] md:w-[195px] lg:w-[235px] rotate-[13deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
     alt: 'Creator showcase',
   },
-  // top-right -> hero (lifted higher right)
+  // top-right -> hero (lifted higher right, anchored to right-[8%] for equal padding)
   {
     id: 3,
     image: 'https://yt3.ggpht.com/Zv5Yc-MJ8YsvbPcQ8NkjbooMVFo6lE_AgCL7jEsmvcff7a5KUltco45Ipquw1rQnoHX5fKv_8_nevw=s640-c-fcrop64=1,0000199affffe666-rw-nd-v1',
-    className: 'top-[12%] left-[74%] w-[175px] md:w-[210px] lg:w-[255px] -rotate-[9deg] z-10 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
+    className: 'top-[12%] right-[8%] w-[175px] md:w-[210px] lg:w-[255px] -rotate-[9deg] z-10 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
     alt: 'Hero clash',
   },
   // center -> hero community battle (anchors the collage, balanced size)
   {
     id: 4,
     image: 'https://yt3.ggpht.com/qvuhoQsq_FR_EYp_F-V-bWcM7sguNjzFxMjTTcvYuzXDJ4FykGmWQz5zqq2UnCIXk2HpfrSqpafyJg=s640-c-fcrop64=1,000025a6ffffda5a-rw-nd-v1',
-    className: 'top-[34%] left-[54%] w-[235px] md:w-[285px] lg:w-[340px] -rotate-[3deg] z-30 shadow-[0_22px_50px_rgba(0,0,0,0.85)]',
+    className: 'top-[34%] left-[60%] w-[235px] md:w-[285px] lg:w-[340px] -rotate-[3deg] z-30 shadow-[0_22px_50px_rgba(0,0,0,0.85)]',
     alt: 'Main community battle',
   },
   // left-middle -> strategy (pushed down-left)
   {
     id: 5,
     image: 'https://yt3.ggpht.com/U2aYi7vZYSaqSHpjZc0lGOuFCk0VAePvcHWAQ_yNOBL7W5vMYA5WyrsbWbPNdDXSC4nO2YyADpC2=s640-c-fcrop64=1,00001c29ffffc6d3-rw-nd-v1',
-    className: 'top-[41%] left-[40%] w-[145px] md:w-[175px] lg:w-[215px] rotate-[11deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
+    className: 'top-[41%] left-[46%] w-[145px] md:w-[175px] lg:w-[215px] rotate-[11deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
     alt: 'War matrix strategy',
   },
-  // right-middle -> village peaks (tucked higher-right)
+  // right-middle -> village peaks (tucked right, small part behind center)
   {
     id: 6,
     image: 'https://yt3.ggpht.com/aRDkxY-CiRt0P3R_-DI0tphLbI6yiPL9hRAsj5MxV721kgZn0UwCkISZzkp_3d6oDvw8Hi6Zm9h-9Q=s640-c-fcrop64=1,00003000ffffcfff-rw-nd-v1',
-    className: 'top-[29%] left-[73%] w-[155px] md:w-[185px] lg:w-[225px] -rotate-[14deg] z-10 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
+    className: 'top-[29%] right-[13%] w-[155px] md:w-[185px] lg:w-[225px] -rotate-[14deg] z-10 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
     alt: 'Village peaks',
   },
   // bottom-left -> community
   {
     id: 7,
     image: 'https://yt3.ggpht.com/d_S3to15h8x86D5dDKPbI9SYdA6xZo18TbUiWeAzg5GgIjYLxVtWt2N4n0wy5zYsCzmzSvTqgoDLRSo=s640-c-fcrop64=1,0000199affffe666-rw-nd-v1',
-    className: 'top-[60%] left-[42%] w-[155px] md:w-[185px] lg:w-[225px] -rotate-[12deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
+    className: 'top-[60%] left-[48%] w-[155px] md:w-[185px] lg:w-[225px] -rotate-[12deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
     alt: 'Community memories',
   },
   // bottom-middle -> clan wars (placed cleanly at the bottom without overlapping center card)
   {
     id: 8,
     image: 'https://i.redd.it/k4y8dmsvnq2c1.jpg',
-    className: 'top-[71%] left-[57%] w-[170px] md:w-[200px] lg:w-[245px] rotate-[8deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
+    className: 'top-[71%] left-[62%] w-[170px] md:w-[200px] lg:w-[245px] rotate-[8deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
     alt: 'Clan wars memory',
   },
-  // bottom-right -> victory (kicked out to bottom-right)
+  // bottom-right -> victory (anchored to right-[8%] for equal padding)
   {
     id: 9,
     image: 'https://yt3.ggpht.com/hU_EnKy0Ijd_3giN1jqa-Y8F66oWc7lvlaESpz88Aix7V7N6PC7dUnEx03mlHYfR4NzoaSdYgiLf=s640-c-fcrop64=1,00000000ffffffff-rw-nd-v1',
-    className: 'top-[59%] left-[73%] w-[180px] md:w-[215px] lg:w-[260px] rotate-[15deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
+    className: 'top-[59%] right-[8%] w-[180px] md:w-[215px] lg:w-[260px] rotate-[15deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
     alt: 'Final victory',
   },
 ];
 
-// ── Background Depth Layer Cards (Reduced to 4) ──
+// ── Background Depth Layer Cards (Reduced to 2) ──
 const BACKGROUND_MEMORY_GALLERY: MemoryItem[] = [
   {
     id: 101,
     image: 'https://yt3.ggpht.com/vq49TcZ5AAKQKRlUxNx7W0eZnUeMRlMwnoRKASxkoynlN17KZwT-bai6Vne9SwKeveSJEVfxSLmC=s632-c-fcrop64=1,2aab0000d555ffff-rw-nd-v1',
-    className: 'top-[7%] left-[54%] w-[125px] md:w-[150px] lg:w-[175px] -rotate-[16deg] z-0 opacity-40 scale-95 shadow-md',
+    className: 'top-[7%] left-[64%] w-[125px] md:w-[150px] lg:w-[175px] rotate-[10deg] z-0 opacity-40 scale-95 shadow-md',
     alt: 'Background war matrix',
   },
   {
     id: 104,
     image: '/images/whats-new-background.jpg',
-    className: 'top-[22%] left-[82%] w-[130px] md:w-[155px] lg:w-[185px] rotate-[18deg] z-0 opacity-35 scale-90 shadow-md',
+    className: 'top-[49%] right-[8%] w-[130px] md:w-[155px] lg:w-[185px] rotate-[18deg] z-0 opacity-35 scale-90 shadow-md',
     alt: 'Background scenery',
-  },
-  {
-    id: 106,
-    image: '/images/card-creators.jpg',
-    className: 'top-[75%] left-[44%] w-[125px] md:w-[150px] lg:w-[175px] rotate-[14deg] z-0 opacity-35 scale-90 shadow-md',
-    alt: 'Background clan memories',
-  },
-  {
-    id: 107,
-    image: '/images/hero-coc.webp',
-    className: 'top-[61%] left-[78%] w-[135px] md:w-[160px] lg:w-[185px] -rotate-[12deg] z-0 opacity-35 scale-90 shadow-md',
-    alt: 'Background hero battle',
   },
 ];
 // ── SLIT REVEAL CONFIGURATION ─────────────────────────────────────────
@@ -320,7 +308,7 @@ export const HorizontalScroll: React.FC = () => {
           trigger: outer,
           start: 'top top',
           end: 'bottom bottom',
-          scrub: 0.7,
+          scrub: true,
           invalidateOnRefresh: true,
         },
       });
@@ -451,9 +439,10 @@ export const HorizontalScroll: React.FC = () => {
         );
       }
 
-      // ── Natural vertical scroll down to ClashNet (single continuous background) ──
-      const VERTICAL_SCROLL_START = 0.77;
-      const VERTICAL_SCROLL_DURATION = 0.20; // 0.77 -> 0.97
+      // ── Natural vertical scroll down to ClashNet (1:1 speed matching website scroll) ──
+      const VERTICAL_SCROLL_START = 0.76;
+      const VERTICAL_SCROLL_DURATION = 0.096; // 100vh travel / 100vh physical scroll = 1:1 speed
+      const TIMELINE_END = 0.896;
 
       if (verticalCanvasRef.current) {
         tl.fromTo(
@@ -467,6 +456,7 @@ export const HorizontalScroll: React.FC = () => {
           },
           VERTICAL_SCROLL_START
         );
+        tl.set({}, {}, TIMELINE_END);
       }
 
 
@@ -665,7 +655,7 @@ export const HorizontalScroll: React.FC = () => {
               </div>
 
               {/* Mobile / Tablet compact gallery strip */}
-              <div className="lg:hidden absolute bottom-6 right-6 left-6 z-10 flex gap-3 overflow-x-auto no-scrollbar py-2 pointer-events-auto">
+              <div className="lg:hidden absolute bottom-6 left-[6%] md:left-[7%] right-[6%] md:right-[7%] z-10 flex gap-3 overflow-x-auto no-scrollbar py-2 pointer-events-auto">
                 {MEMORY_GALLERY.slice(0, 5).map((item) => (
                   <div
                     key={item.id}
