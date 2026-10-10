@@ -45,6 +45,130 @@ const CARDS: FeatureCard[] = [
   },
 ];
 
+interface MemoryItem {
+  id: number;
+  image: string;
+  className: string;
+  alt: string;
+}
+
+const MEMORY_GALLERY: MemoryItem[] = [
+  // top-left -> event
+  {
+    id: 1,
+    image: '/images/card-events.jpg',
+    className: 'top-[13%] left-[38.5%] w-[135px] md:w-[165px] lg:w-[200px] rotate-[8deg] z-10 shadow-[0_12px_30px_rgba(0,0,0,0.6)]',
+    alt: 'Tournament clash',
+  },
+  // top-middle -> creator
+  {
+    id: 2,
+    image: '/images/card-creators.jpg',
+    className: 'top-[14%] left-[56.5%] w-[170px] md:w-[205px] lg:w-[250px] rotate-[12deg] z-10 shadow-[0_12px_30px_rgba(0,0,0,0.6)]',
+    alt: 'Creator showcase',
+  },
+  // top-right -> hero
+  {
+    id: 3,
+    image: '/images/hero-coc.webp',
+    className: 'top-[16%] left-[72%] w-[197px] md:w-[238px] lg:w-[290px] rotate-[14deg] z-10 shadow-[0_12px_30px_rgba(0,0,0,0.6)]',
+    alt: 'Hero clash',
+  },
+  // center -> a
+  {
+    id: 4,
+    image: '/images/a.jpg',
+    className: 'top-[36%] left-[50%] w-[285px] md:w-[345px] lg:w-[420px] rotate-[8deg] z-30 shadow-[0_24px_60px_rgba(0,0,0,0.85)] border-white/30',
+    alt: 'Main community battle',
+  },
+  // left-middle -> tools
+  {
+    id: 5,
+    image: '/images/card-tools.jpg',
+    className: 'top-[39%] left-[36.5%] w-[130px] md:w-[156px] lg:w-[190px] -rotate-[4deg] z-10 shadow-[0_12px_30px_rgba(0,0,0,0.6)]',
+    alt: 'War matrix strategy',
+  },
+  // right-middle -> whats new
+  {
+    id: 6,
+    image: '/images/whats-new-background.jpg',
+    className: 'top-[40%] left-[74.5%] w-[153px] md:w-[185px] lg:w-[225px] rotate-[5deg] z-10 shadow-[0_12px_30px_rgba(0,0,0,0.6)]',
+    alt: 'Village peaks',
+  },
+  // bottom-left -> creator
+  {
+    id: 7,
+    image: '/images/card-creators.jpg',
+    className: 'top-[65%] left-[37.5%] w-[160px] md:w-[193px] lg:w-[235px] -rotate-[8deg] z-20 shadow-[0_12px_30px_rgba(0,0,0,0.6)]',
+    alt: 'Community memories',
+  },
+  // bottom-middle -> hero (tucks slightly behind the center card)
+  {
+    id: 8,
+    image: '/images/hero-coc.webp',
+    className: 'top-[67%] left-[54.5%] w-[170px] md:w-[205px] lg:w-[250px] -rotate-[6deg] z-20 shadow-[0_12px_30px_rgba(0,0,0,0.6)]',
+    alt: 'Clan wars memory',
+  },
+  // bottom-right -> event
+  {
+    id: 9,
+    image: '/images/card-events.jpg',
+    className: 'top-[61%] left-[74%] w-[194px] md:w-[234px] lg:w-[285px] rotate-[16deg] z-10 shadow-[0_12px_30px_rgba(0,0,0,0.6)]',
+    alt: 'Final victory',
+  },
+];
+
+// ── Background Blurry Depth Layer Cards ──
+const BACKGROUND_MEMORY_GALLERY: MemoryItem[] = [
+  {
+    id: 101,
+    image: '/images/card-tools.jpg',
+    className: 'top-[8%] left-[48%] w-[125px] md:w-[150px] lg:w-[180px] -rotate-[10deg] z-0 opacity-55 blur-[2.5px] scale-95 shadow-md',
+    alt: 'Background war matrix',
+  },
+  {
+    id: 102,
+    image: '/images/hero-coc.webp',
+    className: 'top-[7%] left-[67%] w-[130px] md:w-[155px] lg:w-[185px] rotate-[6deg] z-0 opacity-50 blur-[3px] scale-90 shadow-md',
+    alt: 'Background hero battle',
+  },
+  {
+    id: 103,
+    image: '/images/card-creators.jpg',
+    className: 'top-[24%] left-[44%] w-[115px] md:w-[140px] lg:w-[165px] rotate-[12deg] z-0 opacity-45 blur-[3px] scale-90 shadow-md',
+    alt: 'Background creator memory',
+  },
+  {
+    id: 104,
+    image: '/images/whats-new-background.jpg',
+    className: 'top-[26%] left-[81%] w-[135px] md:w-[160px] lg:w-[190px] rotate-[18deg] z-0 opacity-45 blur-[2.5px] scale-90 shadow-md',
+    alt: 'Background scenery',
+  },
+  {
+    id: 105,
+    image: '/images/card-events.jpg',
+    className: 'top-[50%] left-[81%] w-[130px] md:w-[155px] lg:w-[185px] -rotate-[12deg] z-0 opacity-55 blur-[2px] scale-95 shadow-md',
+    alt: 'Background tournament',
+  },
+  {
+    id: 106,
+    image: '/images/card-creators.jpg',
+    className: 'top-[77%] left-[40%] w-[125px] md:w-[150px] lg:w-[175px] rotate-[5deg] z-0 opacity-50 blur-[3px] scale-90 shadow-md',
+    alt: 'Background clan memories',
+  },
+  {
+    id: 107,
+    image: '/images/hero-coc.webp',
+    className: 'top-[74%] left-[69%] w-[135px] md:w-[160px] lg:w-[190px] -rotate-[10deg] z-0 opacity-50 blur-[3px] scale-90 shadow-md',
+    alt: 'Background hero battle',
+  },
+  {
+    id: 108,
+    image: '/images/a.jpg',
+    className: 'top-[78%] left-[49%] w-[125px] md:w-[150px] lg:w-[175px] rotate-[8deg] z-0 opacity-55 blur-[2px] scale-95 shadow-md',
+    alt: 'Background base view',
+  },
+];
 // ── SLIT REVEAL CONFIGURATION ─────────────────────────────────────────
 // Exactly 3 openings based on the 1919px grid, opening exclusively to the LEFT:
 // 1. Far Left:  0px to 644px (33.56% width)
@@ -84,6 +208,9 @@ export const HorizontalScroll: React.FC = () => {
   // Static full-screen white background behind a.jpg
   const nextImageRef = useRef<HTMLDivElement>(null);
 
+  // Memories layer ref (editorial text + photo collage gliding right to left)
+  const memoriesLayerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const outer = outerRef.current;
     const sticky = stickyRef.current;
@@ -94,6 +221,10 @@ export const HorizontalScroll: React.FC = () => {
     const preImg = new Image();
     preImg.src = '/images/a.jpg';
     if (preImg.decode) preImg.decode().catch(() => { });
+
+    const finalBgImg = new Image();
+    finalBgImg.src = '/images/Clifftop Tower Beneath a Golden Sky.png';
+    if (finalBgImg.decode) finalBgImg.decode().catch(() => { });
 
     // Pre-decode all card images so they don't hitch the GPU when sliding into the viewport
     CARDS.forEach((card) => {
@@ -112,6 +243,11 @@ export const HorizontalScroll: React.FC = () => {
       // White background stays behind a.jpg; initially hidden so mountain scene is visible
       if (nextImageRef.current) {
         gsap.set(nextImageRef.current, { opacity: 0 });
+      }
+
+      // Memories layer starts off-screen to the right, hidden until reveal
+      if (memoriesLayerRef.current) {
+        gsap.set(memoriesLayerRef.current, { x: () => window.innerWidth, autoAlpha: 0, force3D: true });
       }
 
       // Track starts completely off-screen to the right
@@ -311,6 +447,26 @@ export const HorizontalScroll: React.FC = () => {
         );
       }
 
+      // ── Memories editorial text & photo collage entrance (glide in from right to left) ──
+      // Triggers when the background image reaches the middle of the screen (50% revealed):
+      const MEMORIES_START = SPEED_BOOST_TIME;
+      const memoriesDuration = TRACK_END - MEMORIES_START;
+
+      if (memoriesLayerRef.current) {
+        tl.set(memoriesLayerRef.current, { autoAlpha: 1 }, MEMORIES_START);
+        tl.fromTo(
+          memoriesLayerRef.current,
+          { x: () => window.innerWidth },
+          {
+            x: 0,
+            ease: 'none',
+            duration: memoriesDuration,
+            force3D: true,
+          },
+          MEMORIES_START
+        );
+      }
+
 
 
       // Inner image parallax (images move slightly less than the card = depth effect)
@@ -392,12 +548,24 @@ export const HorizontalScroll: React.FC = () => {
           </div>
         </div>
 
-        {/* ── Final Background: Pure White Screen (revealed behind a.jpg) ── */}
+        {/* ── Final Page: Clifftop Tower Background (revealed behind a.jpg) ── */}
         <div
           ref={nextImageRef}
-          className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden bg-white"
+          className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden"
           style={{ zIndex: 15, opacity: 0 }}
-        />
+        >
+          {/* Background image */}
+          <img
+            src="/images/Clifftop Tower Beneath a Golden Sky.png"
+            alt="Clifftop Tower Beneath a Golden Sky"
+            className="w-full h-full object-cover object-center select-none pointer-events-none"
+            draggable={false}
+          />
+
+          {/* Vignette overlay for text readability and cinematic depth */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none" />
+        </div>
 
         {/* ── Layer B: Multi-Column Slit Reveal (a.jpg) ────────────── */}
         <div
@@ -425,6 +593,88 @@ export const HorizontalScroll: React.FC = () => {
               />
             </div>
           ))}
+        </div>
+
+        {/* ── Layer C: Memories Editorial & Collage (glides right-to-left at z-25, in front of a.jpg, behind trackRef) ── */}
+        <div
+          ref={memoriesLayerRef}
+          className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden will-change-transform"
+          style={{ zIndex: 25, transform: 'translate3d(100vw, 0, 0)', opacity: 0 }}
+        >
+          {/* ── Left Column: Editorial Info & Typography ── */}
+          <div
+            className="absolute left-[6%] md:left-[7%] lg:left-[8%] top-1/2 -translate-y-1/2 max-w-[480px] z-20 pointer-events-auto"
+          >
+            {/* Title */}
+            <h2 className="font-cormorant font-normal uppercase text-white tracking-[0.04em] leading-[0.92] text-5xl sm:text-6xl md:text-7xl lg:text-8xl drop-shadow-[0_6px_28px_rgba(0,0,0,0.9)] mb-6">
+              MEMORIES
+            </h2>
+
+            {/* Description */}
+            <p className="font-outfit text-sm sm:text-base md:text-lg text-white/85 leading-relaxed max-w-[440px] drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
+              Connect with fellow creators, find your community, compete in tournaments, and make memories that last long after the battle ends.
+            </p>
+          </div>
+
+          {/* ── Right / Center: Floating Image Collage ── */}
+          <div className="absolute inset-0 z-10 pointer-events-none">
+            {/* Depth Background Layer (blurry cards) */}
+            <div className="hidden lg:block absolute inset-0 z-0 pointer-events-none select-none">
+              {BACKGROUND_MEMORY_GALLERY.map((item) => (
+                <div
+                  key={item.id}
+                  className={`absolute overflow-hidden rounded-md border border-white/10 bg-slate-900/40 
+                              shadow-[0_8px_24px_rgba(0,0,0,0.5)] ${item.className}`}
+                >
+                  <img
+                    src={item.image}
+                    alt={item.alt}
+                    className="w-full h-auto aspect-[4/3] object-cover object-center"
+                    draggable={false}
+                    decoding="async"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Foreground Sharp Interactive Cards */}
+            <div className="hidden lg:block absolute inset-0 z-10 pointer-events-none">
+              {MEMORY_GALLERY.map((item) => (
+                <div
+                  key={item.id}
+                  className={`absolute overflow-hidden rounded-md border border-white/20 bg-slate-900/40 
+                              shadow-[0_12px_36px_rgba(0,0,0,0.7)] backdrop-blur-[2px] transition-all duration-300 
+                              hover:scale-105 hover:z-30 hover:border-amber-400/60 hover:shadow-[0_24px_50px_rgba(0,0,0,0.95)] 
+                              pointer-events-auto cursor-pointer ${item.className}`}
+                >
+                  <img
+                    src={item.image}
+                    alt={item.alt}
+                    className="w-full h-auto aspect-[4/3] object-cover object-center select-none pointer-events-none"
+                    draggable={false}
+                    decoding="async"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Mobile / Tablet compact gallery strip */}
+            <div className="lg:hidden absolute bottom-6 right-6 left-6 z-10 flex gap-3 overflow-x-auto no-scrollbar py-2 pointer-events-auto">
+              {MEMORY_GALLERY.slice(0, 5).map((item) => (
+                <div
+                  key={item.id}
+                  className="flex-shrink-0 w-36 sm:w-48 rounded-md overflow-hidden border border-white/20 shadow-lg bg-slate-900/40"
+                >
+                  <img
+                    src={item.image}
+                    alt={item.alt}
+                    className="w-full h-auto aspect-[4/3] object-cover"
+                    draggable={false}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* ── Layer D: Horizontal Card Track (frames 4 & 5) ──────────── */}
