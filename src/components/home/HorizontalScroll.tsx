@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -185,6 +185,87 @@ export const HorizontalScroll: React.FC = () => {
   const cloud1Ref = useRef<HTMLDivElement>(null);
   const cloud2Ref = useRef<HTMLDivElement>(null);
 
+  // Custom Cursor for Feature Cards
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const [cursorText, setCursorText] = useState<string>('');
+  const isHoveringCardRef = useRef(false);
+  const lastMousePosRef = useRef({ x: -100, y: -100 });
+
+  const handleCardLeave = () => {
+    isHoveringCardRef.current = false;
+    if (cursorRef.current) {
+      gsap.to(cursorRef.current, {
+        scale: 0,
+        autoAlpha: 0,
+        duration: 0.2,
+        ease: 'power2.in',
+        overwrite: 'auto',
+      });
+    }
+  };
+
+  const handleCardEnter = (actionText?: string) => {
+    isHoveringCardRef.current = true;
+    setCursorText(actionText || 'View Events');
+    if (cursorRef.current) {
+      gsap.to(cursorRef.current, {
+        scale: 1,
+        autoAlpha: 1,
+        duration: 0.25,
+        ease: 'back.out(1.5)',
+        overwrite: 'auto',
+      });
+    }
+  };
+
+  const checkHoverState = () => {
+    if (!isHoveringCardRef.current) return;
+    const el = document.elementFromPoint(lastMousePosRef.current.x, lastMousePosRef.current.y);
+    if (!el || !el.closest('.horizontal-scroll_panel')) {
+      handleCardLeave();
+    }
+  };
+
+  useEffect(() => {
+    const cursor = cursorRef.current;
+    if (!cursor) return;
+
+    gsap.set(cursor, {
+      xPercent: -50,
+      yPercent: -50,
+      scale: 0,
+      autoAlpha: 0,
+      force3D: true,
+    });
+
+    const xTo = gsap.quickTo(cursor, 'x', { duration: 0.18, ease: 'power3.out' });
+    const yTo = gsap.quickTo(cursor, 'y', { duration: 0.18, ease: 'power3.out' });
+
+    const handleMouseMove = (e: MouseEvent) => {
+      lastMousePosRef.current = { x: e.clientX, y: e.clientY };
+      xTo(e.clientX);
+      yTo(e.clientY);
+    };
+
+    const handleScroll = () => {
+      checkHoverState();
+    };
+
+    const handleMouseLeaveWindow = () => {
+      handleCardLeave();
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    document.addEventListener('mouseleave', handleMouseLeaveWindow);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('mouseleave', handleMouseLeaveWindow);
+    };
+  }, []);
+
   useEffect(() => {
     const outer = outerRef.current;
     const sticky = stickyRef.current;
@@ -325,6 +406,9 @@ export const HorizontalScroll: React.FC = () => {
           end: 'bottom bottom',
           scrub: true,
           invalidateOnRefresh: true,
+          onUpdate: () => checkHoverState(),
+          onLeave: () => handleCardLeave(),
+          onLeaveBack: () => handleCardLeave(),
         },
       });
 
@@ -586,9 +670,26 @@ export const HorizontalScroll: React.FC = () => {
       ref={outerRef}
       id="whats-new"
       aria-label="What's New"
+      onMouseLeave={handleCardLeave}
       className="relative w-full"
       style={{ height: SECTION_HEIGHT }}
     >
+      {/* ── Custom Floating Cursor on Card Hover ──────────────────── */}
+      <div
+        ref={cursorRef}
+        className="fixed top-0 left-0 pointer-events-none z-[100]
+                   hidden md:inline-flex items-center gap-1.5
+                   text-white font-montserrat font-bold text-[11px] tracking-[0.22em] uppercase
+                   drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] select-none will-change-transform"
+      >
+        <span>{cursorText}</span>
+        {cursorText === 'Coming Soon' ? (
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+        ) : (
+          <span className="text-amber-400 text-sm font-normal leading-none">+</span>
+        )}
+      </div>
+
       {/* ── Sticky Viewport ──────────────────────────────────────────── */}
       <div
         ref={stickyRef}
@@ -854,11 +955,19 @@ export const HorizontalScroll: React.FC = () => {
             <div
               key={card.id}
               id={card.id}
+              onMouseEnter={() => handleCardEnter(card.actionText)}
+              onMouseLeave={handleCardLeave}
+              onClick={() => {
+                if (!card.isComingSoon) {
+                  window.location.hash = card.id;
+                }
+              }}
               className="horizontal-scroll_panel relative flex-shrink-0 overflow-hidden rounded-xl
                          border border-white/30
                          shadow-[0_20px_50px_rgba(0,0,0,0.55),inset_0_1px_1px_rgba(255,255,255,0.4),inset_0_0_12px_rgba(255,255,255,0.06)]
                          flex flex-col justify-between
-                         p-7 md:p-8 text-white group opacity-100"
+                         p-7 md:p-8 text-white group opacity-100
+                         md:cursor-none md:[&_*]:cursor-none"
               style={{
                 width: 'clamp(310px, 36vw, 560px)',
                 height: 'clamp(390px, 63vh, 620px)',
@@ -901,24 +1010,15 @@ export const HorizontalScroll: React.FC = () => {
                 </p>
               </div>
 
-              {/* Middle: CTA / Status */}
-              <div data-panel-action className="relative z-10 self-start">
-                {card.isComingSoon ? (
+              {/* Middle: Status badge (if Coming Soon) */}
+              {card.isComingSoon && (
+                <div data-panel-action className="relative z-10 self-start">
                   <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-950/40 border border-amber-400/40 font-montserrat font-bold text-[10px] tracking-[0.22em] uppercase text-amber-300">
                     Coming Soon
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                   </span>
-                ) : (
-                  <a
-                    href={`#${card.id}`}
-                    className="inline-flex items-center gap-2 font-montserrat font-bold text-[11px] tracking-[0.22em]
-                               uppercase text-white hover:text-amber-300 transition-colors duration-200"
-                  >
-                    {card.actionText || 'Learn More'}
-                    <span className="text-amber-400 text-sm font-normal">+</span>
-                  </a>
-                )}
-              </div>
+                </div>
+              )}
 
               {/* Bottom: tag + counter */}
               <div data-panel-footer className="relative z-10 flex items-end justify-between border-t border-white/20 pt-4">
