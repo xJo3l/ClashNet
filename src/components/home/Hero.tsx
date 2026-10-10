@@ -87,7 +87,7 @@ export const Hero: React.FC = () => {
             tl.fromTo(
               cloud2Ref.current,
               { yPercent: 100, y: 0 },
-              { yPercent: cloud2End, y: 0, ease: 'none', force3D: true, duration: 0.95 },
+              { yPercent: cloud2End, y: 0, ease: 'none', force3D: true, duration: 1 },
               0
             );
           }
@@ -97,7 +97,7 @@ export const Hero: React.FC = () => {
             tl.fromTo(
               aboutRef.current,
               { yPercent: 100, y: 0 },
-              { yPercent: 0, y: 0, ease: 'none', force3D: true, duration: 0.95 },
+              { yPercent: 0, y: 0, ease: 'none', force3D: true, duration: 1 },
               0
             );
           }
@@ -107,7 +107,7 @@ export const Hero: React.FC = () => {
             tl.fromTo(
               cloud1Ref.current,
               { yPercent: 100, y: 0 },
-              { yPercent: cloud1End, y: 0, ease: 'none', force3D: true, duration: 0.95 },
+              { yPercent: cloud1End, y: 0, ease: 'none', force3D: true, duration: 1 },
               0
             );
           }
@@ -117,45 +117,41 @@ export const Hero: React.FC = () => {
           tl.fromTo(
             '.about-label',
             { opacity: 0, y: 35, scale: 0.9 },
-            { opacity: 1, y: 0, scale: 1, ease: 'power2.out', duration: 0.32 },
-            0.40
+            { opacity: 1, y: 0, scale: 1, ease: 'power2.out', duration: 0.28 },
+            0.36
           );
 
-          // 2. Desktop Statement: individual words emerge with cinematic blur-to-sharp cascade
+          // 2. Desktop Statement: individual words emerge with smooth GPU opacity & transform
           const words = heroRef.current?.querySelectorAll('.about-proximity-word');
           if (words && words.length > 0) {
             tl.fromTo(
               words,
-              { opacity: 0, y: 48, filter: 'blur(12px)' },
+              { opacity: 0, y: 35 },
               {
                 opacity: 1,
                 y: 0,
-                filter: 'blur(0px)',
-                stagger: 0.016,
+                stagger: 0.012,
                 ease: 'power2.out',
-                duration: 0.38,
+                duration: 0.28,
               },
-              0.44
+              0.40
             );
           } else {
             tl.fromTo(
               '.about-statement',
-              { opacity: 0, y: 55, filter: 'blur(12px)' },
-              { opacity: 1, y: 0, filter: 'blur(0px)', ease: 'power2.out', duration: 0.4 },
-              0.44
+              { opacity: 0, y: 35 },
+              { opacity: 1, y: 0, ease: 'power2.out', duration: 0.32 },
+              0.40
             );
           }
 
           // 3. Mobile statement reveal
           tl.fromTo(
             '.about-mobile-statement',
-            { opacity: 0, y: 45, filter: 'blur(10px)' },
-            { opacity: 1, y: 0, filter: 'blur(0px)', ease: 'power2.out', duration: 0.4 },
-            0.44
+            { opacity: 0, y: 35 },
+            { opacity: 1, y: 0, ease: 'power2.out', duration: 0.32 },
+            0.40
           );
-
-          // Timeline pad so 0.95-1.0 is pure white buffer before page transitions into About section
-          tl.set({}, {}, 1);
         }
       );
     }, heroRef);

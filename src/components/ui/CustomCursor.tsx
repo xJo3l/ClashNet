@@ -84,18 +84,10 @@ export const CustomCursor: React.FC = () => {
       for (let i = 0; i < cloudImgs.length; i++) {
         const img = cloudImgs[i];
 
-        // Ensure element and its parent containers are rendered and visible (e.g. not autoAlpha: 0)
-        let isVis = true;
-        let curr: HTMLElement | null = img;
-        while (curr && curr !== document.body && curr !== document.documentElement) {
-          const s = window.getComputedStyle(curr);
-          if (s.display === 'none' || s.visibility === 'hidden' || Number(s.opacity) < 0.05) {
-            isVis = false;
-            break;
-          }
-          curr = curr.parentElement;
-        }
-        if (!isVis) continue;
+        // Quickly check if element is visually rendered without costly getComputedStyle in loop
+        if (img.offsetParent === null) continue;
+        const parent = img.parentElement;
+        if (parent && (parent.style.visibility === 'hidden' || parent.style.opacity === '0')) continue;
 
         const rect = img.getBoundingClientRect();
         if (rect.width === 0 || rect.height === 0) continue;

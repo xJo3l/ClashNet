@@ -325,22 +325,14 @@ export const HorizontalScroll: React.FC = () => {
       }
 
       // Expand the opening scene as the section rises into the viewport;
-      // transitions smoothly from padded frame to true 100% full-screen once it reaches top top.
+      // transitions smoothly using GPU-accelerated scale once it reaches top top.
       if (mountainRef.current) {
         gsap.fromTo(
           mountainRef.current,
           {
-            paddingTop: '3vw',
-            paddingBottom: '3vw',
-            paddingLeft: '4vw',
-            paddingRight: '4vw',
-            scale: 0.96,
+            scale: 0.94,
           },
           {
-            paddingTop: 0,
-            paddingBottom: 0,
-            paddingLeft: 0,
-            paddingRight: 0,
             scale: 1,
             ease: 'none',
             force3D: true,
@@ -406,7 +398,6 @@ export const HorizontalScroll: React.FC = () => {
           end: 'bottom bottom',
           scrub: true,
           invalidateOnRefresh: true,
-          onUpdate: () => checkHoverState(),
           onLeave: () => handleCardLeave(),
           onLeaveBack: () => handleCardLeave(),
         },
@@ -699,7 +690,7 @@ export const HorizontalScroll: React.FC = () => {
         {/* ── Layer A: Mountain Hero (frames 1 & 2) ──────────────────── */}
         <div
           ref={mountainRef}
-          className="absolute inset-0 z-10 will-change-[padding,transform]"
+          className="absolute inset-0 z-10 will-change-transform"
         >
           <div className="relative w-full h-full overflow-hidden">
             <img
@@ -763,16 +754,17 @@ export const HorizontalScroll: React.FC = () => {
         <div
           ref={slitsContainerRef}
           className="absolute inset-0 z-20 pointer-events-none overflow-hidden will-change-transform"
-          style={{ transform: 'translateZ(0)' }}
+          style={{ transform: 'translate3d(0,0,0)' }}
         >
           {SLITS.map((slit, i) => (
             <div
               key={i}
               ref={(el) => { slitElementsRef.current[i] = el; }}
-              className="absolute inset-0 w-full h-full overflow-hidden will-change-[clip-path]"
+              className="absolute inset-0 w-full h-full overflow-hidden"
               style={{
                 clipPath: slit.initial,
-                transform: 'translateZ(0)',
+                transform: 'translate3d(0,0,0)',
+                willChange: 'clip-path',
                 backfaceVisibility: 'hidden',
               }}
             >
@@ -780,7 +772,7 @@ export const HorizontalScroll: React.FC = () => {
                 src="/images/card_background.webp"
                 alt="Revealed background"
                 className="w-full h-full object-cover object-center select-none pointer-events-none"
-                style={{ transform: 'translateZ(0)' }}
+                style={{ transform: 'translate3d(0,0,0)' }}
                 draggable={false}
               />
             </div>
@@ -825,6 +817,7 @@ export const HorizontalScroll: React.FC = () => {
                       alt={item.alt}
                       className="w-full h-auto block select-none pointer-events-none rounded-md"
                       draggable={false}
+                      loading="lazy"
                       decoding="async"
                     />
                   </div>
@@ -849,6 +842,7 @@ export const HorizontalScroll: React.FC = () => {
                       }}
                       className="w-full h-auto block select-none pointer-events-none rounded-md"
                       draggable={false}
+                      loading="lazy"
                       decoding="async"
                     />
                   </div>

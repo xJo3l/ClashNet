@@ -51,12 +51,37 @@ export const VariableFontCursorProximity: React.FC<VariableFontCursorProximityPr
       .map((axis) => `'${axis}' ${(fromMap[axis] ?? 0).toFixed(2)}`)
       .join(', ');
 
+    // ── Cached relative offsets inside text container: only recomputed on resize ──
+    type GlyphOffset = { ox: number; oy: number };
+    let cachedOffsets: GlyphOffset[] = [];
+    let offsetsDirty = true;
+
+    const buildOffsetCache = () => {
+      const textRect = text.getBoundingClientRect();
+      cachedOffsets = glyphs.map((glyph) => {
+        const r = glyph.getBoundingClientRect();
+        return {
+          ox: r.left + r.width / 2 - textRect.left,
+          oy: r.top + r.height / 2 - textRect.top,
+        };
+      });
+      offsetsDirty = false;
+    };
+
+    const invalidateOffsets = () => {
+      offsetsDirty = true;
+    };
+
     const updateGlyphs = (clientX: number, clientY: number) => {
-      glyphs.forEach((glyph) => {
-        const rect = glyph.getBoundingClientRect();
-        const dx = clientX - (rect.left + rect.width / 2);
-        const dy = clientY - (rect.top + rect.height / 2);
-        const distance = Math.hypot(dx, dy);
+      if (offsetsDirty || cachedOffsets.length !== glyphs.length) buildOffsetCache();
+      const textRect = text.getBoundingClientRect();
+
+      glyphs.forEach((glyph, i) => {
+        const offset = cachedOffsets[i];
+        if (!offset) return;
+        const cx = textRect.left + offset.ox;
+        const cy = textRect.top + offset.oy;
+        const distance = Math.hypot(clientX - cx, clientY - cy);
 
         if (distance > radius) {
           glyph.style.fontVariationSettings = defaultSettings;
@@ -106,11 +131,16 @@ export const VariableFontCursorProximity: React.FC<VariableFontCursorProximityPr
       resetGlyphs();
     };
 
+    // Invalidate cache only on resize, not on scroll
+    const ro = new ResizeObserver(invalidateOffsets);
+    ro.observe(container);
+
     container.addEventListener('pointermove', onMove, { passive: true });
     container.addEventListener('pointerleave', onLeave, { passive: true });
 
     return () => {
       if (frameId) cancelAnimationFrame(frameId);
+      ro.disconnect();
       container.removeEventListener('pointermove', onMove);
       container.removeEventListener('pointerleave', onLeave);
     };
