@@ -370,30 +370,38 @@ export const HorizontalScroll: React.FC = () => {
       // ── Transition & Speed Controls (Adjust manually here) ────────────
       // ══════════════════════════════════════════════════════════════════
 
-      // 1. START POINT: When the background transition begins (adjust multiplier e.g. 0.45, 0.47, 0.55):
-      const REVEAL_START = cardTriggerPoint + (TRACK_END - cardTriggerPoint) * 0.47;
+      // Measure Tools card position inside track; calibrated to sit behind around 75% of the Tools card:
+      const toolsCard = track.querySelector('#tools') as HTMLElement;
+      const toolsTargetOffset = toolsCard
+        ? (toolsCard.offsetLeft + toolsCard.offsetWidth * 0.75)
+        : (window.innerWidth * 0.96);
 
-      // 2. Duration for a.jpg to cross the screen:
+      // Mathematical relationship:
+      // REVEAL_START triggers so the background wipe boundary stays fixed behind ~75% of the Tools card:
+      const k = toolsTargetOffset / window.innerWidth;
+      const REVEAL_START = (cardTriggerPoint + k * TRACK_END) / (1 + k);
+
+      // Duration for a.jpg to cross the screen:
       const bgDuration = TRACK_END - REVEAL_START;
 
-      // 3. BOOST POSITION: When speed increase triggers (0.50 = middle of screen, 0.40 = earlier, 0.60 = later):
-      const BOOST_POSITION = 0.50;
+      // Exact 1:1 speed matching between Tools card and the background image:
+      const bgSpeed = window.innerWidth / bgDuration;
+
+      // BOOST POSITION: Tools and background image speed is the SAME for 70% of time:
+      const BOOST_POSITION = 0.70;
       const SPEED_BOOST_TIME = REVEAL_START + bgDuration * BOOST_POSITION;
 
-      // 4. SPEED BOOST FACTOR:
-      // Controls how much the card speeds up from BOOST_POSITION (linear, never stops):
-      const SPEED_BOOST = 1.50;
-
-      // Calculation of durations to ensure seamless, continuous movement without stopping:
-      const totalTrackDist = track.scrollWidth + window.innerWidth * 1.1;
-      const trackNormalSpeed = totalTrackDist / (TRACK_END - cardTriggerPoint);
+      // Stage 1 (cardTriggerPoint -> SPEED_BOOST_TIME): Tools and background travel at identical speed, locked together
       const stage1Duration = SPEED_BOOST_TIME - cardTriggerPoint;
-      const stage1Distance = trackNormalSpeed * stage1Duration;
-      const stage2RemainingDistance = totalTrackDist - stage1Distance;
-      const stage2Duration = stage2RemainingDistance / (trackNormalSpeed * SPEED_BOOST);
+      const stage1Distance = bgSpeed * stage1Duration;
       const midPointX = window.innerWidth - stage1Distance;
 
-      // Stage 1 (cardTriggerPoint -> SPEED_BOOST_TIME): steady speed matching the background
+      // Stage 2 (Remaining 30% of time): Tools accelerates and goes first
+      const totalTrackDist = track.scrollWidth + window.innerWidth * 1.1;
+      const stage2RemainingDistance = Math.max(totalTrackDist - stage1Distance, track.scrollWidth * 0.25);
+      const stage2Duration = Math.max(bgDuration * (1.0 - BOOST_POSITION), 0.01);
+
+      // Stage 1: Steady speed 1:1 synchronized with the background image (fixed with Tools)
       tl.fromTo(
         track,
         { x: () => window.innerWidth },
@@ -407,12 +415,12 @@ export const HorizontalScroll: React.FC = () => {
         cardTriggerPoint
       );
 
-      // Stage 2 (SPEED_BOOST_TIME -> exit): directly transitions into boosted speed (NO zero-velocity freeze)
+      // Stage 2 (SPEED_BOOST_TIME -> exit): Rest 30% of time, Tools accelerates and clears first
       tl.to(
         track,
         {
           x: () => -(track.scrollWidth + window.innerWidth * 0.1),
-          ease: 'none', // linear boosted speed so the card never stops or delays
+          ease: 'none',
           duration: stage2Duration,
           force3D: true,
         },
@@ -846,13 +854,14 @@ export const HorizontalScroll: React.FC = () => {
             <div
               key={card.id}
               id={card.id}
-              className="horizontal-scroll_panel relative flex-shrink-0 overflow-hidden rounded-sm
-                         shadow-[0_24px_60px_rgba(0,0,0,0.55)]
+              className="horizontal-scroll_panel relative flex-shrink-0 overflow-hidden rounded-xl
+                         border border-white/30
+                         shadow-[0_20px_50px_rgba(0,0,0,0.55),inset_0_1px_1px_rgba(255,255,255,0.4),inset_0_0_12px_rgba(255,255,255,0.06)]
                          flex flex-col justify-between
-                         p-8 md:p-10 text-white group opacity-100"
+                         p-7 md:p-8 text-white group opacity-100"
               style={{
-                width: 'clamp(340px, 42vw, 660px)',
-                height: 'clamp(420px, 72vh, 720px)',
+                width: 'clamp(310px, 36vw, 560px)',
+                height: 'clamp(390px, 63vh, 620px)',
               }}
             >
               {/* Background image with parallax wrapper */}
