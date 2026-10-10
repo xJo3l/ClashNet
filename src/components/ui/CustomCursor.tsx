@@ -1,22 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  size: number;
-  color: string;
-  alpha: number;
-  decay: number;
-}
-
 interface Point {
   x: number;
   y: number;
 }
-
-const AMBER_PALETTE = ['#f59e0b', '#fbbf24', '#fde047', '#d97706', '#fef08a'];
 
 export const CustomCursor: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -41,34 +28,13 @@ export const CustomCursor: React.FC = () => {
     window.addEventListener('resize', onResize);
 
     // Mouse state
-    const mouse = { x: -100, y: -100, prevX: -100, prevY: -100, speed: 0 };
+    const mouse = { x: -100, y: -100, prevX: -100 };
     let isVisible = false;
-    let isHoveringInteractive = false;
     let isCardHovered = false;
 
-    // Trailing nodes for fluid comet ribbon trail (longer trail for silky flow)
-    const TRAIL_LENGTH = 20;
+    // Simple trailing comet nodes (8 nodes for a sleek, lightweight trail)
+    const TRAIL_LENGTH = 8;
     const trail: Point[] = Array.from({ length: TRAIL_LENGTH }, () => ({ x: -100, y: -100 }));
-
-    // Floating spark particles
-    const particles: Particle[] = [];
-
-    const addSparks = (x: number, y: number, count: number, speedMult = 1, flowVx = 0, flowVy = 0) => {
-      for (let i = 0; i < count; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = (Math.random() * 1.5 + 0.3) * speedMult;
-        particles.push({
-          x: x + (Math.random() - 0.5) * 4,
-          y: y + (Math.random() - 0.5) * 4,
-          vx: flowVx * 0.12 + Math.cos(angle) * speed,
-          vy: flowVy * 0.12 + Math.sin(angle) * speed - 0.15,
-          size: Math.random() * 2.2 + 0.8,
-          color: '#ffffff',
-          alpha: 0.95,
-          decay: Math.random() * 0.025 + 0.016,
-        });
-      }
-    };
 
     let animationFrameId: number;
 
@@ -145,32 +111,17 @@ export const CustomCursor: React.FC = () => {
       return false;
     };
 
-
     const onMouseMove = (e: MouseEvent) => {
       isVisible = true;
       mouse.prevX = mouse.x;
-      mouse.prevY = mouse.y;
       mouse.x = e.clientX;
       mouse.y = e.clientY;
-
-      const dx = mouse.x - mouse.prevX;
-      const dy = mouse.y - mouse.prevY;
-      mouse.speed = Math.hypot(dx, dy);
 
       const target = e.target as HTMLElement | null;
       if (target) {
         // Hide if over card with dedicated card cursor
         isCardHovered = !!target.closest('.horizontal-scroll_panel');
-
-        // Check for clickable/interactive elements
-        isHoveringInteractive = !!target.closest(
-          'a, button, [role="button"], input, textarea, select, .cursor-pointer, [data-interactive]'
-        );
       }
-
-      // Check whether current point is over clouds or white backgrounds
-      const isLight = checkIsOverWhiteOrCloud(mouse.x, mouse.y);
-      targetTone = isLight ? 0 : 1;
 
       // Prevent initial streak when cursor first enters screen
       if (mouse.prevX === -100) {
@@ -179,17 +130,6 @@ export const CustomCursor: React.FC = () => {
           trail[i].y = mouse.y;
         }
       }
-
-      // If moving and not over card, emit micro sparks drifting naturally in the wake
-      if (!isCardHovered && mouse.speed > 2 && Math.random() > 0.3) {
-        addSparks(mouse.x, mouse.y, 1, 0.6, -dx, -dy);
-      }
-    };
-
-    const onMouseDown = (e: MouseEvent) => {
-      if (isCardHovered) return;
-      // Burst of sparks on click
-      addSparks(e.clientX, e.clientY, 10, 2.0);
     };
 
     const onMouseLeave = () => {
@@ -201,7 +141,6 @@ export const CustomCursor: React.FC = () => {
     };
 
     window.addEventListener('mousemove', onMouseMove, { passive: true });
-    window.addEventListener('mousedown', onMouseDown, { passive: true });
     document.addEventListener('mouseleave', onMouseLeave);
     document.addEventListener('mouseenter', onMouseEnter);
 
@@ -219,82 +158,34 @@ export const CustomCursor: React.FC = () => {
       currentTone += (targetTone - currentTone) * 0.18;
       const gray = Math.round(currentTone * 255);
 
-      // Smoothly update trailing nodes (fluid liquid ribbon physics)
-      if (isVisible && !isCardHovered) {
-        // Soft, fluid follow for head node
-        trail[0].x += (mouse.x - trail[0].x) * 0.46;
-        trail[0].y += (mouse.y - trail[0].y) * 0.46;
+      // Simple, smooth trailing comet tail
+      if (isVisible && !isCardHovered && mouse.x >= 0) {
+        // Head follows mouse directly with gentle easing
+        trail[0].x += (mouse.x - trail[0].x) * 0.6;
+        trail[0].y += (mouse.y - trail[0].y) * 0.6;
 
-        // Progressive fluid drag: tip moves smoothly, tail undulates with natural wave lag
+        // Trailing nodes follow with smooth progressive lag
         for (let i = 1; i < TRAIL_LENGTH; i++) {
-          const leader = trail[i - 1];
-          const follower = trail[i];
-          const factor = 0.45 - (i / TRAIL_LENGTH) * 0.22;
-          follower.x += (leader.x - follower.x) * factor;
-          follower.y += (leader.y - follower.y) * factor;
+          trail[i].x += (trail[i - 1].x - trail[i].x) * 0.45;
+          trail[i].y += (trail[i - 1].y - trail[i].y) * 0.45;
         }
 
-        // Draw silky smooth curved ribbon using midpoint quadratic Bezier splines
-        const midPoints: Point[] = [];
+        // Draw clean, smooth tapered line
         for (let i = 0; i < TRAIL_LENGTH - 1; i++) {
-          midPoints.push({
-            x: (trail[i].x + trail[i + 1].x) * 0.5,
-            y: (trail[i].y + trail[i + 1].y) * 0.5,
-          });
-        }
+          const p1 = trail[i];
+          const p2 = trail[i + 1];
+          const progress = 1 - i / (TRAIL_LENGTH - 1);
+          const lineWidth = Math.max(0.8, progress * 4.5);
+          const alpha = progress * 0.75;
 
-        for (let i = 0; i < TRAIL_LENGTH - 1; i++) {
-          const progress = 1 - i / (TRAIL_LENGTH - 1); // 1 at head, 0 at tail
-          const lineWidth = Math.max(0.6, progress * 6.5);
-          const alpha = Math.pow(progress, 0.85) * 0.78;
-
-          const start = i === 0 ? trail[0] : midPoints[i - 1];
-          const control = trail[i];
-          const end = i === TRAIL_LENGTH - 2 ? trail[TRAIL_LENGTH - 1] : midPoints[i];
-
-          // Outer glowing body
           ctx.beginPath();
-          ctx.moveTo(start.x, start.y);
-          ctx.quadraticCurveTo(control.x, control.y, end.x, end.y);
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
           ctx.strokeStyle = `rgba(${gray}, ${gray}, ${gray}, ${alpha})`;
           ctx.lineWidth = lineWidth;
           ctx.lineCap = 'round';
-          ctx.lineJoin = 'round';
-          ctx.stroke();
-
-          // Luminous inner core
-          ctx.beginPath();
-          ctx.moveTo(start.x, start.y);
-          ctx.quadraticCurveTo(control.x, control.y, end.x, end.y);
-          ctx.strokeStyle = `rgba(${gray}, ${gray}, ${gray}, ${alpha * 0.95})`;
-          ctx.lineWidth = lineWidth * 0.42;
           ctx.stroke();
         }
-
-      }
-
-      // Update and draw floating spark particles
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.alpha -= p.decay;
-        p.size *= 0.96;
-
-        if (p.alpha <= 0 || p.size <= 0.2) {
-          particles.splice(i, 1);
-          continue;
-        }
-
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, p.alpha);
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgb(${gray}, ${gray}, ${gray})`;
-        ctx.shadowColor = `rgba(${gray}, ${gray}, ${gray}, 0.35)`;
-        ctx.shadowBlur = 4;
-        ctx.fill();
-        ctx.restore();
       }
 
       animationFrameId = requestAnimationFrame(render);
@@ -305,7 +196,6 @@ export const CustomCursor: React.FC = () => {
     return () => {
       window.removeEventListener('resize', onResize);
       window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mousedown', onMouseDown);
       document.removeEventListener('mouseleave', onMouseLeave);
       document.removeEventListener('mouseenter', onMouseEnter);
       cancelAnimationFrame(animationFrameId);
