@@ -191,7 +191,7 @@ export const Hero: React.FC = () => {
           />
 
           <img
-            src="/images/cloud-2-full.png"
+            src="/images/cloud-2-full.webp"
             alt="Clouds overlay background"
             className="absolute top-0 left-0 w-full h-full object-cover object-top select-none pointer-events-none"
             style={{ transform: 'translateZ(0)' }}
@@ -211,7 +211,7 @@ export const Hero: React.FC = () => {
           }}
         >
           <img
-            src="/images/cloud-1-cropped.png"
+            src="/images/cloud-1-cropped.webp"
             alt="Clouds overlay foreground"
             className="absolute top-0 left-0 w-full h-full object-cover object-top select-none pointer-events-none"
             style={{ transform: 'translateZ(0)' }}

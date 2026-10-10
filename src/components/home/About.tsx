@@ -6,14 +6,47 @@ export const About: React.FC = () => {
   return (
     <section
       id="about"
-      className="relative w-full min-h-screen text-[#182337] selection:bg-rose-500 selection:text-white flex items-center justify-center"
+      className="relative w-full min-h-screen text-[#182337] selection:bg-rose-500 selection:text-white flex items-center justify-center overflow-hidden"
       style={{
         background:
           'linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.8) 20%, #ffffff 35%, #ffffff 100%)',
       }}
     >
+      {/* Background Architectural Grid Pattern */}
+      <div
+        className="absolute inset-0 pointer-events-none z-0 overflow-hidden"
+        style={{
+          maskImage:
+            'radial-gradient(ellipse 92% 88% at 50% 50%, black 55%, transparent 100%)',
+          WebkitMaskImage:
+            'radial-gradient(ellipse 92% 88% at 50% 50%, black 55%, transparent 100%)',
+        }}
+      >
+        <svg
+          className="absolute inset-0 w-full h-full"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <pattern
+              id="about-grid-pattern"
+              width="80"
+              height="80"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M 80 0 L 0 0 0 80"
+                fill="none"
+                stroke="rgba(15, 23, 42, 0.16)"
+                strokeWidth="1.25"
+              />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#about-grid-pattern)" />
+        </svg>
+      </div>
+
       {/* Main About content container */}
-      <div className="relative w-full py-12 md:py-16 my-auto">
+      <div className="relative w-full py-12 md:py-16 my-auto z-10">
         {/* Desktop Layout: starts on the right side of 644px grid line and spans to 1591px */}
         <div
           ref={aboutDesktopRef}

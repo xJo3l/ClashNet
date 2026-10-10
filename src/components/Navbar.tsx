@@ -159,7 +159,7 @@ export const Navbar: React.FC = () => {
             onClick={handleScrollToTop}
           >
             <img
-              src="/images/logo.png"
+              src="/images/logo.webp"
               alt="ClashNet Logo"
               className={`h-9 md:h-11 w-auto object-contain transition-all duration-300 ${isAboutSection
                 ? 'brightness-0'

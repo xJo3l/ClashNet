@@ -21,7 +21,7 @@ const CARDS: FeatureCard[] = [
     tag: 'ESPORTS & CWL',
     subtitle:
       'Live tournament coverage, CWL brackets, and competitive clash war leagues with real-time match tracking and world championship standings.',
-    image: '/images/card-events.jpg',
+    image: '/images/card-events.webp',
     actionText: 'View Events',
   },
   {
@@ -30,7 +30,7 @@ const CARDS: FeatureCard[] = [
     tag: 'COMMANDERS',
     subtitle:
       "Discover creator boost codes, exclusive base links, live streams, and tactical attack breakdowns from the world's best Clash commanders.",
-    image: '/images/card-creators.jpg',
+    image: '/images/card-creators.webp',
     actionText: 'Meet Creators',
   },
   {
@@ -39,7 +39,7 @@ const CARDS: FeatureCard[] = [
     tag: 'WAR MATRIX',
     subtitle:
       'Next-gen base builder analyzers, war attack path planning matrix, and hero equipment upgrade planners — releasing soon.',
-    image: '/images/card-tools.jpg',
+    image: '/images/card-tools.webp',
     actionText: 'Coming Soon',
     isComingSoon: true,
   },
@@ -128,7 +128,7 @@ const BACKGROUND_MEMORY_GALLERY: MemoryItem[] = [
   },
   {
     id: 104,
-    image: '/images/whats-new-background.jpg',
+    image: '/images/whats-new-background.webp',
     className: 'top-[49%] right-[8%] w-[130px] md:w-[155px] lg:w-[185px] rotate-[18deg] z-0 opacity-35 scale-90 shadow-md',
     alt: 'Background scenery',
   },
@@ -169,7 +169,7 @@ export const HorizontalScroll: React.FC = () => {
   const trackRef = useRef<HTMLDivElement>(null);
   const imgRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Static full-screen white background behind a.jpg
+  // Static full-screen white background behind card_background.webp
   const nextImageRef = useRef<HTMLDivElement>(null);
 
   // Memories entrance animation ref (left text + photo collage)
@@ -274,11 +274,11 @@ export const HorizontalScroll: React.FC = () => {
 
     // Preload & pre-decode images into GPU VRAM to prevent on-the-fly texture allocation hitch
     const preImg = new Image();
-    preImg.src = '/images/a.jpg';
+    preImg.src = '/images/card_background.webp';
     if (preImg.decode) preImg.decode().catch(() => { });
 
     const finalBgImg = new Image();
-    finalBgImg.src = '/images/Clifftop Tower Beneath a Golden Sky.png';
+    finalBgImg.src = '/images/memory_background.webp';
     if (finalBgImg.decode) finalBgImg.decode().catch(() => { });
 
     // Pre-decode all card images so they don't hitch the GPU when sliding into the viewport
@@ -295,7 +295,7 @@ export const HorizontalScroll: React.FC = () => {
         if (el && SLITS[i]) gsap.set(el, { clipPath: SLITS[i].initial, force3D: true });
       });
 
-      // White background stays behind a.jpg; initially hidden so mountain scene is visible
+      // White background stays behind card_background.webp; initially hidden so mountain scene is visible
       if (nextImageRef.current) {
         gsap.set(nextImageRef.current, { opacity: 0 });
       }
@@ -465,7 +465,7 @@ export const HorizontalScroll: React.FC = () => {
       const k = toolsTargetOffset / window.innerWidth;
       const REVEAL_START = (cardTriggerPoint + k * TRACK_END) / (1 + k);
 
-      // Duration for a.jpg to cross the screen:
+      // Duration for card_background.webp to cross the screen:
       const bgDuration = TRACK_END - REVEAL_START;
 
       // Exact 1:1 speed matching between Tools card and the background image:
@@ -511,7 +511,7 @@ export const HorizontalScroll: React.FC = () => {
         SPEED_BOOST_TIME
       );
 
-      // Activate pure white background behind a.jpg ahead of the wipe
+      // Activate pure white background behind card_background.webp ahead of the wipe
       if (nextImageRef.current) {
         tl.set(nextImageRef.current, { opacity: 1 }, REVEAL_START - 0.05);
       }
@@ -704,7 +704,7 @@ export const HorizontalScroll: React.FC = () => {
           <div className="relative w-full h-full overflow-hidden">
             <img
               ref={mountainImageRef}
-              src="/images/whats-new-background.jpg"
+              src="/images/whats-new-background.webp"
               alt="Mountain landscape"
               className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
               draggable={false}
@@ -741,7 +741,7 @@ export const HorizontalScroll: React.FC = () => {
           </div>
         </div>
 
-        {/* ── Final Page: Clifftop Tower Background (revealed behind a.jpg) ── */}
+        {/* ── Final Page: Memory Background (revealed behind card_background.webp) ── */}
         <div
           ref={nextImageRef}
           className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden"
@@ -749,8 +749,8 @@ export const HorizontalScroll: React.FC = () => {
         >
           {/* Background image */}
           <img
-            src="/images/Clifftop Tower Beneath a Golden Sky.png"
-            alt="Clifftop Tower Beneath a Golden Sky"
+            src="/images/memory_background.webp"
+            alt="Memory background"
             className="w-full h-full object-cover object-center select-none pointer-events-none"
             draggable={false}
           />
@@ -759,7 +759,7 @@ export const HorizontalScroll: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/25 pointer-events-none" />
         </div>
 
-        {/* ── Layer B: Multi-Column Slit Reveal (a.jpg) ────────────── */}
+        {/* ── Layer B: Multi-Column Slit Reveal (card_background.webp) ────────────── */}
         <div
           ref={slitsContainerRef}
           className="absolute inset-0 z-20 pointer-events-none overflow-hidden will-change-transform"
@@ -777,7 +777,7 @@ export const HorizontalScroll: React.FC = () => {
               }}
             >
               <img
-                src="/images/a.jpg"
+                src="/images/card_background.webp"
                 alt="Revealed background"
                 className="w-full h-full object-cover object-center select-none pointer-events-none"
                 style={{ transform: 'translateZ(0)' }}
@@ -845,7 +845,7 @@ export const HorizontalScroll: React.FC = () => {
                       alt={item.alt}
                       referrerPolicy="no-referrer"
                       onError={(e) => {
-                        e.currentTarget.src = '/images/card-events.jpg';
+                        e.currentTarget.src = '/images/card-events.webp';
                       }}
                       className="w-full h-auto block select-none pointer-events-none rounded-md"
                       draggable={false}
@@ -905,7 +905,7 @@ export const HorizontalScroll: React.FC = () => {
           />
 
           <img
-            src="/images/cloud-2-full.png"
+            src="/images/cloud-2-full.webp"
             alt="Clouds overlay background"
             className="absolute top-0 left-0 w-full h-full object-cover object-top select-none pointer-events-none"
             style={{ transform: 'translateZ(0)' }}
@@ -927,7 +927,7 @@ export const HorizontalScroll: React.FC = () => {
           }}
         >
           <img
-            src="/images/cloud-1-cropped.png"
+            src="/images/cloud-1-cropped.webp"
             alt="Clouds overlay foreground"
             className="absolute top-0 left-0 w-full h-full object-cover object-top select-none pointer-events-none"
             style={{ transform: 'translateZ(0)' }}

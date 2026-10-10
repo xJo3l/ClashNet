@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { Hero, HorizontalScroll, Contact } from './components/home';
+import { CustomCursor } from './components/ui/CustomCursor';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -40,6 +41,8 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-outfit selection:bg-rose-500 selection:text-white relative">
+      {/* Global Interactive Custom Cursor */}
+      <CustomCursor />
 
       {/* Navigation */}
       <Navbar />

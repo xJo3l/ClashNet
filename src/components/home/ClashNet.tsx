@@ -6,10 +6,10 @@ export const ClashNet: React.FC = () => {
       id="clashnet-section"
       className="relative w-full h-screen min-h-[600px] overflow-hidden flex items-center justify-center bg-black select-none"
     >
-      {/* Background Clifftop Image */}
+      {/* Background Memory Image */}
       <img
-        src="/images/Clifftop Tower Beneath a Golden Sky.png"
-        alt="Clifftop Tower Beneath a Golden Sky"
+        src="/images/memory_background.webp"
+        alt="Memory background"
         className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
         draggable={false}
       />

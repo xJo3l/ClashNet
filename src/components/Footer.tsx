@@ -25,7 +25,7 @@ export const Footer: React.FC = () => {
             <div>
               <div className="flex items-center space-x-2.5 mb-6 group cursor-pointer inline-flex" onClick={scrollToTop}>
                 <img
-                  src="/images/logo.png"
+                  src="/images/logo.webp"
                   alt="ClashNet Logo"
                   className="h-10 w-auto object-contain brightness-0 invert drop-shadow-[0_2px_10px_rgba(255,255,255,0.25)] transition-transform duration-300 group-hover:scale-105"
                 />
