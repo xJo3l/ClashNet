@@ -4,9 +4,16 @@ import { VariableFontCursorProximity } from '../ui/variable-font-cursor-proximit
 export const About: React.FC = () => {
   const aboutDesktopRef = useRef<HTMLDivElement>(null);
   return (
-    <section id="about" className="relative w-full min-h-[60vh] bg-transparent text-[#182337] selection:bg-rose-500 selection:text-white">
-      {/* Main About content container - moved higher with reduced top padding */}
-      <div className="relative w-full pt-10 pb-20 md:pt-14 md:pb-32 lg:pt-16 lg:pb-40">
+    <section
+      id="about"
+      className="relative w-full min-h-screen text-[#182337] selection:bg-rose-500 selection:text-white flex items-center justify-center"
+      style={{
+        background:
+          'linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.8) 20%, #ffffff 35%, #ffffff 100%)',
+      }}
+    >
+      {/* Main About content container */}
+      <div className="relative w-full py-12 md:py-16 my-auto">
         {/* Desktop Layout: starts on the right side of 644px grid line and spans to 1591px */}
         <div
           ref={aboutDesktopRef}

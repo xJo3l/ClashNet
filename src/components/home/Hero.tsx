@@ -82,12 +82,22 @@ export const Hero: React.FC = () => {
             );
           }
 
-          // Cloud 2 & About section: rise from bottom until solid white base fills the screen
+          // Cloud 2: dense cloud bank rises up
           if (cloud2Ref.current) {
             tl.fromTo(
-              [cloud2Ref.current, aboutRef.current],
+              cloud2Ref.current,
               { yPercent: 100, y: 0 },
               { yPercent: cloud2End, y: 0, ease: 'none', force3D: true, duration: 0.95 },
+              0
+            );
+          }
+
+          // About section: rises from bottom into full screen view (same as Contact approach)
+          if (aboutRef.current) {
+            tl.fromTo(
+              aboutRef.current,
+              { yPercent: 100, y: 0 },
+              { yPercent: 0, y: 0, ease: 'none', force3D: true, duration: 0.95 },
               0
             );
           }
@@ -209,10 +219,10 @@ export const Hero: React.FC = () => {
           />
         </div>
 
-        {/* About section - z-40 (IN FRONT of all clouds, adjust top-[...] to move higher/lower) */}
+        {/* About section - z-40 (IN FRONT of all clouds) */}
         <div
           ref={aboutRef}
-          className="absolute top-[90%] left-0 w-full z-40 pointer-events-auto will-change-transform"
+          className="absolute top-0 left-0 w-full h-full z-40 pointer-events-auto will-change-transform"
         >
           <About />
         </div>
