@@ -23,12 +23,16 @@ export const Contact: React.FC = () => {
   return (
     <section
       id="contact"
-      className="relative w-full bg-white text-slate-900 z-30 flex flex-col items-center justify-start px-6 sm:px-10 md:px-16 lg:px-24 pt-0 md:pt-2 pb-16 md:pb-24 -mt-44 md:-mt-64 lg:-mt-72 selection:bg-rose-500 selection:text-white"
+      className="relative w-full min-h-screen text-slate-900 z-30 flex items-center justify-center px-6 sm:px-10 md:px-16 lg:px-24 py-12 md:py-16 -mt-[80vh] md:-mt-[90vh] selection:bg-rose-500 selection:text-white"
+      style={{
+        background:
+          'linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.8) 20%, #ffffff 35%, #ffffff 100%)',
+      }}
     >
-      <div className="max-w-6xl w-full mx-auto relative z-40">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+      <div className="max-w-6xl w-full mx-auto relative z-40 my-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left Column: Heading, Subtext & Coffee Space */}
-          <div className="lg:col-span-5 flex flex-col justify-between">
+          <div className="lg:col-span-5 flex flex-col justify-center gap-8">
             <div>
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200/80 text-slate-600 font-montserrat font-bold text-[10px] tracking-[0.2em] uppercase self-start mb-6">

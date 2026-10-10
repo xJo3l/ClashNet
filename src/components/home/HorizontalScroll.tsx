@@ -148,7 +148,7 @@ const SLITS = [
 // OPENING_RUNWAY_VH: Physical runway for intro & slit reveal (keeps it at current speed)
 // CARD_RUNWAY_VH: Physical runway for horizontal card scroll (keeps it at current speed)
 const OPENING_RUNWAY_VH = 315;
-const CARD_RUNWAY_VH = 841;
+const CARD_RUNWAY_VH = 735;
 const SECTION_HEIGHT = `${OPENING_RUNWAY_VH + CARD_RUNWAY_VH}vh`;
 
 export const HorizontalScroll: React.FC = () => {
@@ -336,7 +336,7 @@ export const HorizontalScroll: React.FC = () => {
       // Ratio to preserve exact physical pixel pacing of opening, cards, and memories:
       const SCROLL_SCALE = 1050 / (OPENING_RUNWAY_VH + CARD_RUNWAY_VH - 100);
 
-      const OPENING_RATIO = (OPENING_RUNWAY_VH / (OPENING_RUNWAY_VH + CARD_RUNWAY_VH)) * SCROLL_SCALE;
+      const OPENING_RATIO = (315 / 1156) * SCROLL_SCALE;
       const OPENING_START = OPENING_RATIO * (SLIT_START_FACTOR / 0.508);
       const OPENING_DURATION = OPENING_RATIO * (0.32 / 0.508);
 
@@ -446,8 +446,8 @@ export const HorizontalScroll: React.FC = () => {
       }
 
       // ── Memories Gallery entrance (glides from right to left after Tools card) ──
-      // Starts when background wipe is halfway (SPEED_BOOST_TIME) and finishes at TRACK_END:
-      const MEMORIES_START = SPEED_BOOST_TIME;
+      // Triggers earlier (at 50% of background wipe) so it glides in smoothly as Tools moves across:
+      const MEMORIES_START = REVEAL_START + bgDuration * 0.50;
       const memoriesEntranceDuration = TRACK_END - MEMORIES_START;
 
       if (memoriesLayerRef.current) {
@@ -534,7 +534,7 @@ export const HorizontalScroll: React.FC = () => {
           cloud2Ref.current,
           { yPercent: 82, y: 0 },
           {
-            yPercent: -105,
+            yPercent: -45,
             y: 0,
             ease: 'none',
             duration: transitionDuration,
@@ -549,7 +549,7 @@ export const HorizontalScroll: React.FC = () => {
           cloud1Ref.current,
           { yPercent: 82, y: 0 },
           {
-            yPercent: -150,
+            yPercent: -75,
             y: 0,
             ease: 'none',
             duration: transitionDuration,
