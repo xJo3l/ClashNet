@@ -112,6 +112,48 @@ export const Hero: React.FC = () => {
             );
           }
 
+          // ── Text Revealing Animation in About Section ──
+          // 1. About label ("ClashNet" with sketchy loop) glides up and reveals
+          tl.fromTo(
+            '.about-label',
+            { opacity: 0, y: 35, scale: 0.9 },
+            { opacity: 1, y: 0, scale: 1, ease: 'power2.out', duration: 0.32 },
+            0.40
+          );
+
+          // 2. Desktop Statement: individual words emerge with cinematic blur-to-sharp cascade
+          const words = heroRef.current?.querySelectorAll('.about-proximity-word');
+          if (words && words.length > 0) {
+            tl.fromTo(
+              words,
+              { opacity: 0, y: 48, filter: 'blur(12px)' },
+              {
+                opacity: 1,
+                y: 0,
+                filter: 'blur(0px)',
+                stagger: 0.016,
+                ease: 'power2.out',
+                duration: 0.38,
+              },
+              0.44
+            );
+          } else {
+            tl.fromTo(
+              '.about-statement',
+              { opacity: 0, y: 55, filter: 'blur(12px)' },
+              { opacity: 1, y: 0, filter: 'blur(0px)', ease: 'power2.out', duration: 0.4 },
+              0.44
+            );
+          }
+
+          // 3. Mobile statement reveal
+          tl.fromTo(
+            '.about-mobile-statement',
+            { opacity: 0, y: 45, filter: 'blur(10px)' },
+            { opacity: 1, y: 0, filter: 'blur(0px)', ease: 'power2.out', duration: 0.4 },
+            0.44
+          );
+
           // Timeline pad so 0.95-1.0 is pure white buffer before page transitions into About section
           tl.set({}, {}, 1);
         }
@@ -171,6 +213,7 @@ export const Hero: React.FC = () => {
             </text>
           </svg>
         </div>
+
 
         {/* Cloud layers:
             Start below visible viewport via gsap.set,

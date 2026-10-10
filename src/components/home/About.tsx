@@ -12,52 +12,19 @@ export const About: React.FC = () => {
           'linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.8) 20%, #ffffff 35%, #ffffff 100%)',
       }}
     >
-      {/* Background Architectural Grid Pattern */}
-      <div
-        className="absolute inset-0 pointer-events-none z-0 overflow-hidden"
-        style={{
-          maskImage:
-            'radial-gradient(ellipse 92% 88% at 50% 50%, black 55%, transparent 100%)',
-          WebkitMaskImage:
-            'radial-gradient(ellipse 92% 88% at 50% 50%, black 55%, transparent 100%)',
-        }}
-      >
-        <svg
-          className="absolute inset-0 w-full h-full"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <pattern
-              id="about-grid-pattern"
-              width="80"
-              height="80"
-              patternUnits="userSpaceOnUse"
-            >
-              <path
-                d="M 80 0 L 0 0 0 80"
-                fill="none"
-                stroke="rgba(15, 23, 42, 0.16)"
-                strokeWidth="1.25"
-              />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#about-grid-pattern)" />
-        </svg>
-      </div>
-
       {/* Main About content container */}
       <div className="relative w-full py-12 md:py-16 my-auto z-10">
-        {/* Desktop Layout: starts on the right side of 644px grid line and spans to 1591px */}
+        {/* Desktop Layout: balanced width to prevent hover line wrap while maintaining editorial proportions */}
         <div
           ref={aboutDesktopRef}
-          className="relative z-10 hidden lg:flex flex-col items-start gap-8"
+          className="relative z-10 hidden lg:flex flex-col items-start gap-8 pr-4"
           style={{
             marginLeft: `${(644 / 1919) * 100}%`,
-            width: `${((1591 - 644) / 1919) * 100}%`,
+            width: `${((1680 - 644) / 1919) * 100}%`,
           }}
         >
           {/* Small label: ClashNet on the right side of the 644px grid line */}
-          <div className="relative inline-flex items-center justify-center px-6 py-2 select-none -ml-4">
+          <div className="about-label relative inline-flex items-center justify-center px-6 py-2 select-none -ml-4">
             {/* Hand-drawn sketchy elliptical loop SVG */}
             <svg
               viewBox="0 0 190 60"
@@ -90,20 +57,20 @@ export const About: React.FC = () => {
               />
             </svg>
 
-            <span className="relative z-10 font-cormorant italic font-normal text-base xl:text-lg text-black tracking-wider">
+            <span className="relative z-10 font-cormorant italic font-normal text-lg xl:text-xl text-black tracking-wider">
               ClashNet
             </span>
           </div>
 
           {/* Main Statement: spans from 644px to 1591px in luxury Italiana editorial serif */}
-          <h2 className="about-statement font-editorial font-normal text-[#182337] uppercase tracking-[0.012em] leading-[0.96] text-[2.1rem] xl:text-[2.6rem] 2xl:text-[3rem]">
+          <h2 className="about-statement font-editorial font-normal text-[#182337] uppercase tracking-[0.012em] leading-[0.96] text-[2.85rem] lg:text-[3.1rem] xl:text-[3.65rem] 2xl:text-[4.2rem]">
             {/* Indented first line matching the editorial reference */}
             <span className="inline-block w-[14%] xl:w-[18%]" />
             <VariableFontCursorProximity
               className="about-proximity"
               containerRef={aboutDesktopRef}
               fromFontVariationSettings="'wght' 300"
-              radius={120}
+              radius={150}
               toFontVariationSettings="'wght' 700"
             >
               A PLACE FOR CLASHERS TO DISCOVER WHAT’S NEW, FOLLOW THE META, FIND THE BEST BASES, AND STAY CONNECTED TO THE COMMUNITY.
@@ -114,7 +81,7 @@ export const About: React.FC = () => {
         {/* Mobile & Tablet Layout */}
         <div className="lg:hidden w-full px-6 sm:px-12 md:px-16 flex flex-col items-start gap-8">
           {/* Label with sketch loop */}
-          <div className="relative inline-flex items-center justify-center px-6 py-2 select-none self-start">
+          <div className="about-label relative inline-flex items-center justify-center px-6 py-2 select-none self-start">
             <svg
               viewBox="0 0 190 60"
               fill="none"
@@ -142,13 +109,13 @@ export const About: React.FC = () => {
                 strokeWidth="0.75"
               />
             </svg>
-            <span className="relative z-10 font-cormorant italic font-normal text-base text-black tracking-wider">
+            <span className="relative z-10 font-cormorant italic font-normal text-lg text-black tracking-wider">
               ClashNet
             </span>
           </div>
 
           {/* Statement */}
-          <h2 className="about-statement font-editorial font-normal text-[#182337] uppercase tracking-[0.012em] leading-[0.98] text-2xl sm:text-3xl md:text-4xl max-w-2xl">
+          <h2 className="about-statement about-mobile-statement font-editorial font-normal text-[#182337] uppercase tracking-[0.012em] leading-[0.98] text-3xl sm:text-4xl md:text-5xl max-w-3xl">
             <span className="inline-block w-[14%] sm:w-[18%]" />
             A PLACE FOR CLASHERS TO DISCOVER WHAT’S NEW, FOLLOW THE META, FIND THE BEST BASES, AND STAY CONNECTED TO THE COMMUNITY.
           </h2>

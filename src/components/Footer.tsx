@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUp, Heart, Sparkles, MessageSquare, Youtube, Twitter, Github } from 'lucide-react';
+import { Heart, MessageSquare, Youtube, Twitter, Github } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const scrollToTop = () => {
@@ -20,8 +20,8 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-16 md:pt-20 pb-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-16 pb-16 border-b border-white/10">
           
-          {/* Brand Column (5 cols) */}
-          <div className="lg:col-span-5 flex flex-col justify-between">
+          {/* Brand Column (6 cols) */}
+          <div className="lg:col-span-6 flex flex-col justify-between">
             <div>
               <div className="flex items-center space-x-2.5 mb-6 group cursor-pointer inline-flex" onClick={scrollToTop}>
                 <img
@@ -58,8 +58,8 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Quick Links (2 cols) */}
-          <div className="lg:col-span-2 sm:col-span-1">
+          {/* Quick Links (3 cols) */}
+          <div className="lg:col-span-3 sm:col-span-1">
             <h4 className="font-montserrat font-bold text-xs uppercase tracking-[0.2em] text-white mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
               Explore
@@ -85,8 +85,8 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Resources Column (2 cols) */}
-          <div className="lg:col-span-2 sm:col-span-1">
+          {/* Resources Column (3 cols) */}
+          <div className="lg:col-span-3 sm:col-span-1">
             <h4 className="font-montserrat font-bold text-xs uppercase tracking-[0.2em] text-white mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
               Resources
@@ -109,26 +109,6 @@ export const Footer: React.FC = () => {
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* Back to top card / community status (3 cols) */}
-          <div className="lg:col-span-3 flex flex-col justify-between">
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/10 backdrop-blur-sm">
-              <div className="flex items-center gap-2 text-xs font-montserrat font-bold tracking-widest uppercase text-amber-400 mb-2">
-                <Sparkles className="w-3.5 h-3.5" />
-                Live Community
-              </div>
-              <p className="text-xs text-slate-400 leading-relaxed mb-4">
-                Join over 25,000+ Clash leaders and creators shaping the competitive scene.
-              </p>
-              <button
-                onClick={scrollToTop}
-                className="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white text-white hover:text-slate-950 font-montserrat font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-all duration-300 group"
-              >
-                Back to Top
-                <ArrowUp className="w-3.5 h-3.5 transition-transform duration-300 group-hover:-translate-y-0.5" />
-              </button>
-            </div>
           </div>
 
         </div>
