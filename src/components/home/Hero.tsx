@@ -218,6 +218,8 @@ export const Hero: React.FC = () => {
         {/* Cloud 2 (main dense cloud bank + About section) */}
         <div
           ref={cloud2Ref}
+          data-hero-cloud="2"
+          style={{ transform: 'translate3d(0, 100%, 0)' }}
           className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none will-change-transform"
         >
           {/* Smooth, dense white backing gradient to completely blend away dark background */}
@@ -243,8 +245,10 @@ export const Hero: React.FC = () => {
         {/* Cloud 1 (foreground cloud wisps, faster parallax) */}
         <div
           ref={cloud1Ref}
+          data-hero-cloud="1"
           className="absolute top-0 left-0 w-full h-full z-30 pointer-events-none will-change-transform"
           style={{
+            transform: 'translate3d(0, 100%, 0)',
             WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 98%)',
             maskImage: 'linear-gradient(to bottom, black 70%, transparent 98%)',
           }}
@@ -261,6 +265,7 @@ export const Hero: React.FC = () => {
         {/* About section - z-40 (IN FRONT of all clouds) */}
         <div
           ref={aboutRef}
+          style={{ transform: 'translate3d(0, 100%, 0)' }}
           className="absolute top-0 left-0 w-full h-full z-40 pointer-events-auto will-change-transform"
         >
           <About />

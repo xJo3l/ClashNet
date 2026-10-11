@@ -886,8 +886,9 @@ export const HorizontalScroll: React.FC = () => {
         {/* Cloud 2 (main dense cloud bank with organic billowy silhouettes matching Hero) */}
         <div
           ref={cloud2Ref}
+          data-clashnet-cloud="2"
           className="absolute inset-0 w-full h-full pointer-events-none will-change-transform"
-          style={{ zIndex: 28 }}
+          style={{ zIndex: 28, opacity: 0 }}
         >
           {/* Smooth white base backing strictly at the bottom */}
           <div
@@ -913,9 +914,11 @@ export const HorizontalScroll: React.FC = () => {
         {/* Cloud 1 (foreground cloud wisps with parallax depth matching Hero) */}
         <div
           ref={cloud1Ref}
+          data-clashnet-cloud="1"
           className="absolute inset-0 w-full h-full pointer-events-none will-change-transform"
           style={{
             zIndex: 29,
+            opacity: 0,
             WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 98%)',
             maskImage: 'linear-gradient(to bottom, black 70%, transparent 98%)',
           }}
@@ -948,11 +951,17 @@ export const HorizontalScroll: React.FC = () => {
           {CARDS.map((card, index) => (
             <div
               key={card.id}
-              id={card.id}
+              id={`card-${card.id}`}
+              data-card-id={card.id}
               onMouseEnter={() => handleCardEnter(card.actionText)}
               onMouseLeave={handleCardLeave}
               onClick={() => {
                 if (!card.isComingSoon) {
+                  const lenis = (window as any).__lenis;
+                  if (lenis) lenis.scrollTo(0, { immediate: true });
+                  window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+                  document.documentElement.scrollTop = 0;
+                  document.body.scrollTop = 0;
                   window.location.hash = card.id;
                 }
               }}

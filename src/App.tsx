@@ -7,7 +7,6 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { Hero, HorizontalScroll, Contact } from './components/home';
 import { Creators } from './components/Creators';
-import { CustomCursor } from './components/ui/CustomCursor';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,7 +19,11 @@ export const App: React.FC = () => {
     const handleHashChange = () => {
       if (window.location.hash === '#creators') {
         setCurrentRoute('creators');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        const lenis = (window as any).__lenis;
+        if (lenis) lenis.scrollTo(0, { immediate: true });
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
       } else if (window.location.hash === '#home' || !window.location.hash) {
         setCurrentRoute('home');
       }
@@ -29,6 +32,16 @@ export const App: React.FC = () => {
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+  useEffect(() => {
+    if (currentRoute === 'creators') {
+      const lenis = (window as any).__lenis;
+      if (lenis) lenis.scrollTo(0, { immediate: true });
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, [currentRoute]);
   useEffect(() => {
     // Initialize Lenis smooth scroll
     const lenis = new Lenis({
@@ -59,9 +72,6 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-outfit selection:bg-rose-500 selection:text-white relative">
-      {/* Global Interactive Custom Cursor */}
-      <CustomCursor />
-
       {currentRoute === 'creators' ? (
         <Creators
           key="creators-clean"
