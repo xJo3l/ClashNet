@@ -57,6 +57,12 @@ export const CustomCursor: React.FC = () => {
         }
       }
 
+      // 2. Check Creators page (#creators, [data-page="creators"], or route) -> Black cursor
+      const creatorsEl = document.getElementById('creators') || document.querySelector('[data-page="creators"]');
+      if (creatorsEl || window.location.hash === '#creators') {
+        return true;
+      }
+
       // 2. Check Contact section (#contact) -> Black cursor
       const contactEl = document.getElementById('contact');
       if (contactEl) {

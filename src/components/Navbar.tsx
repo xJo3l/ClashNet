@@ -18,7 +18,11 @@ const TOGGLE_DISTANCE = 40;
 /** The bar always stays visible while the page is this close to the very top. */
 const TOP_OFFSET = 12;
 
-export const Navbar: React.FC = () => {
+interface NavbarProps {
+  onNavigate?: (page: string) => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
   const [activeItem, setActiveItem] = useState<string>('HOME');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isHidden, setIsHidden] = useState<boolean>(false);
@@ -121,9 +125,25 @@ export const Navbar: React.FC = () => {
 
   const handleNavClick = (e: React.MouseEvent, href: string, name: string) => {
     if (href === '#home' || name === 'HOME') {
+      if (onNavigate) {
+        onNavigate('home');
+      }
       handleScrollToTop(e);
       return;
     }
+
+    if (href === '#creators' || name === 'CREATORS') {
+      if (e) e.preventDefault();
+      setActiveItem('CREATORS');
+      setIsMobileMenuOpen(false);
+      window.location.hash = '#creators';
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+      if (onNavigate) {
+        onNavigate('creators');
+      }
+      return;
+    }
+
     setActiveItem(name);
     setIsMobileMenuOpen(false);
     const lenis = (window as any).__lenis;
