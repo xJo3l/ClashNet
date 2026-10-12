@@ -42,7 +42,7 @@ export interface ClashEvent {
   prizePool?: string;
   startDate: string;
   timeInfo: string;
-  bannerUrl: string;
+  bannerUrl?: string;
   registrationUrl?: string;
   hostContact?: string;
   streamUrl?: string;
@@ -73,320 +73,8 @@ export const TOWNHALL_OPTIONS = [
   'TH1',
 ];
 
-const PRESET_BANNERS = [
-  {
-    name: 'Esports Championship',
-    url: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
-  },
-  {
-    name: 'Inferno War Arena',
-    url: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80',
-  },
-  {
-    name: 'Titan Trophy Clash',
-    url: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1200&q=80',
-  },
-  {
-    name: 'Midnight Siege',
-    url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
-  },
-];
 
-const INITIAL_EVENTS: ClashEvent[] = [
-  // ── ONGOING EVENTS ──
-  {
-    id: 'evt-ongoing-1',
-    title: 'Clash World Championship 2026 - Last Chance Qualifier',
-    hostName: 'Supercell Esports',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=SupercellEsports',
-    hostVerified: true,
-    status: 'ongoing',
-    format: '5v5 Clan War',
-    townHall: 'TH17 & TH16',
-    prizePool: '$50,000 USD',
-    startDate: 'Live Now',
-    timeInfo: 'Day 2 • Semifinals Bracket',
-    bannerUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
-    streamUrl: 'https://www.youtube.com',
-    description: 'The world’s best clans battle in high-stakes war attacks for the final Golden Ticket to the World Championship.',
-    participantsCount: '16 Teams',
-    addedAt: Date.now() - 3600000,
-  },
-  {
-    id: 'evt-ongoing-2',
-    title: 'Queso Cup Masters: Golden Ticket Semis',
-    hostName: 'Team Queso',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=TeamQueso',
-    hostVerified: true,
-    status: 'ongoing',
-    format: '5v5 War',
-    townHall: 'TH16 Max',
-    prizePool: '$10,000 USD',
-    startDate: 'Live Now',
-    timeInfo: 'Round of 8 In Progress',
-    bannerUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80',
-    streamUrl: 'https://www.youtube.com',
-    description: 'High-intensity clan war matchups streaming live with pro live commentary and real-time star percent tracking.',
-    participantsCount: '8 Pro Clans',
-    addedAt: Date.now() - 7200000,
-  },
-  {
-    id: 'evt-ongoing-3',
-    title: 'Midnight Blitz 1v1 Rush Tournament',
-    hostName: 'Pixel Gaming COC',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=PixelGaming',
-    hostVerified: true,
-    status: 'ongoing',
-    format: '1v1 Showdown',
-    townHall: 'TH16 Only',
-    prizePool: '5,000 Gems',
-    startDate: 'Live Now',
-    timeInfo: 'Quarterfinals Underway',
-    bannerUrl: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1200&q=80',
-    streamUrl: 'https://www.youtube.com',
-    description: 'Fastest 3-star time trial showdown between top leaderboard trophy pushers.',
-    participantsCount: '32 Commanders',
-    addedAt: Date.now() - 10800000,
-  },
-  {
-    id: 'evt-ongoing-4',
-    title: 'European Masters League: Stage 3 Live Stream',
-    hostName: 'EML Esports',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=EMLEsports',
-    hostVerified: true,
-    status: 'ongoing',
-    format: '5v5 War',
-    townHall: 'TH17 & TH16',
-    prizePool: '$8,000 USD',
-    startDate: 'Live Now',
-    timeInfo: 'Group Stage Matchday 4',
-    bannerUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
-    streamUrl: 'https://www.youtube.com',
-    description: 'European top-tier tier clan warfare broadcasted with live casting and detailed attack replays.',
-    participantsCount: '12 Top Clans',
-    addedAt: Date.now() - 12000000,
-  },
-  {
-    id: 'evt-ongoing-5',
-    title: 'Hero Equipment Gauntlet: King & Queen 1v1',
-    hostName: 'Hero Arena',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=HeroArena',
-    hostVerified: false,
-    status: 'ongoing',
-    format: '1v1 Showdown',
-    townHall: 'TH16 Max',
-    prizePool: '4,000 Gems',
-    startDate: 'Live Now',
-    timeInfo: 'Finals in Progress',
-    bannerUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
-    streamUrl: 'https://www.youtube.com',
-    description: 'Duelists test max equipment combinations against custom war compartments.',
-    participantsCount: '16 Attackers',
-    addedAt: Date.now() - 13000000,
-  },
-
-  // ── UPCOMING EVENTS ──
-  {
-    id: 'evt-upcoming-1',
-    title: 'Titan League Clan War Championship Season 6',
-    hostName: 'Chupacabras Clan',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=Chupacabras',
-    hostVerified: true,
-    status: 'upcoming',
-    format: '5v5 War',
-    townHall: 'TH17 & TH16',
-    prizePool: '$7,500 USD',
-    startDate: 'Oct 18, 2026',
-    timeInfo: 'Starts in 4 Days • 18:00 UTC',
-    bannerUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
-    registrationUrl: 'https://discord.gg',
-    description: 'Open community cup with live bracket seeding, strict war anti-mod rules, and top tier clash casters.',
-    participantsCount: '24 Clans Registered',
-    addedAt: Date.now() - 14400000,
-  },
-  {
-    id: 'evt-upcoming-2',
-    title: 'Town Hall 16 All-Stars Invitational',
-    hostName: 'CarbonFin & iTzu',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=CarbonFin',
-    hostVerified: true,
-    status: 'upcoming',
-    format: '5v5 War',
-    townHall: 'TH16 Only',
-    prizePool: '$15,000 USD',
-    startDate: 'Oct 25, 2026',
-    timeInfo: 'Registration Closes Soon',
-    bannerUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
-    registrationUrl: 'https://discord.gg',
-    description: 'Premier creator-hosted tournament featuring the best competitive base designs and attack executions.',
-    participantsCount: '16 Invited Teams',
-    addedAt: Date.now() - 18000000,
-  },
-  {
-    id: 'evt-upcoming-3',
-    title: 'Underdog Cup: TH14 & Below Community League',
-    hostName: 'Clash Community Hub',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=CommunityHub',
-    hostVerified: false,
-    status: 'upcoming',
-    format: '10v10 War',
-    townHall: 'TH14, TH13, TH12',
-    prizePool: '10,000 Gems',
-    startDate: 'Nov 02, 2026',
-    timeInfo: 'Registration Open',
-    bannerUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80',
-    registrationUrl: 'https://discord.gg',
-    description: 'Fair play tournament dedicated to non-maxed clans and mid-tier Town Hall attackers looking for glory.',
-    participantsCount: '48 Clans Joined',
-    addedAt: Date.now() - 21600000,
-  },
-  {
-    id: 'evt-upcoming-4',
-    title: 'Blueprint Base Defense Expo & Scrims',
-    hostName: 'Blueprint CoC',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=BlueprintCoC',
-    hostVerified: true,
-    status: 'upcoming',
-    format: 'Base Defense 1v1',
-    townHall: 'TH17 & TH16',
-    prizePool: '$3,000 USD',
-    startDate: 'Nov 12, 2026',
-    timeInfo: 'Sign-ups Opening',
-    bannerUrl: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1200&q=80',
-    registrationUrl: 'https://discord.gg',
-    description: 'Top base builders challenge the community to crack custom unreleased war layouts for bounties.',
-    participantsCount: '64 Challengers',
-    addedAt: Date.now() - 25200000,
-  },
-  {
-    id: 'evt-upcoming-5',
-    title: 'Global Clash Masters: Fall 2026 Season',
-    hostName: 'Supercell Esports',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=SupercellEsports',
-    hostVerified: true,
-    status: 'upcoming',
-    format: '5v5 Clan War',
-    townHall: 'TH17 & TH16',
-    prizePool: '$30,000 USD',
-    startDate: 'Nov 20, 2026',
-    timeInfo: 'Open Registration',
-    bannerUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
-    registrationUrl: 'https://discord.gg',
-    description: 'The road to world finals continues with open qualification slots available for all competitive rosters.',
-    participantsCount: '32 Teams',
-    addedAt: Date.now() - 28800000,
-  },
-  {
-    id: 'evt-upcoming-6',
-    title: 'Golden Hour Scrimmage Cup',
-    hostName: 'V.M Gaming',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=VMGaming',
-    hostVerified: true,
-    status: 'upcoming',
-    format: '5v5 War',
-    townHall: 'TH16 Only',
-    prizePool: '2,500 Gems',
-    startDate: 'Nov 28, 2026',
-    timeInfo: 'Starting in 6 Days',
-    bannerUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80',
-    registrationUrl: 'https://discord.gg',
-    description: 'Casual community scrim night designed for clans testing new attack meta strategies and army compositions.',
-    participantsCount: '16 Clans',
-    addedAt: Date.now() - 32000000,
-  },
-  {
-    id: 'evt-upcoming-7',
-    title: 'Legends Trophy Push Marathon',
-    hostName: 'Apex Clashers',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=ApexClashers',
-    hostVerified: false,
-    status: 'upcoming',
-    format: 'Trophy Race',
-    townHall: 'TH17 & TH16',
-    prizePool: '$2,000 USD',
-    startDate: 'Dec 01, 2026',
-    timeInfo: 'Registration Open',
-    bannerUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
-    registrationUrl: 'https://discord.gg',
-    description: 'Compete for the highest ladder trophy count over a 72-hour nonstop season sprint.',
-    participantsCount: '120 Players',
-    addedAt: Date.now() - 36000000,
-  },
-
-  // ── COMPLETED EVENTS ──
-  {
-    id: 'evt-completed-1',
-    title: 'Clash Masters Summer Invitational 2026',
-    hostName: 'Tribe Gaming',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=TribeGaming',
-    hostVerified: true,
-    status: 'completed',
-    format: '5v5 Clan War',
-    townHall: 'TH16 Max',
-    prizePool: '$25,000 USD',
-    startDate: 'Concluded Sep 28',
-    timeInfo: 'Grand Finals Concluded',
-    bannerUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
-    winner: 'Natus Vincere',
-    description: 'A thrilling 5v5 war series won by NaVi with a 15-star perfect destruction performance in the grand final.',
-    participantsCount: '32 Clans',
-    addedAt: Date.now() - 86400000 * 14,
-  },
-  {
-    id: 'evt-completed-2',
-    title: 'CWL Champion League Finals - Season 7',
-    hostName: 'Reddit Clash Alliance',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=RedditClash',
-    hostVerified: true,
-    status: 'completed',
-    format: '15v15 CWL',
-    townHall: 'Mixed TH16/15',
-    prizePool: '$12,000 USD',
-    startDate: 'Concluded Sep 15',
-    timeInfo: 'Season 7 Champions Crowned',
-    bannerUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
-    winner: 'VM Legacy',
-    description: 'Week-long CWL division war tournament with intense tiebreakers decided by total destruction percent.',
-    participantsCount: '16 Clans',
-    addedAt: Date.now() - 86400000 * 25,
-  },
-  {
-    id: 'evt-completed-3',
-    title: 'Judo Sloth Speed Attack Showdown',
-    hostName: 'Judo Sloth Gaming',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=JudoSloth',
-    hostVerified: true,
-    status: 'completed',
-    format: '1v1 Time Trial',
-    townHall: 'TH16 Max',
-    prizePool: '$5,000 USD',
-    startDate: 'Concluded Aug 30',
-    timeInfo: 'Winner: Stars (1m 12s)',
-    bannerUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80',
-    winner: 'Stars (1m 12s)',
-    description: 'Fastest 3-star attack competition featuring the best hybrid and root rider speed attacks in the world.',
-    participantsCount: '64 Pro Attackers',
-    addedAt: Date.now() - 86400000 * 40,
-  },
-  {
-    id: 'evt-completed-4',
-    title: 'Winter Clash Warmup Cup',
-    hostName: 'Repotted Gaming',
-    hostAvatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=Repotted',
-    hostVerified: true,
-    status: 'completed',
-    format: '5v5 Clan War',
-    townHall: 'TH16 Max',
-    prizePool: '$10,000 USD',
-    startDate: 'Concluded Aug 15',
-    timeInfo: 'Winner: Repotted Gaming',
-    bannerUrl: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1200&q=80',
-    winner: 'Repotted Gaming',
-    description: 'Intense 5v5 war series with high percentage destruction across all rounds.',
-    participantsCount: '20 Clans',
-    addedAt: Date.now() - 86400000 * 55,
-  },
-];
+const INITIAL_EVENTS: ClashEvent[] = [];
 
 interface EventsProps {
   onNavigateHome?: () => void;
@@ -472,7 +160,20 @@ export const Events: React.FC<EventsProps> = ({ onNavigateHome, onNavigateCreato
       const saved = localStorage.getItem('clashnet_community_events_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) {
+          // Keep only user-created events, filter out mock/dummy events
+          return parsed
+            .filter((e: ClashEvent) => e.id?.startsWith('evt-user-'))
+            .map((e: ClashEvent) => {
+              if (
+                e.bannerUrl ===
+                'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80'
+              ) {
+                return { ...e, bannerUrl: undefined };
+              }
+              return e;
+            });
+        }
       }
     } catch {
       // fallback
@@ -742,9 +443,7 @@ export const Events: React.FC<EventsProps> = ({ onNavigateHome, onNavigateCreato
       prizePool: prizePool.trim() || undefined,
       startDate: status === 'ongoing' ? 'Live Now' : displayDate || 'Upcoming',
       timeInfo: displayDate ? `Ends ${displayDate}` : 'Starts Soon',
-      bannerUrl:
-        bannerUrl ||
-        'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
+      bannerUrl: bannerUrl.trim() || undefined,
       registrationUrl: cleanRegUrl || undefined,
       hostContact: hostContact.trim() || undefined,
       description: description.trim() || 'Community tournament hosted on ClashNet.',
@@ -1070,7 +769,7 @@ export const Events: React.FC<EventsProps> = ({ onNavigateHome, onNavigateCreato
                     setViewingCategory('all');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="w-10 h-10 rounded-2xl bg-slate-100 hover:bg-black hover:text-white text-slate-800 flex items-center justify-center transition-all shadow-xs group"
+                  className="w-10 h-10 rounded-2xl bg-black hover:bg-neutral-800 text-white flex items-center justify-center transition-all shadow-sm hover:shadow active:scale-95 group"
                   title="Back to All Sections"
                   aria-label="Back to All Sections"
                 >
@@ -1154,26 +853,42 @@ export const Events: React.FC<EventsProps> = ({ onNavigateHome, onNavigateCreato
 
             {/* List / Grid of category events */}
             {categoryEventsList.length === 0 ? (
-              <div className="py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-300">
-                <Trophy className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-                <h3 className="text-lg font-bold text-slate-900">No events found</h3>
-                <p className="text-sm text-slate-500 max-w-md mx-auto mt-1 mb-5">
+              <div className="w-full -mx-4 sm:-mx-6 md:mx-0 w-[calc(100%+2rem)] sm:w-[calc(100%+3rem)] md:w-full py-20 sm:py-24 px-6 sm:px-10 text-center bg-slate-50/90 rounded-2xl sm:rounded-3xl border border-dashed border-slate-300 flex flex-col items-center justify-center shadow-xs">
+                <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center mb-4 shadow-xs">
+                  <Trophy className="w-8 h-8 text-amber-500" />
+                </div>
+                <h3 className="font-montserrat font-bold text-xl sm:text-2xl text-slate-900 mb-2">
+                  No {viewingCategory !== 'all' ? `${viewingCategory.charAt(0).toUpperCase() + viewingCategory.slice(1)} ` : ''}Events Found
+                </h3>
+                <p className="text-sm text-slate-500 max-w-md mx-auto mb-6 leading-relaxed">
                   {searchQuery
                     ? `No ${viewingCategory} events match "${searchQuery}".`
                     : `No ${viewingCategory} events match the active filters.`}
                 </p>
-                {(searchQuery || formatFilter !== 'all' || townHallFilter !== 'all') && (
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  {(searchQuery || formatFilter !== 'all' || townHallFilter !== 'all') && (
+                    <button
+                      onClick={() => {
+                        setSearchQuery('');
+                        setFormatFilter('all');
+                        setTownHallFilter('all');
+                      }}
+                      className="px-6 py-2.5 rounded-full bg-slate-200 text-slate-800 text-xs font-bold uppercase tracking-wider hover:bg-slate-300 transition-all shadow-sm"
+                    >
+                      Clear Filters
+                    </button>
+                  )}
                   <button
                     onClick={() => {
-                      setSearchQuery('');
-                      setFormatFilter('all');
-                      setTownHallFilter('all');
+                      setFormError('');
+                      setIsAddModalOpen(true);
                     }}
-                    className="px-5 py-2.5 rounded-full bg-black text-white text-xs font-bold uppercase tracking-wider hover:bg-neutral-800 transition-all shadow-sm"
+                    className="flex items-center space-x-2 px-6 py-2.5 rounded-full bg-black hover:bg-neutral-800 text-white text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-sm hover:scale-105 active:scale-95"
                   >
-                    Clear Filters
+                    <Plus className="w-4 h-4 text-white" />
+                    <span>Host New Event</span>
                   </button>
-                )}
+                </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-2 pb-16">
@@ -1246,10 +961,26 @@ export const Events: React.FC<EventsProps> = ({ onNavigateHome, onNavigateCreato
 
               {/* Horizontal Track */}
               {upcomingEvents.length === 0 ? (
-                <div className="p-8 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-300">
-                  <p className="text-sm font-semibold text-slate-500">
-                    No upcoming events match your filters. Click &quot;Add Event&quot; above to host a new tournament!
+                <div className="w-full -mx-4 sm:-mx-6 md:mx-0 w-[calc(100%+2rem)] sm:w-[calc(100%+3rem)] md:w-full py-16 sm:py-20 md:py-24 px-6 sm:px-10 text-center bg-slate-50/90 rounded-2xl sm:rounded-3xl border border-dashed border-slate-300 flex flex-col items-center justify-center shadow-xs">
+                  <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200/80 text-amber-600 flex items-center justify-center mb-4 shadow-xs">
+                    <Calendar className="w-7 h-7" />
+                  </div>
+                  <h3 className="font-montserrat font-bold text-lg sm:text-xl text-slate-900 mb-1.5">
+                    No Upcoming Events
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto mb-6 leading-relaxed">
+                    No upcoming tournaments or events right now. Ready to host your own event?
                   </p>
+                  <button
+                    onClick={() => {
+                      setFormError('');
+                      setIsAddModalOpen(true);
+                    }}
+                    className="flex items-center space-x-2 px-6 py-3 rounded-2xl bg-black hover:bg-neutral-800 text-white text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-sm hover:scale-105 active:scale-95"
+                  >
+                    <Plus className="w-4 h-4 text-white" />
+                    <span>Host New Event</span>
+                  </button>
                 </div>
               ) : (
                 <div
@@ -1324,10 +1055,26 @@ export const Events: React.FC<EventsProps> = ({ onNavigateHome, onNavigateCreato
 
               {/* Horizontal Track */}
               {ongoingEvents.length === 0 ? (
-                <div className="p-8 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-300">
-                  <p className="text-sm font-semibold text-slate-500">
-                    No ongoing events currently matching your search. Check out upcoming cups below or host one!
+                <div className="w-full -mx-4 sm:-mx-6 md:mx-0 w-[calc(100%+2rem)] sm:w-[calc(100%+3rem)] md:w-full py-16 sm:py-20 md:py-24 px-6 sm:px-10 text-center bg-slate-50/90 rounded-2xl sm:rounded-3xl border border-dashed border-slate-300 flex flex-col items-center justify-center shadow-xs">
+                  <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-emerald-600 flex items-center justify-center mb-4 shadow-xs">
+                    <Radio className="w-7 h-7 animate-pulse" />
+                  </div>
+                  <h3 className="font-montserrat font-bold text-lg sm:text-xl text-slate-900 mb-1.5">
+                    No Ongoing Events
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto mb-6 leading-relaxed">
+                    No live tournament matches are currently underway. Check out upcoming scheduled events below or host one!
                   </p>
+                  <button
+                    onClick={() => {
+                      setFormError('');
+                      setIsAddModalOpen(true);
+                    }}
+                    className="flex items-center space-x-2 px-6 py-3 rounded-2xl bg-black hover:bg-neutral-800 text-white text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-sm hover:scale-105 active:scale-95"
+                  >
+                    <Plus className="w-4 h-4 text-white" />
+                    <span>Host New Event</span>
+                  </button>
                 </div>
               ) : (
                 <div
@@ -1402,9 +1149,15 @@ export const Events: React.FC<EventsProps> = ({ onNavigateHome, onNavigateCreato
 
               {/* Horizontal Track */}
               {completedEvents.length === 0 ? (
-                <div className="p-8 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-300">
-                  <p className="text-sm font-semibold text-slate-500">
-                    No completed events match your search query.
+                <div className="w-full -mx-4 sm:-mx-6 md:mx-0 w-[calc(100%+2rem)] sm:w-[calc(100%+3rem)] md:w-full py-16 sm:py-20 md:py-24 px-6 sm:px-10 text-center bg-slate-50/90 rounded-2xl sm:rounded-3xl border border-dashed border-slate-300 flex flex-col items-center justify-center shadow-xs">
+                  <div className="w-14 h-14 rounded-2xl bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center mb-4 shadow-xs">
+                    <Award className="w-7 h-7 text-amber-500" />
+                  </div>
+                  <h3 className="font-montserrat font-bold text-lg sm:text-xl text-slate-900 mb-1.5">
+                    No Completed Events
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto leading-relaxed">
+                    No completed tournaments or match archives recorded yet. Concluded events will appear here.
                   </p>
                 </div>
               ) : (
@@ -2035,12 +1788,23 @@ const EventCard: React.FC<EventCardProps> = ({ event, isGridView }) => {
     >
       {/* 16:9 Banner Image Container */}
       <div className="relative aspect-video w-full overflow-hidden bg-slate-900">
-        <img
-          src={event.bannerUrl}
-          alt={event.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        {event.bannerUrl ? (
+          <>
+            <img
+              src={event.bannerUrl}
+              alt={event.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+          </>
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-neutral-900 via-slate-900 to-zinc-900 flex items-center justify-center relative overflow-hidden">
+            <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
+            <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/30 group-hover:scale-110 group-hover:text-white/50 transition-all">
+              <Swords className="w-6 h-6" />
+            </div>
+          </div>
+        )}
 
         {/* Status Pill (Top Left) */}
         <div className="absolute top-3 left-3">
