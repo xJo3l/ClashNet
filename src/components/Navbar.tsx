@@ -149,6 +149,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
       return;
     }
 
+    if (href === '#events' || name === 'EVENTS') {
+      if (e) e.preventDefault();
+      setActiveItem('EVENTS');
+      setIsMobileMenuOpen(false);
+      const lenis = (window as any).__lenis;
+      if (lenis) lenis.scrollTo(0, { immediate: true });
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      window.location.hash = '#events';
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+      if (onNavigate) {
+        onNavigate('events');
+      }
+      return;
+    }
+
     setActiveItem(name);
     setIsMobileMenuOpen(false);
     const lenis = (window as any).__lenis;

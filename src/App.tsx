@@ -7,25 +7,39 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { Hero, HorizontalScroll, Contact } from './components/home';
 import { Creators } from './components/Creators';
+import { Events } from './components/Events';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export const App: React.FC = () => {
-  const [currentRoute, setCurrentRoute] = useState<'home' | 'creators'>(() => {
-    return typeof window !== 'undefined' && window.location.hash === '#creators' ? 'creators' : 'home';
+  const [currentRoute, setCurrentRoute] = useState<'home' | 'creators' | 'events'>(() => {
+    if (typeof window !== 'undefined') {
+      if (window.location.hash === '#creators') return 'creators';
+      if (window.location.hash === '#events') return 'events';
+    }
+    return 'home';
   });
+
+  const scrollToPageTop = () => {
+    const lenis = (window as any).__lenis;
+    if (lenis) lenis.scrollTo(0, { immediate: true });
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  };
 
   useEffect(() => {
     const handleHashChange = () => {
-      if (window.location.hash === '#creators') {
+      const hash = window.location.hash;
+      if (hash === '#creators') {
         setCurrentRoute('creators');
-        const lenis = (window as any).__lenis;
-        if (lenis) lenis.scrollTo(0, { immediate: true });
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-      } else if (window.location.hash === '#home' || !window.location.hash) {
+        scrollToPageTop();
+      } else if (hash === '#events') {
+        setCurrentRoute('events');
+        scrollToPageTop();
+      } else if (hash === '#home' || !hash) {
         setCurrentRoute('home');
+        scrollToPageTop();
       }
     };
 
@@ -34,13 +48,7 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (currentRoute === 'creators') {
-      const lenis = (window as any).__lenis;
-      if (lenis) lenis.scrollTo(0, { immediate: true });
-      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }
+    scrollToPageTop();
   }, [currentRoute]);
   useEffect(() => {
     // Initialize Lenis smooth scroll
@@ -78,12 +86,32 @@ export const App: React.FC = () => {
           onNavigateHome={() => {
             window.location.hash = '#home';
             setCurrentRoute('home');
+            scrollToPageTop();
+          }}
+          onNavigateEvents={() => {
+            window.location.hash = '#events';
+            setCurrentRoute('events');
+            scrollToPageTop();
+          }}
+        />
+      ) : currentRoute === 'events' ? (
+        <Events
+          key="events-clean"
+          onNavigateHome={() => {
+            window.location.hash = '#home';
+            setCurrentRoute('home');
+            scrollToPageTop();
+          }}
+          onNavigateCreators={() => {
+            window.location.hash = '#creators';
+            setCurrentRoute('creators');
+            scrollToPageTop();
           }}
         />
       ) : (
         <>
           {/* Navigation */}
-          <Navbar onNavigate={(page) => setCurrentRoute(page as 'home' | 'creators')} />
+          <Navbar onNavigate={(page) => setCurrentRoute(page as 'home' | 'creators' | 'events')} />
 
           {/* Main content */}
           <main>

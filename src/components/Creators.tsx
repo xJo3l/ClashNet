@@ -405,9 +405,10 @@ function isClashOfClansVideo(v: YouTubeVideoItem): boolean {
 
 interface CreatorsProps {
   onNavigateHome?: () => void;
+  onNavigateEvents?: () => void;
 }
 
-export const Creators: React.FC<CreatorsProps> = ({ onNavigateHome }) => {
+export const Creators: React.FC<CreatorsProps> = ({ onNavigateHome, onNavigateEvents }) => {
   // Navigation / Tabs state
   const [activeSection, setActiveSection] = useState<'channels' | 'content'>('channels');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -492,10 +493,23 @@ export const Creators: React.FC<CreatorsProps> = ({ onNavigateHome }) => {
   };
   const handleGoHome = (e?: React.MouseEvent) => {
     if (e) e.preventDefault();
+    window.location.hash = '#home';
+    const lenis = (window as any).__lenis;
+    if (lenis) lenis.scrollTo(0, { immediate: true });
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     if (onNavigateHome) {
       onNavigateHome();
+    }
+  };
+
+  const handleGoEvents = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    if (onNavigateEvents) {
+      onNavigateEvents();
     } else {
-      window.location.hash = '#home';
+      window.location.hash = '#events';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -1080,6 +1094,7 @@ export const Creators: React.FC<CreatorsProps> = ({ onNavigateHome }) => {
               <li>
                 <a
                   href="#events"
+                  onClick={handleGoEvents}
                   className="relative inline-block py-1 text-xs md:text-sm font-bold uppercase tracking-[0.22em] text-black/70 hover:text-black hover:-translate-y-[2px] transition-all duration-200 after:content-[''] after:absolute after:bottom-[-6px] after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:bg-black after:w-0 hover:after:w-full after:transition-all after:duration-300"
                 >
                   EVENTS
@@ -1142,6 +1157,7 @@ export const Creators: React.FC<CreatorsProps> = ({ onNavigateHome }) => {
               <li>
                 <a
                   href="#events"
+                  onClick={handleGoEvents}
                   className="inline-block py-1 text-sm font-bold uppercase tracking-[0.22em] text-black/70 hover:text-black"
                 >
                   EVENTS
