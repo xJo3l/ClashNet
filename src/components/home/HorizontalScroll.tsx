@@ -525,7 +525,7 @@ export const HorizontalScroll: React.FC = () => {
           cloud2Ref.current,
           { yPercent: 82, y: 0 },
           {
-            yPercent: -45,
+            yPercent: -85,
             y: 0,
             ease: 'none',
             duration: transitionDuration,
@@ -540,7 +540,7 @@ export const HorizontalScroll: React.FC = () => {
           cloud1Ref.current,
           { yPercent: 82, y: 0 },
           {
-            yPercent: -75,
+            yPercent: -105,
             y: 0,
             ease: 'none',
             duration: transitionDuration,
