@@ -52,6 +52,78 @@ interface MemoryItem {
   alt: string;
 }
 
+interface LazyMemoryImageProps {
+  src: string;
+  alt: string;
+  className?: string;
+  fallbackSrc?: string;
+  referrerPolicy?: React.HTMLAttributeReferrerPolicy;
+  draggable?: boolean;
+}
+
+const LazyMemoryImage: React.FC<LazyMemoryImageProps> = ({
+  src,
+  alt,
+  className = '',
+  fallbackSrc = '/images/card-events.webp',
+  referrerPolicy,
+  draggable = false,
+}) => {
+  const [isInView, setIsInView] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const el = imgRef.current;
+    if (!el) return;
+
+    if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            setIsInView(true);
+            observer.disconnect();
+          }
+        },
+        { rootMargin: '500px' }
+      );
+      observer.observe(el);
+      return () => observer.disconnect();
+    } else {
+      setIsInView(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isInView && imgRef.current?.complete && imgRef.current.naturalWidth > 0) {
+      setIsLoaded(true);
+    }
+  }, [isInView]);
+
+  return (
+    <img
+      ref={imgRef}
+      src={isInView ? src : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 9"%3E%3C/svg%3E'}
+      alt={alt}
+      referrerPolicy={referrerPolicy}
+      draggable={draggable}
+      loading="lazy"
+      decoding="async"
+      onLoad={() => {
+        if (isInView) {
+          setIsLoaded(true);
+        }
+      }}
+      onError={(e) => {
+        if (isInView && fallbackSrc && e.currentTarget.src !== fallbackSrc) {
+          e.currentTarget.src = fallbackSrc;
+        }
+      }}
+      className={`${className} transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+    />
+  );
+};
+
 const MEMORY_GALLERY: MemoryItem[] = [
   // top-left -> event (higher, tilted out)
   {
@@ -190,6 +262,37 @@ export const HorizontalScroll: React.FC = () => {
   const [cursorText, setCursorText] = useState<string>('');
   const isHoveringCardRef = useRef(false);
   const lastMousePosRef = useRef({ x: -100, y: -100 });
+
+  // Lazy load state for What's New mountain background
+  const [isWhatsNewInView, setIsWhatsNewInView] = useState(false);
+  const [whatsNewBgLoaded, setWhatsNewBgLoaded] = useState(false);
+
+  useEffect(() => {
+    const el = outerRef.current;
+    if (!el) return;
+
+    if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            setIsWhatsNewInView(true);
+            observer.disconnect();
+          }
+        },
+        { rootMargin: '600px' }
+      );
+      observer.observe(el);
+      return () => observer.disconnect();
+    } else {
+      setIsWhatsNewInView(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isWhatsNewInView && mountainImageRef.current?.complete && mountainImageRef.current.naturalWidth > 0) {
+      setWhatsNewBgLoaded(true);
+    }
+  }, [isWhatsNewInView]);
 
   const handleCardLeave = () => {
     isHoveringCardRef.current = false;
@@ -695,10 +798,17 @@ export const HorizontalScroll: React.FC = () => {
           <div className="relative w-full h-full overflow-hidden">
             <img
               ref={mountainImageRef}
-              src="/images/whats-new-background.webp"
+              src={isWhatsNewInView ? '/images/whats-new-background.webp' : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 9"%3E%3C/svg%3E'}
               alt="Mountain landscape"
-              className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
+              className={`absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none transition-opacity duration-700 ${whatsNewBgLoaded ? 'opacity-100' : 'opacity-0'}`}
               draggable={false}
+              loading="lazy"
+              decoding="async"
+              onLoad={() => {
+                if (isWhatsNewInView) {
+                  setWhatsNewBgLoaded(true);
+                }
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
 
@@ -812,13 +922,11 @@ export const HorizontalScroll: React.FC = () => {
                     key={item.id}
                     className={`absolute rounded-md overflow-hidden ${item.className}`}
                   >
-                    <img
+                    <LazyMemoryImage
                       src={item.image}
                       alt={item.alt}
                       className="w-full h-auto block select-none pointer-events-none rounded-md"
                       draggable={false}
-                      loading="lazy"
-                      decoding="async"
                     />
                   </div>
                 ))}
@@ -833,17 +941,13 @@ export const HorizontalScroll: React.FC = () => {
                                 hover:scale-105 hover:z-40 hover:shadow-2xl 
                                 pointer-events-auto cursor-pointer ${item.className}`}
                   >
-                    <img
+                    <LazyMemoryImage
                       src={item.image}
                       alt={item.alt}
                       referrerPolicy="no-referrer"
-                      onError={(e) => {
-                        e.currentTarget.src = '/images/card-events.webp';
-                      }}
+                      fallbackSrc="/images/card-events.webp"
                       className="w-full h-auto block select-none pointer-events-none rounded-md"
                       draggable={false}
-                      loading="lazy"
-                      decoding="async"
                     />
                   </div>
                 ))}
@@ -856,9 +960,11 @@ export const HorizontalScroll: React.FC = () => {
                     key={item.id}
                     className="flex-shrink-0 w-36 sm:w-48 rounded-md overflow-hidden shadow-lg"
                   >
-                    <img
+                    <LazyMemoryImage
                       src={item.image}
                       alt={item.alt}
+                      referrerPolicy="no-referrer"
+                      fallbackSrc="/images/card-events.webp"
                       className="w-full h-auto block rounded-md"
                       draggable={false}
                     />
