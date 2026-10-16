@@ -263,37 +263,6 @@ export const HorizontalScroll: React.FC = () => {
   const isHoveringCardRef = useRef(false);
   const lastMousePosRef = useRef({ x: -100, y: -100 });
 
-  // Lazy load state for What's New mountain background
-  const [isWhatsNewInView, setIsWhatsNewInView] = useState(false);
-  const [whatsNewBgLoaded, setWhatsNewBgLoaded] = useState(false);
-
-  useEffect(() => {
-    const el = outerRef.current;
-    if (!el) return;
-
-    if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting) {
-            setIsWhatsNewInView(true);
-            observer.disconnect();
-          }
-        },
-        { rootMargin: '600px' }
-      );
-      observer.observe(el);
-      return () => observer.disconnect();
-    } else {
-      setIsWhatsNewInView(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isWhatsNewInView && mountainImageRef.current?.complete && mountainImageRef.current.naturalWidth > 0) {
-      setWhatsNewBgLoaded(true);
-    }
-  }, [isWhatsNewInView]);
-
   const handleCardLeave = () => {
     isHoveringCardRef.current = false;
     if (cursorRef.current) {
@@ -798,17 +767,10 @@ export const HorizontalScroll: React.FC = () => {
           <div className="relative w-full h-full overflow-hidden">
             <img
               ref={mountainImageRef}
-              src={isWhatsNewInView ? '/images/whats-new-background.webp' : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 9"%3E%3C/svg%3E'}
+              src="/images/whats-new-background.webp"
               alt="Mountain landscape"
-              className={`absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none transition-opacity duration-700 ${whatsNewBgLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
               draggable={false}
-              loading="lazy"
-              decoding="async"
-              onLoad={() => {
-                if (isWhatsNewInView) {
-                  setWhatsNewBgLoaded(true);
-                }
-              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
 
