@@ -219,9 +219,11 @@ const SLITS = [
 // Scroll pacing runway:
 // OPENING_RUNWAY_VH: Physical runway for intro & slit reveal (keeps it at current speed)
 // CARD_RUNWAY_VH: Physical runway for horizontal card scroll (keeps it at current speed)
+// MEMORIES_RUNWAY_VH: Dedicated physical runway for Memories entrance & viewing
 const OPENING_RUNWAY_VH = 315;
 const CARD_RUNWAY_VH = 735;
-const SECTION_HEIGHT = `${OPENING_RUNWAY_VH + CARD_RUNWAY_VH}vh`;
+const MEMORIES_RUNWAY_VH = 120;
+const SECTION_HEIGHT = `${OPENING_RUNWAY_VH + CARD_RUNWAY_VH + MEMORIES_RUNWAY_VH}vh`;
 
 export const HorizontalScroll: React.FC = () => {
   const outerRef = useRef<HTMLDivElement>(null);
@@ -481,7 +483,7 @@ export const HorizontalScroll: React.FC = () => {
       const SLIT_START_FACTOR = 0.22;
 
       // Ratio to preserve exact physical pixel pacing of opening, cards, and memories:
-      const SCROLL_SCALE = 1050 / (OPENING_RUNWAY_VH + CARD_RUNWAY_VH - 100);
+      const SCROLL_SCALE = 1050 / (OPENING_RUNWAY_VH + CARD_RUNWAY_VH + MEMORIES_RUNWAY_VH - 100);
 
       const OPENING_RATIO = (315 / 1156) * SCROLL_SCALE;
       const OPENING_START = OPENING_RATIO * (SLIT_START_FACTOR / 0.508);
@@ -595,7 +597,8 @@ export const HorizontalScroll: React.FC = () => {
       // ── Memories Gallery entrance (glides from right to left after Tools card) ──
       // Triggers earlier (at 50% of background wipe) so it glides in smoothly as Tools moves across:
       const MEMORIES_START = REVEAL_START + bgDuration * 0.50;
-      const memoriesEntranceDuration = TRACK_END - MEMORIES_START;
+      // Extended duration for a calm, slow glide requiring significantly more scroll:
+      const memoriesEntranceDuration = (TRACK_END - MEMORIES_START) + (120 / 1050) * SCROLL_SCALE;
 
       if (memoriesLayerRef.current) {
         tl.set(memoriesLayerRef.current, { autoAlpha: 1 }, MEMORIES_START);
@@ -613,7 +616,8 @@ export const HorizontalScroll: React.FC = () => {
       }
 
       // ── Natural vertical scroll down to ClashNet (1:1 speed matching website scroll) ──
-      const VERTICAL_SCROLL_START = 0.72 * SCROLL_SCALE;
+      // Starts immediately as soon as the Memories section and images take their place (stop moving):
+      const VERTICAL_SCROLL_START = MEMORIES_START + memoriesEntranceDuration;
       const VERTICAL_SCROLL_DURATION = 0.095 * SCROLL_SCALE; // 100vh travel / 100vh physical scroll = 1:1 speed
       const TIMELINE_END = 1.0;
 
