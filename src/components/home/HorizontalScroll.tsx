@@ -45,166 +45,7 @@ const CARDS: FeatureCard[] = [
   },
 ];
 
-interface MemoryItem {
-  id: number;
-  image: string;
-  className: string;
-  alt: string;
-}
 
-interface LazyMemoryImageProps {
-  src: string;
-  alt: string;
-  className?: string;
-  fallbackSrc?: string;
-  referrerPolicy?: React.HTMLAttributeReferrerPolicy;
-  draggable?: boolean;
-}
-
-const LazyMemoryImage: React.FC<LazyMemoryImageProps> = ({
-  src,
-  alt,
-  className = '',
-  fallbackSrc = '/images/card-events.webp',
-  referrerPolicy,
-  draggable = false,
-}) => {
-  const [isInView, setIsInView] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const imgRef = useRef<HTMLImageElement>(null);
-
-  useEffect(() => {
-    const el = imgRef.current;
-    if (!el) return;
-
-    if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting) {
-            setIsInView(true);
-            observer.disconnect();
-          }
-        },
-        { rootMargin: '500px' }
-      );
-      observer.observe(el);
-      return () => observer.disconnect();
-    } else {
-      setIsInView(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isInView && imgRef.current?.complete && imgRef.current.naturalWidth > 0) {
-      setIsLoaded(true);
-    }
-  }, [isInView]);
-
-  return (
-    <img
-      ref={imgRef}
-      src={isInView ? src : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 9"%3E%3C/svg%3E'}
-      alt={alt}
-      referrerPolicy={referrerPolicy}
-      draggable={draggable}
-      loading="lazy"
-      decoding="async"
-      onLoad={() => {
-        if (isInView) {
-          setIsLoaded(true);
-        }
-      }}
-      onError={(e) => {
-        if (isInView && fallbackSrc && e.currentTarget.src !== fallbackSrc) {
-          e.currentTarget.src = fallbackSrc;
-        }
-      }}
-      className={`${className} transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
-    />
-  );
-};
-
-const MEMORY_GALLERY: MemoryItem[] = [
-  // top-left -> event (higher, tilted out)
-  {
-    id: 1,
-    image: 'https://yt3.ggpht.com/vdbD_yhCOrZpa_M1FrsYZ0ke9wIclz3F6n5L_N4rnLYMQVji4FPdfErKQx7WsP1Y66737bm-6u9i=s640-c-fcrop64=1,00000000ffff9fff-rw-nd-v1',
-    className: 'top-[11%] left-[49%] w-[140px] md:w-[170px] lg:w-[205px] -rotate-[14deg] z-10 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
-    alt: 'Tournament clash',
-  },
-  // top-middle -> creator (dipped down towards center)
-  {
-    id: 2,
-    image: 'https://yt3.ggpht.com/ZPNgmBDptzkU8TsYnb9Z5GBLCg2E5IFzRiqC3ntst2VPkHAULxsBqFCndhadT5H9zaq0_EyiPRwX=s640-c-fcrop64=1,38000000c7ffffff-rw-nd-v1',
-    className: 'top-[18%] left-[63%] w-[160px] md:w-[195px] lg:w-[235px] rotate-[13deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
-    alt: 'Creator showcase',
-  },
-  // top-right -> hero (lifted higher right, anchored to right-[8%] for equal padding)
-  {
-    id: 3,
-    image: 'https://yt3.ggpht.com/Zv5Yc-MJ8YsvbPcQ8NkjbooMVFo6lE_AgCL7jEsmvcff7a5KUltco45Ipquw1rQnoHX5fKv_8_nevw=s640-c-fcrop64=1,0000199affffe666-rw-nd-v1',
-    className: 'top-[12%] right-[8%] w-[175px] md:w-[210px] lg:w-[255px] -rotate-[9deg] z-10 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
-    alt: 'Hero clash',
-  },
-  // center -> hero community battle (anchors the collage, balanced size)
-  {
-    id: 4,
-    image: 'https://yt3.ggpht.com/qvuhoQsq_FR_EYp_F-V-bWcM7sguNjzFxMjTTcvYuzXDJ4FykGmWQz5zqq2UnCIXk2HpfrSqpafyJg=s640-c-fcrop64=1,000025a6ffffda5a-rw-nd-v1',
-    className: 'top-[34%] left-[60%] w-[235px] md:w-[285px] lg:w-[340px] -rotate-[3deg] z-30 shadow-[0_22px_50px_rgba(0,0,0,0.85)]',
-    alt: 'Main community battle',
-  },
-  // left-middle -> strategy (pushed down-left)
-  {
-    id: 5,
-    image: 'https://yt3.ggpht.com/U2aYi7vZYSaqSHpjZc0lGOuFCk0VAePvcHWAQ_yNOBL7W5vMYA5WyrsbWbPNdDXSC4nO2YyADpC2=s640-c-fcrop64=1,00001c29ffffc6d3-rw-nd-v1',
-    className: 'top-[41%] left-[46%] w-[145px] md:w-[175px] lg:w-[215px] rotate-[11deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
-    alt: 'War matrix strategy',
-  },
-  // right-middle -> village peaks (tucked right, small part behind center)
-  {
-    id: 6,
-    image: 'https://yt3.ggpht.com/aRDkxY-CiRt0P3R_-DI0tphLbI6yiPL9hRAsj5MxV721kgZn0UwCkISZzkp_3d6oDvw8Hi6Zm9h-9Q=s640-c-fcrop64=1,00003000ffffcfff-rw-nd-v1',
-    className: 'top-[29%] right-[13%] w-[155px] md:w-[185px] lg:w-[225px] -rotate-[14deg] z-10 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
-    alt: 'Village peaks',
-  },
-  // bottom-left -> community
-  {
-    id: 7,
-    image: 'https://yt3.ggpht.com/d_S3to15h8x86D5dDKPbI9SYdA6xZo18TbUiWeAzg5GgIjYLxVtWt2N4n0wy5zYsCzmzSvTqgoDLRSo=s640-c-fcrop64=1,0000199affffe666-rw-nd-v1',
-    className: 'top-[60%] left-[48%] w-[155px] md:w-[185px] lg:w-[225px] -rotate-[12deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
-    alt: 'Community memories',
-  },
-  // bottom-middle -> clan wars (placed cleanly at the bottom without overlapping center card)
-  {
-    id: 8,
-    image: 'https://i.redd.it/k4y8dmsvnq2c1.jpg',
-    className: 'top-[71%] left-[62%] w-[170px] md:w-[200px] lg:w-[245px] rotate-[8deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
-    alt: 'Clan wars memory',
-  },
-  // bottom-right -> victory (anchored to right-[8%] for equal padding)
-  {
-    id: 9,
-    image: 'https://yt3.ggpht.com/hU_EnKy0Ijd_3giN1jqa-Y8F66oWc7lvlaESpz88Aix7V7N6PC7dUnEx03mlHYfR4NzoaSdYgiLf=s640-c-fcrop64=1,00000000ffffffff-rw-nd-v1',
-    className: 'top-[59%] right-[8%] w-[180px] md:w-[215px] lg:w-[260px] rotate-[15deg] z-20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]',
-    alt: 'Final victory',
-  },
-];
-
-// ── Background Depth Layer Cards (Reduced to 2) ──
-const BACKGROUND_MEMORY_GALLERY: MemoryItem[] = [
-  {
-    id: 101,
-    image: 'https://yt3.ggpht.com/vq49TcZ5AAKQKRlUxNx7W0eZnUeMRlMwnoRKASxkoynlN17KZwT-bai6Vne9SwKeveSJEVfxSLmC=s632-c-fcrop64=1,2aab0000d555ffff-rw-nd-v1',
-    className: 'top-[7%] left-[64%] w-[125px] md:w-[150px] lg:w-[175px] rotate-[10deg] z-0 opacity-40 scale-95 shadow-md',
-    alt: 'Background war matrix',
-  },
-  {
-    id: 104,
-    image: '/images/whats-new-background.webp',
-    className: 'top-[49%] right-[8%] w-[130px] md:w-[155px] lg:w-[185px] rotate-[18deg] z-0 opacity-35 scale-90 shadow-md',
-    alt: 'Background scenery',
-  },
-];
 // ── SLIT REVEAL CONFIGURATION ─────────────────────────────────────────
 // Exactly 3 openings based on the 1919px grid, opening exclusively to the LEFT:
 // 1. Far Left:  0px to 644px (33.56% width)
@@ -594,11 +435,10 @@ export const HorizontalScroll: React.FC = () => {
         );
       }
 
-      // ── Memories Gallery entrance (glides from right to left after Tools card) ──
-      // Triggers earlier (at 50% of background wipe) so it glides in smoothly as Tools moves across:
+      // ── Quote Entrance (glides from right to left as card background finishes closing) ──
+      // Triggers when the card section is about 75% closed, arriving in the middle as the card background is completely gone:
       const MEMORIES_START = REVEAL_START + bgDuration * 0.50;
-      // Extended duration for a calm, slow glide requiring significantly more scroll:
-      const memoriesEntranceDuration = (TRACK_END - MEMORIES_START) + (120 / 1050) * SCROLL_SCALE;
+      const memoriesEntranceDuration = TRACK_END - MEMORIES_START;
 
       if (memoriesLayerRef.current) {
         tl.set(memoriesLayerRef.current, { autoAlpha: 1 }, MEMORIES_START);
@@ -861,81 +701,30 @@ export const HorizontalScroll: React.FC = () => {
           className="absolute inset-0 w-full h-[200vh] pointer-events-none will-change-transform"
           style={{ zIndex: 25, transform: 'translate3d(0, 0, 0)' }}
         >
-          {/* Screen 1 (top: 0): Memories Editorial & Collage Gallery */}
+          {/* Screen 1 (top: 0): Community Quote */}
           <div
             ref={memoriesLayerRef}
-            className="absolute top-0 left-0 w-full h-screen pointer-events-none overflow-hidden will-change-transform"
+            className="absolute top-0 left-0 w-full h-screen pointer-events-none overflow-hidden flex items-center justify-center px-6 sm:px-12 md:px-20 lg:px-32 will-change-transform"
             style={{ transform: 'translate3d(100vw, 0, 0)', opacity: 0 }}
           >
-            {/* Left Column: Editorial Info & Typography */}
-            <div
-              className="absolute left-[6%] md:left-[7%] lg:left-[8%] top-1/2 -translate-y-1/2 max-w-[480px] z-20 pointer-events-auto"
-            >
-              <h2 className="font-cormorant font-normal uppercase text-white tracking-[0.04em] leading-[0.92] text-5xl sm:text-6xl md:text-7xl lg:text-8xl drop-shadow-[0_6px_28px_rgba(0,0,0,0.9)] mb-6">
-                MEMORIES
-              </h2>
-              <p className="font-outfit text-sm sm:text-base md:text-lg text-white/85 leading-relaxed max-w-[440px] drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
-                Connect with fellow creators, find your community, compete in tournaments, and make memories that last long after the battle ends.
-              </p>
-            </div>
-
-            {/* Right / Center: Floating Image Collage */}
-            <div className="absolute inset-0 z-10 pointer-events-none">
-              {/* Depth Background Layer (4 cards) */}
-              <div className="hidden lg:block absolute inset-0 z-0 pointer-events-none select-none">
-                {BACKGROUND_MEMORY_GALLERY.map((item) => (
-                  <div
-                    key={item.id}
-                    className={`absolute rounded-md overflow-hidden ${item.className}`}
-                  >
-                    <LazyMemoryImage
-                      src={item.image}
-                      alt={item.alt}
-                      className="w-full h-auto block select-none pointer-events-none rounded-md"
-                      draggable={false}
-                    />
-                  </div>
-                ))}
+            <div className="relative max-w-4xl mx-auto text-center pointer-events-auto select-none">
+              {/* Decorative quotation mark */}
+              <div className="font-cormorant text-amber-400/40 text-7xl sm:text-8xl md:text-9xl leading-none select-none mb-2">
+                “
               </div>
 
-              {/* Foreground Sharp Interactive Cards */}
-              <div className="hidden lg:block absolute inset-0 z-10 pointer-events-none">
-                {MEMORY_GALLERY.map((item) => (
-                  <div
-                    key={item.id}
-                    className={`absolute rounded-md overflow-hidden transition-all duration-300 
-                                hover:scale-105 hover:z-40 hover:shadow-2xl 
-                                pointer-events-auto cursor-pointer ${item.className}`}
-                  >
-                    <LazyMemoryImage
-                      src={item.image}
-                      alt={item.alt}
-                      referrerPolicy="no-referrer"
-                      fallbackSrc="/images/card-events.webp"
-                      className="w-full h-auto block select-none pointer-events-none rounded-md"
-                      draggable={false}
-                    />
-                  </div>
-                ))}
-              </div>
+              {/* Quote Statement */}
+              <blockquote className="font-cormorant italic font-normal text-white text-2xl sm:text-3xl md:text-4xl lg:text-[2.65rem] leading-[1.3] tracking-wide drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] -mt-8 sm:-mt-10 mb-6">
+                “Don't be like a Queen who keeps hitting walls and fails to discover what's new in the community. Discover new creators and events and make memories that last long after the battle ends.”
+              </blockquote>
 
-              {/* Mobile / Tablet compact gallery strip */}
-              <div className="lg:hidden absolute bottom-6 left-[6%] md:left-[7%] right-[6%] md:right-[7%] z-10 flex gap-3 overflow-x-auto no-scrollbar py-2 pointer-events-auto">
-                {MEMORY_GALLERY.slice(0, 5).map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex-shrink-0 w-36 sm:w-48 rounded-md overflow-hidden shadow-lg"
-                  >
-                    <LazyMemoryImage
-                      src={item.image}
-                      alt={item.alt}
-                      referrerPolicy="no-referrer"
-                      fallbackSrc="/images/card-events.webp"
-                      className="w-full h-auto block rounded-md"
-                      draggable={false}
-                    />
-                  </div>
-                ))}
+              {/* Sub-label */}
+              <div className="inline-flex items-center gap-3">
+                <span className="w-8 sm:w-12 h-[1px] bg-white/30" />
+                <span className="font-montserrat font-bold text-[10px] sm:text-xs text-white/70 tracking-[0.28em] uppercase">
+                  ClashNet Community
+                </span>
+                <span className="w-8 sm:w-12 h-[1px] bg-white/30" />
               </div>
             </div>
           </div>
