@@ -5,7 +5,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
-import { Hero, About, HorizontalScroll, Contact } from './components/home';
+import { Hero, News, About, HorizontalScroll, Contact } from './components/home';
 import { Creators } from './components/Creators';
 import { Events } from './components/Events';
 
@@ -116,11 +116,16 @@ export const App: React.FC = () => {
           {/* Main content */}
           <main>
             <Hero />
-            <About />
-            <HorizontalScroll />
 
-            {/* Contact area with white background under ClashNet */}
-            <Contact />
+            {/* Content stream directly following the cloud transition */}
+            <div className="relative z-20 w-full bg-white">
+              <News />
+              <About />
+              <HorizontalScroll />
+
+              {/* Get in touch section right above the footer */}
+              <Contact />
+            </div>
           </main>
 
           {/* Dark Footer */}

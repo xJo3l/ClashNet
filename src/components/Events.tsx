@@ -320,7 +320,7 @@ export const Events: React.FC<EventsProps> = ({ onNavigateHome, onNavigateCreato
   };
 
   // Horizontal scroll row helper
-  const scrollRow = (ref: React.RefObject<HTMLDivElement>, direction: 'left' | 'right') => {
+  const scrollRow = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
     if (ref.current) {
       const scrollAmount = direction === 'left' ? -380 : 380;
       ref.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
@@ -858,7 +858,7 @@ export const Events: React.FC<EventsProps> = ({ onNavigateHome, onNavigateCreato
                   <Trophy className="w-8 h-8 text-amber-500" />
                 </div>
                 <h3 className="font-montserrat font-bold text-xl sm:text-2xl text-slate-900 mb-2">
-                  No {viewingCategory !== 'all' ? `${viewingCategory.charAt(0).toUpperCase() + viewingCategory.slice(1)} ` : ''}Events Found
+                  No {`${viewingCategory.charAt(0).toUpperCase() + viewingCategory.slice(1)} `}Events Found
                 </h3>
                 <p className="text-sm text-slate-500 max-w-md mx-auto mb-6 leading-relaxed">
                   {searchQuery
@@ -1778,6 +1778,7 @@ interface EventCardProps {
 }
 
 const EventCard: React.FC<EventCardProps> = ({ event, isGridView }) => {
+  const [showDetails, setShowDetails] = useState<boolean>(false);
   return (
     <div
       className={`${
@@ -1870,10 +1871,9 @@ const EventCard: React.FC<EventCardProps> = ({ event, isGridView }) => {
                 target={event.hostContact.startsWith('http') ? '_blank' : undefined}
                 rel={event.hostContact.startsWith('http') ? 'noopener noreferrer' : undefined}
                 onClick={(e) => {
-                  if (!event.hostContact?.startsWith('http') && !event.hostContact?.includes('@')) {
+                  if (event.hostContact && !event.hostContact.startsWith('http') && !event.hostContact.includes('@')) {
                     e.preventDefault();
                     navigator.clipboard?.writeText(event.hostContact);
-                    alert(`Host Contact: ${event.hostContact}\n(Copied to clipboard)`);
                   }
                 }}
                 title={`Contact Host: ${event.hostContact} (Click to open or copy)`}
@@ -1891,7 +1891,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, isGridView }) => {
           </h3>
 
           {/* Description */}
-          <p className="text-xs text-slate-500 line-clamp-2 mt-2 leading-relaxed">
+          <p className={`text-xs text-slate-500 ${showDetails ? '' : 'line-clamp-2'} mt-2 leading-relaxed transition-all`}>
             {event.description}
           </p>
         </div>
@@ -1932,12 +1932,10 @@ const EventCard: React.FC<EventCardProps> = ({ event, isGridView }) => {
             </a>
           ) : (
             <button
-              onClick={() => {
-                alert(`Event: ${event.title}\nHost: ${event.hostName}\nDetails: ${event.description}`);
-              }}
+              onClick={() => setShowDetails(!showDetails)}
               className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold transition-colors"
             >
-              Details
+              {showDetails ? 'Close' : 'Details'}
             </button>
           )}
         </div>

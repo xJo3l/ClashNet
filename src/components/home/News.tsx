@@ -252,90 +252,83 @@ export const News: React.FC = () => {
     <section
       id="news"
       aria-label="News"
-      className="relative w-full min-h-full text-slate-900 pt-24 sm:pt-28 md:pt-32 pb-14 sm:pb-18 md:pb-20 px-6 sm:px-10 md:px-12 lg:px-16 flex flex-col justify-start selection:bg-rose-500 selection:text-white overflow-x-hidden"
-      style={{
-        background:
-          'linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.2) 40px, rgba(255, 255, 255, 0.65) 100px, rgba(255, 255, 255, 0.95) 160px, #ffffff 210px, #ffffff 100%)',
-      }}
+      className="relative w-full text-slate-900 pt-16 sm:pt-20 md:pt-24 pb-16 sm:pb-20 px-6 sm:px-10 md:px-12 lg:px-16 flex flex-col justify-start selection:bg-rose-500 selection:text-white"
     >
       <div className="news-content-wrapper max-w-7xl mx-auto w-full my-0 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
-          {/* Left Column: Heading */}
-          <div className="lg:col-span-4 lg:sticky lg:top-24">
-            <h2 className="font-cormorant font-normal text-6xl sm:text-7xl lg:text-8xl xl:text-9xl text-slate-950 tracking-tight leading-none">
-              News
-            </h2>
-          </div>
-
-          {/* Right Column: Intro text, top 3 cards, See More option */}
-          <div className="lg:col-span-8 flex flex-col gap-5 sm:gap-6">
-            {/* Header / Intro row */}
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b border-slate-200/80">
-              <p className="font-outfit text-sm sm:text-base md:text-[16px] text-slate-600 leading-relaxed max-w-xl">
-                Stay updated with the latest gaming trends, news, and releases in the industry. Our informative articles cover a wide range of topics, from game reviews to upcoming events, ensuring you are always in the loop.
-              </p>
+        <div className="flex flex-col gap-6 sm:gap-8">
+          {/* Section Header: Full Width without Sidebar */}
+          <div className="flex flex-col gap-3 pb-4 border-b border-slate-200/80">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <div>
+                <h2 className="font-cormorant font-normal text-6xl sm:text-7xl lg:text-8xl text-slate-950 tracking-tight leading-none mb-2">
+                  News
+                </h2>
+                <p className="font-outfit text-sm sm:text-base md:text-[16px] text-slate-600 leading-relaxed max-w-2xl">
+                  Stay updated with the latest gaming trends, news, and releases in the industry. Our informative articles cover a wide range of topics, from game reviews to upcoming events, ensuring you are always in the loop.
+                </p>
+              </div>
               <a
                 href="https://supercell.com/en/games/clashofclans/blog/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 inline-flex items-center gap-1.5 font-montserrat font-bold text-xs uppercase tracking-wider text-amber-600 hover:text-amber-700 transition-colors pb-1"
+                className="shrink-0 inline-flex items-center gap-1.5 font-montserrat font-bold text-xs uppercase tracking-wider text-amber-600 hover:text-amber-700 transition-colors pb-1 self-start md:self-end"
               >
                 <span>See More News</span>
                 <span>→</span>
               </a>
             </div>
+          </div>
 
-            {/* Top 3 Horizontal News Cards Stack */}
-            <div className="flex flex-col gap-4 sm:gap-5">
-              {top3Articles.map((article) => (
-                <a
-                  key={article.id}
-                  href={article.linkUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group block rounded-3xl bg-slate-50 hover:bg-slate-100/90 border border-slate-200/90 hover:border-slate-300 p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/70 hover:-translate-y-0.5 cursor-pointer"
-                >
-                  <div className="flex flex-col sm:flex-row gap-5 md:gap-6 items-center">
-                    {/* Left Thumbnail */}
-                    <div className="w-full sm:w-[210px] md:w-[240px] lg:w-[260px] h-[150px] sm:h-[135px] md:h-[145px] shrink-0 rounded-2xl overflow-hidden bg-slate-200">
-                      <img
-                        src={article.thumbnailUrl}
-                        alt={article.title}
-                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
-                        loading="lazy"
-                      />
-                    </div>
-
-                    {/* Right Content */}
-                    <div className="flex-1 min-w-0 flex flex-col justify-center">
-                      <h3 className="font-cormorant font-normal text-2xl sm:text-3xl text-slate-900 group-hover:text-amber-600 transition-colors duration-200 tracking-tight leading-snug mb-1">
-                        {article.title}
-                      </h3>
-                      <p className="font-montserrat text-xs sm:text-[13px] text-slate-500 font-medium tracking-wide mb-2">
-                        {article.category} • {article.publishDate}
-                      </p>
-                      <p className="font-outfit text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-2 md:line-clamp-3">
-                        {article.summary ||
-                          'Delve into the latest updates, balance changes, and exclusive developer insights directly from the official Clash team.'}
-                      </p>
-                    </div>
-                  </div>
-                </a>
-              ))}
-            </div>
-
-            {/* Bottom Right: See More Pill Button */}
-            <div className="flex justify-end pt-2 pb-2">
+          {/* Top 3 Horizontal News Cards Stack - Full Width on Cloud */}
+          <div className="flex flex-col gap-4 sm:gap-5">
+            {top3Articles.map((article) => (
               <a
-                href="https://supercell.com/en/games/clashofclans/blog/"
+                key={article.id}
+                href={article.linkUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-slate-950 hover:bg-slate-800 active:scale-95 text-white font-outfit font-semibold text-sm sm:text-base tracking-normal transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02]"
+                className="group block rounded-3xl bg-white/90 hover:bg-white border border-slate-200/90 hover:border-slate-300 p-4 sm:p-5 md:p-6 transition-all duration-300 hover:shadow-xl hover:shadow-slate-300/50 hover:-translate-y-0.5 cursor-pointer backdrop-blur-sm"
               >
-                <span>See More</span>
-                <span className="text-white/60">→</span>
+                <div className="flex flex-col sm:flex-row gap-5 md:gap-8 items-center">
+                  {/* Left Thumbnail */}
+                  <div className="w-full sm:w-[240px] md:w-[280px] lg:w-[320px] h-[160px] sm:h-[150px] md:h-[165px] shrink-0 rounded-2xl overflow-hidden bg-slate-200">
+                    <img
+                      src={article.thumbnailUrl}
+                      alt={article.title}
+                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+                      loading="lazy"
+                    />
+                  </div>
+
+                  {/* Right Content */}
+                  <div className="flex-1 min-w-0 flex flex-col justify-center">
+                    <h3 className="font-cormorant font-normal text-2xl sm:text-3xl md:text-4xl text-slate-900 group-hover:text-amber-600 transition-colors duration-200 tracking-tight leading-snug mb-1.5">
+                      {article.title}
+                    </h3>
+                    <p className="font-montserrat text-xs sm:text-[13px] text-slate-500 font-medium tracking-wide mb-2.5">
+                      {article.category} • {article.publishDate}
+                    </p>
+                    <p className="font-outfit text-xs sm:text-sm md:text-base text-slate-600 leading-relaxed line-clamp-2 md:line-clamp-3">
+                      {article.summary ||
+                        'Delve into the latest updates, balance changes, and exclusive developer insights directly from the official Clash team.'}
+                    </p>
+                  </div>
+                </div>
               </a>
-            </div>
+            ))}
+          </div>
+
+          {/* Bottom Right: See More Pill Button */}
+          <div className="flex justify-end pt-2 pb-2">
+            <a
+              href="https://supercell.com/en/games/clashofclans/blog/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-slate-950 hover:bg-slate-800 active:scale-95 text-white font-outfit font-semibold text-sm sm:text-base tracking-normal transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02]"
+            >
+              <span>See More</span>
+              <span className="text-white/60">→</span>
+            </a>
           </div>
         </div>
       </div>

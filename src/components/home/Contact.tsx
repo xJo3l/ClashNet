@@ -23,13 +23,9 @@ export const Contact: React.FC = () => {
   return (
     <section
       id="contact"
-      className="relative w-full min-h-screen text-slate-900 z-30 flex items-center justify-center px-6 sm:px-10 md:px-16 lg:px-24 py-12 md:py-16 -mt-[80vh] md:-mt-[90vh] selection:bg-rose-500 selection:text-white"
-      style={{
-        background:
-          'linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.8) 20%, #ffffff 35%, #ffffff 100%)',
-      }}
+      className="relative w-full text-slate-900 z-10 flex items-center justify-center px-6 sm:px-10 md:px-16 lg:px-24 pt-12 sm:pt-16 md:pt-20 pb-16 sm:pb-20 md:pb-24 bg-white selection:bg-rose-500 selection:text-white"
     >
-      <div className="max-w-6xl w-full mx-auto relative z-40 my-auto">
+      <div className="max-w-6xl w-full mx-auto relative z-20 my-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left Column: Heading, Subtext & Coffee Space */}
           <div className="lg:col-span-5 flex flex-col justify-center gap-8">
