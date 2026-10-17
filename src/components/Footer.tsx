@@ -17,29 +17,29 @@ export const Footer: React.FC = () => {
       <div className="absolute bottom-0 right-0 w-[500px] h-[300px] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-16 md:pt-20 pb-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-16 pb-16 border-b border-white/10" data-sc-in data-sc-stagger="60">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 lg:px-16 pt-12 sm:pt-16 md:pt-20 pb-10 sm:pb-12 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-16 pb-12 sm:pb-16 border-b border-white/10" data-sc-in data-sc-stagger="60">
           
-          {/* Brand Column (6 cols) */}
+          {/* Brand Column */}
           <div className="lg:col-span-6 flex flex-col justify-between">
             <div>
-              <div className="flex items-center space-x-2.5 mb-6 group cursor-pointer inline-flex" onClick={scrollToTop}>
+              <div className="flex items-center space-x-2.5 mb-4 sm:mb-6 group cursor-pointer inline-flex" onClick={scrollToTop}>
                 <img
                   src="/images/logo.webp"
                   alt="ClashNet Logo"
-                  className="h-10 w-auto object-contain brightness-0 invert drop-shadow-[0_2px_10px_rgba(255,255,255,0.25)] transition-transform duration-300 group-hover:scale-105"
+                  className="h-9 sm:h-10 w-auto object-contain brightness-0 invert drop-shadow-[0_2px_10px_rgba(255,255,255,0.25)] transition-transform duration-300 group-hover:scale-105"
                 />
-                <span className="font-montserrat font-bold text-xl tracking-[0.22em] uppercase text-white">
+                <span className="font-montserrat font-bold text-lg sm:text-xl tracking-[0.22em] uppercase text-white">
                   clashnet
                 </span>
               </div>
-              <p className="font-outfit text-sm text-slate-400 leading-relaxed max-w-sm mb-8">
+              <p className="font-outfit text-xs sm:text-sm text-slate-400 leading-relaxed max-w-sm mb-6 sm:mb-8">
                 The ultimate competitive home for Clashers. Discover top creators, tournament events, custom base analytics, and tools built for victory.
               </p>
             </div>
 
             {/* Social Icons with Magnetic Hover */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2.5 sm:space-x-3">
               {[
                 { name: 'Discord', icon: MessageSquare, href: '#' },
                 { name: 'YouTube', icon: Youtube, href: '#' },
@@ -51,76 +51,79 @@ export const Footer: React.FC = () => {
                   href={item.href}
                   aria-label={item.name}
                   data-sc-magnet="0.22"
-                  className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/10 hover:border-white/30 text-slate-400 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white/[0.08] will-change-transform"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/[0.04] border border-white/10 hover:border-white/30 text-slate-400 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white/[0.08] will-change-transform"
                 >
-                  <item.icon className="w-4 h-4" />
+                  <item.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Quick Links (3 cols) */}
-          <div className="lg:col-span-3 sm:col-span-1">
-            <h4 className="font-montserrat font-bold text-xs uppercase tracking-[0.2em] text-white mb-6 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-              Explore
-            </h4>
-            <ul className="space-y-3.5 text-sm">
-              {[
-                { label: 'Home', href: '#home' },
-                { label: 'What\'s New', href: '#whats-new' },
-                { label: 'Creators', href: '#creators' },
-                { label: 'Events', href: '#events' },
-                { label: 'Tools', href: '#tools' },
-                { label: 'Contact', href: '#contact' },
-              ].map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-slate-400 hover:text-white transition-colors duration-200 inline-block"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Links Section: 2 columns on all devices from mobile to desktop */}
+          <div className="lg:col-span-6 grid grid-cols-2 gap-6 sm:gap-10">
+            {/* Quick Links */}
+            <div>
+              <h4 className="font-montserrat font-bold text-[11px] sm:text-xs uppercase tracking-[0.2em] text-white mb-4 sm:mb-6 flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                Explore
+              </h4>
+              <ul className="space-y-2.5 sm:space-y-3.5 text-xs sm:text-sm">
+                {[
+                  { label: 'Home', href: '#home' },
+                  { label: 'What\'s New', href: '#whats-new' },
+                  { label: 'Creators', href: '#creators' },
+                  { label: 'Events', href: '#events' },
+                  { label: 'Tools', href: '#tools' },
+                  { label: 'Contact', href: '#contact' },
+                ].map((link) => (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      className="text-slate-400 hover:text-white transition-colors duration-200 inline-block py-0.5"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Resources Column (3 cols) */}
-          <div className="lg:col-span-3 sm:col-span-1">
-            <h4 className="font-montserrat font-bold text-xs uppercase tracking-[0.2em] text-white mb-6 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-              Resources
-            </h4>
-            <ul className="space-y-3.5 text-sm">
-              {[
-                { label: 'Base Layouts', href: '#' },
-                { label: 'Attack Strategies', href: '#' },
-                { label: 'War Analytics', href: '#' },
-                { label: 'Creator Program', href: '#' },
-                { label: 'API & Guides', href: '#' },
-              ].map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-slate-400 hover:text-white transition-colors duration-200 inline-block"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            {/* Resources Column */}
+            <div>
+              <h4 className="font-montserrat font-bold text-[11px] sm:text-xs uppercase tracking-[0.2em] text-white mb-4 sm:mb-6 flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                Resources
+              </h4>
+              <ul className="space-y-2.5 sm:space-y-3.5 text-xs sm:text-sm">
+                {[
+                  { label: 'Base Layouts', href: '#' },
+                  { label: 'Attack Strategies', href: '#' },
+                  { label: 'War Analytics', href: '#' },
+                  { label: 'Creator Program', href: '#' },
+                  { label: 'API & Guides', href: '#' },
+                ].map((link) => (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      className="text-slate-400 hover:text-white transition-colors duration-200 inline-block py-0.5"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
         </div>
 
         {/* Bottom Bar: Copyright & Disclaimer */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <div className="pt-6 sm:pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500 text-center md:text-left">
           <p>© {new Date().getFullYear()} ClashNet. All rights reserved.</p>
-          <p className="text-center md:text-right max-w-xl text-[11px] text-slate-600 leading-relaxed">
+          <p className="max-w-xl text-[10px] sm:text-[11px] text-slate-600 leading-relaxed text-center md:text-right">
             ClashNet is not affiliated with, endorsed, sponsored, or specifically approved by Supercell, and Supercell is not responsible for it.
           </p>
-          <div className="flex items-center gap-1.5 text-slate-400">
+          <div className="flex items-center gap-1.5 text-slate-400 text-xs">
             <span>Built with</span>
             <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
             <span>for the Clash community</span>

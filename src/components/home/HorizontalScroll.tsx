@@ -207,7 +207,7 @@ export const HorizontalScroll: React.FC = () => {
 
     const ctx = gsap.context(() => {
       // ── Initial States ──────────────────────────────────────────────
-      gsap.set(slitsContainerRef.current, { x: 0, autoAlpha: 1, transformOrigin: 'center center', force3D: true });
+      gsap.set(slitsContainerRef.current, { x: 0, autoAlpha: 0, transformOrigin: 'center center', force3D: true });
       slitElementsRef.current.forEach((el, i) => {
         if (el && SLITS[i]) gsap.set(el, { clipPath: SLITS[i].initial, force3D: true });
       });
@@ -242,15 +242,20 @@ export const HorizontalScroll: React.FC = () => {
       }
 
       // Expand the opening scene as the section rises into the viewport;
-      // transitions smoothly using GPU-accelerated scale once it reaches top top.
+      // starts noticeably smaller with soft rounded framing and gradually expands to 100% full screen.
       if (mountainRef.current) {
         gsap.fromTo(
           mountainRef.current,
           {
-            scale: 0.94,
+            scale: 0.82,
+            borderRadius: 24,
+            boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.35)',
+            transformOrigin: 'center center',
           },
           {
             scale: 1,
+            borderRadius: 0,
+            boxShadow: '0 0px 0px rgba(0, 0, 0, 0)',
             ease: 'none',
             force3D: true,
             scrollTrigger: {
@@ -344,6 +349,9 @@ export const HorizontalScroll: React.FC = () => {
       }
 
       // Slits expand leftward at constant speed immediately as text exits
+      if (slitsContainerRef.current) {
+        tl.set(slitsContainerRef.current, { autoAlpha: 1 }, OPENING_START);
+      }
       SLITS.forEach((slit, i) => {
         const el = slitElementsRef.current[i];
         if (!el) return;
@@ -363,7 +371,7 @@ export const HorizontalScroll: React.FC = () => {
       // ── Transition & Speed Controls (Adjust manually here) ────────────
       // ══════════════════════════════════════════════════════════════════
 
-      // Measure Tools card position inside track; calibrated to sit behind around 75% of the Tools card:
+      // Measure Tools card position inside track
       const toolsCard = (track.querySelector('#tools') ||
         track.querySelector('#card-tools') ||
         track.querySelector('[data-card-id="tools"]')) as HTMLElement;
@@ -377,6 +385,12 @@ export const HorizontalScroll: React.FC = () => {
         ? (toolsCard.offsetLeft + toolsCard.offsetWidth * 0.75)
         : computedToolsOffset;
 
+      // Ensure Tools card clears the left edge completely on all screens (especially 1440px+, 1920px+):
+      const toolsRightEdge = toolsCard && toolsCard.offsetLeft > 0
+        ? (toolsCard.offsetLeft + toolsCard.offsetWidth)
+        : (paddingEstimate + 3 * cardWidthEstimate + 2 * gapEstimate);
+      const totalTrackExitX = -(toolsRightEdge + Math.max(window.innerWidth * 0.06, 80));
+
       // Mathematical relationship:
       // REVEAL_START triggers so the background wipe boundary stays fixed behind ~75% of the Tools card:
       const k = toolsTargetOffset / window.innerWidth;
@@ -385,29 +399,16 @@ export const HorizontalScroll: React.FC = () => {
       // Duration for card_background.webp to cross the screen:
       const bgDuration = TRACK_END - REVEAL_START;
 
-      // Exact 1:1 speed matching between Tools card and the background image:
-      const bgSpeed = window.innerWidth / bgDuration;
+      // Track Stage 1 (cardTriggerPoint -> REVEAL_START):
+      // Cards slide into view until Tools card aligns with the wipe line at the right edge
+      const stage1Duration = REVEAL_START - cardTriggerPoint;
+      const trackAtWipeStart = window.innerWidth - toolsTargetOffset;
 
-      // BOOST POSITION: Tools and background image speed is the SAME for 70% of time:
-      const BOOST_POSITION = 0.70;
-      const SPEED_BOOST_TIME = REVEAL_START + bgDuration * BOOST_POSITION;
-
-      // Stage 1 (cardTriggerPoint -> SPEED_BOOST_TIME): Tools and background travel at identical speed, locked together
-      const stage1Duration = SPEED_BOOST_TIME - cardTriggerPoint;
-      const stage1Distance = bgSpeed * stage1Duration;
-      const midPointX = window.innerWidth - stage1Distance;
-
-      // Stage 2 (Remaining 30% of time): Tools accelerates and goes first
-      const totalTrackDist = track.scrollWidth + window.innerWidth * 1.1;
-      const stage2RemainingDistance = Math.max(totalTrackDist - stage1Distance, track.scrollWidth * 0.25);
-      const stage2Duration = Math.max(bgDuration * (1.0 - BOOST_POSITION), 0.01);
-
-      // Stage 1: Steady speed 1:1 synchronized with the background image (fixed with Tools)
       tl.fromTo(
         track,
         { x: () => window.innerWidth },
         {
-          x: () => midPointX,
+          x: () => trackAtWipeStart,
           ease: 'none',
           duration: stage1Duration,
           force3D: true,
@@ -416,16 +417,17 @@ export const HorizontalScroll: React.FC = () => {
         cardTriggerPoint
       );
 
-      // Stage 2 (SPEED_BOOST_TIME -> exit): Rest 30% of time, Tools accelerates and clears first
+      // Track Stage 2 (REVEAL_START -> TRACK_END):
+      // Track travels in lockstep with the background wipe, clearing Tools completely past the left edge
       tl.to(
         track,
         {
-          x: () => -(track.scrollWidth + window.innerWidth * 0.1),
+          x: () => totalTrackExitX,
           ease: 'none',
-          duration: stage2Duration,
+          duration: bgDuration,
           force3D: true,
         },
-        SPEED_BOOST_TIME
+        REVEAL_START
       );
 
       // Activate pure white background behind card_background.webp ahead of the wipe
@@ -599,7 +601,7 @@ export const HorizontalScroll: React.FC = () => {
         {/* ── Layer A: Mountain Hero (frames 1 & 2) ──────────────────── */}
         <div
           ref={mountainRef}
-          className="absolute inset-0 z-10 will-change-transform"
+          className="absolute inset-0 z-10 will-change-transform overflow-hidden"
         >
           <div className="relative w-full h-full overflow-hidden">
             <img
@@ -663,7 +665,7 @@ export const HorizontalScroll: React.FC = () => {
         <div
           ref={slitsContainerRef}
           className="absolute inset-0 z-20 pointer-events-none overflow-hidden will-change-transform"
-          style={{ transform: 'translate3d(0,0,0)' }}
+          style={{ transform: 'translate3d(0,0,0)', opacity: 0 }}
         >
           {SLITS.map((slit, i) => (
             <div

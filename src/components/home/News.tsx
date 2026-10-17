@@ -258,27 +258,15 @@ export const News: React.FC = () => {
         <div className="flex flex-col gap-6 sm:gap-8">
           {/* Section Header: Full Width without Sidebar */}
           <div className="flex flex-col gap-3 pb-4 border-b border-slate-200/80" data-sc-in data-sc-stagger="50">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-              <div>
-                <h2 className="font-cormorant font-normal text-6xl sm:text-7xl lg:text-8xl text-slate-950 tracking-tight leading-none mb-2">
-                  <span className="sc-split sc-split--line">
-                    <span className="sc-split__i">News</span>
-                  </span>
-                </h2>
-                <p className="font-outfit text-sm sm:text-base md:text-[16px] text-slate-600 leading-relaxed max-w-2xl">
-                  Stay updated with the latest gaming trends, news, and releases in the industry. Our informative articles cover a wide range of topics, from game reviews to upcoming events, ensuring you are always in the loop.
-                </p>
-              </div>
-              <a
-                href="https://supercell.com/en/games/clashofclans/blog/"
-                target="_blank"
-                rel="noopener noreferrer"
-                data-sc-magnet="0.22"
-                className="shrink-0 inline-flex items-center gap-1.5 font-montserrat font-bold text-xs uppercase tracking-wider text-amber-600 hover:text-amber-700 transition-colors pb-1 self-start md:self-end will-change-transform"
-              >
-                <span>See More News</span>
-                <span>→</span>
-              </a>
+            <div>
+              <h2 className="font-cormorant font-normal text-6xl sm:text-7xl lg:text-8xl text-slate-950 tracking-tight leading-none mb-2">
+                <span className="sc-split sc-split--line">
+                  <span className="sc-split__i">News</span>
+                </span>
+              </h2>
+              <p className="font-outfit text-sm sm:text-base md:text-[16px] text-slate-600 leading-relaxed max-w-2xl">
+                Stay updated with the latest gaming trends, news, and releases in the industry. Our informative articles cover a wide range of topics, from game reviews to upcoming events, ensuring you are always in the loop.
+              </p>
             </div>
           </div>
 
@@ -295,11 +283,8 @@ export const News: React.FC = () => {
                 className="group block rounded-3xl bg-white/90 hover:bg-white border border-slate-200/90 hover:border-slate-300 p-4 sm:p-5 md:p-6 transition-all duration-300 hover:shadow-xl hover:shadow-slate-300/50 hover:-translate-y-0.5 cursor-pointer backdrop-blur-sm will-change-transform"
               >
                 <div className="flex flex-col sm:flex-row gap-5 md:gap-8 items-center">
-                  {/* Left Thumbnail with clip-path wipe reveal */}
-                  <div
-                    data-sc-reveal="right"
-                    className="w-full sm:w-[240px] md:w-[280px] lg:w-[320px] h-[160px] sm:h-[150px] md:h-[165px] shrink-0 rounded-2xl overflow-hidden bg-slate-200"
-                  >
+                  {/* Left Thumbnail */}
+                  <div className="w-full sm:w-[240px] md:w-[280px] lg:w-[320px] h-[160px] sm:h-[150px] md:h-[165px] shrink-0 rounded-2xl overflow-hidden bg-slate-200">
                     <img
                       src={article.thumbnailUrl}
                       alt={article.title}

@@ -96,7 +96,7 @@ export const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-outfit selection:bg-rose-500 selection:text-white relative">
+    <div className="min-h-screen bg-[#090a0f] text-slate-900 font-outfit selection:bg-rose-500 selection:text-white relative">
       {currentRoute === 'creators' ? (
         <Creators
           key="creators-clean"
@@ -135,9 +135,12 @@ export const App: React.FC = () => {
             <Hero />
 
             {/* Content stream directly following the cloud transition */}
-            <div className="relative z-20 w-full bg-white">
-              <News />
-              <About />
+            <div className="relative z-20 w-full">
+              <div className="w-full bg-white">
+                <News />
+                <About />
+              </div>
+
               <HorizontalScroll />
 
               {/* Get in touch section right above the footer */}
