@@ -6,6 +6,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export const Hero: React.FC = () => {
   const heroRef = useRef<HTMLElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const cloud1Ref = useRef<HTMLDivElement>(null);
   const cloud2Ref = useRef<HTMLDivElement>(null);
@@ -14,6 +15,27 @@ export const Hero: React.FC = () => {
     if (!heroRef.current) return;
 
     const ctx = gsap.context(() => {
+      // Cinematic initial arrival for DISCOVER title with upward wipe reveal
+      if (contentRef.current) {
+        gsap.fromTo(
+          contentRef.current,
+          { opacity: 0, scale: 1.04, y: 24, clipPath: 'inset(100% 0 0 0)' },
+          {
+            opacity: 0.92,
+            scale: 1,
+            y: 0,
+            clipPath: 'inset(0% 0 0 0)',
+            duration: 1.1,
+            ease: 'power3.out',
+            onComplete: () => {
+              if (contentRef.current) {
+                gsap.set(contentRef.current, { clearProps: 'clipPath' });
+              }
+            },
+          }
+        );
+      }
+
       // Initialize clouds completely off-screen below the viewport (ZERO clouds visible at start)
       gsap.set([cloud1Ref.current, cloud2Ref.current], {
         yPercent: 100,
@@ -30,6 +52,16 @@ export const Hero: React.FC = () => {
           scrub: true,
         },
       });
+
+      // Background layer dimensional scale & subtle lag parallax (hero-depth standard)
+      if (bgRef.current) {
+        tl.fromTo(
+          bgRef.current,
+          { scale: 1.04, yPercent: 0 },
+          { scale: 1.0, yPercent: -5, ease: 'none', force3D: true, duration: 1 },
+          0
+        );
+      }
 
       // "DISCOVER" text: scrolls upward as the clouds rise and gently softens with a subtle blur instead of being too blurry
       if (contentRef.current) {
@@ -72,18 +104,47 @@ export const Hero: React.FC = () => {
     return () => ctx.revert();
   }, []);
 
+  // Subtle spring-damped pointer response for dimensional depth (scroll-craft hero-depth §35)
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    const rect = heroRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const xNorm = (e.clientX / window.innerWidth - 0.5) * 2;
+    const yNorm = ((e.clientY - rect.top) / window.innerHeight - 0.5) * 2;
+    if (bgRef.current) {
+      gsap.to(bgRef.current, { x: xNorm * 7, y: yNorm * 4, duration: 0.9, ease: 'power2.out' });
+    }
+    if (contentRef.current) {
+      gsap.to(contentRef.current, { x: -xNorm * 3, duration: 0.9, ease: 'power2.out' });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (bgRef.current) {
+      gsap.to(bgRef.current, { x: 0, y: 0, duration: 1, ease: 'power2.out' });
+    }
+    if (contentRef.current) {
+      gsap.to(contentRef.current, { x: 0, duration: 1, ease: 'power2.out' });
+    }
+  };
+
   return (
     <section
       id="home"
       ref={heroRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       className="relative w-full"
       style={{ height: '160vh' }}
     >
       {/* Sticky 100vh viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-end items-center">
-        {/* Background layer: stationary Clash of Clans artwork */}
+        {/* Background layer: stationary Clash of Clans artwork with subtle depth */}
         <div
-          className="absolute inset-0 w-full h-full pointer-events-none bg-cover bg-center select-none"
+          ref={bgRef}
+          className="absolute inset-0 w-full h-full pointer-events-none bg-cover bg-center select-none will-change-transform"
           style={{ backgroundImage: "url('/images/hero-coc.webp')" }}
         >
           {/* Dark overlay for contrast */}

@@ -17,6 +17,8 @@ export const About: React.FC = () => {
         {/* Desktop Layout: balanced width to prevent hover line wrap while maintaining editorial proportions */}
         <div
           ref={aboutDesktopRef}
+          data-sc-in
+          data-sc-stagger="70"
           className="relative z-10 hidden lg:flex flex-col items-start gap-8 pr-4"
           style={{
             marginLeft: `${(644 / 1919) * 100}%`,
@@ -79,7 +81,7 @@ export const About: React.FC = () => {
         </div>
 
         {/* Mobile & Tablet Layout */}
-        <div className="lg:hidden w-full px-6 sm:px-12 md:px-16 flex flex-col items-start gap-8">
+        <div className="lg:hidden w-full px-6 sm:px-12 md:px-16 flex flex-col items-start gap-8" data-sc-in data-sc-stagger="70">
           {/* Label with sketch loop */}
           <div className="about-label relative inline-flex items-center justify-center px-6 py-2 select-none self-start">
             <svg

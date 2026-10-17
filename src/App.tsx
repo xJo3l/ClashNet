@@ -8,6 +8,7 @@ import { Footer } from './components/Footer';
 import { Hero, News, About, HorizontalScroll, Contact } from './components/home';
 import { Creators } from './components/Creators';
 import { Events } from './components/Events';
+import { ScrollCraft } from './lib/scrollcraft';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -49,6 +50,22 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     scrollToPageTop();
+  }, [currentRoute]);
+
+  useEffect(() => {
+    let sc: any = null;
+    const timer = setTimeout(() => {
+      if (typeof window !== 'undefined' && ScrollCraft && ScrollCraft.mount) {
+        sc = ScrollCraft.mount(document.body);
+      }
+    }, 40);
+
+    return () => {
+      clearTimeout(timer);
+      if (sc && sc.destroy) {
+        sc.destroy();
+      }
+    };
   }, [currentRoute]);
   useEffect(() => {
     // Initialize Lenis smooth scroll

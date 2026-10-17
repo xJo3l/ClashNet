@@ -18,7 +18,7 @@ export const Footer: React.FC = () => {
 
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-16 md:pt-20 pb-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-16 pb-16 border-b border-white/10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-16 pb-16 border-b border-white/10" data-sc-in data-sc-stagger="60">
           
           {/* Brand Column (6 cols) */}
           <div className="lg:col-span-6 flex flex-col justify-between">
@@ -38,7 +38,7 @@ export const Footer: React.FC = () => {
               </p>
             </div>
 
-            {/* Social Icons */}
+            {/* Social Icons with Magnetic Hover */}
             <div className="flex items-center space-x-3">
               {[
                 { name: 'Discord', icon: MessageSquare, href: '#' },
@@ -50,7 +50,8 @@ export const Footer: React.FC = () => {
                   key={item.name}
                   href={item.href}
                   aria-label={item.name}
-                  className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/10 hover:border-white/30 text-slate-400 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white/[0.08]"
+                  data-sc-magnet="0.22"
+                  className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/10 hover:border-white/30 text-slate-400 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white/[0.08] will-change-transform"
                 >
                   <item.icon className="w-4 h-4" />
                 </a>

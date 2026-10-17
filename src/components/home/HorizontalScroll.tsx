@@ -364,10 +364,18 @@ export const HorizontalScroll: React.FC = () => {
       // ══════════════════════════════════════════════════════════════════
 
       // Measure Tools card position inside track; calibrated to sit behind around 75% of the Tools card:
-      const toolsCard = track.querySelector('#tools') as HTMLElement;
-      const toolsTargetOffset = toolsCard
+      const toolsCard = (track.querySelector('#tools') ||
+        track.querySelector('#card-tools') ||
+        track.querySelector('[data-card-id="tools"]')) as HTMLElement;
+
+      const cardWidthEstimate = Math.min(Math.max(window.innerWidth * 0.36, 310), 560);
+      const gapEstimate = window.innerWidth * 0.04;
+      const paddingEstimate = window.innerWidth * 0.08;
+      const computedToolsOffset = paddingEstimate + 2 * (cardWidthEstimate + gapEstimate) + cardWidthEstimate * 0.75;
+
+      const toolsTargetOffset = toolsCard && toolsCard.offsetLeft > 0
         ? (toolsCard.offsetLeft + toolsCard.offsetWidth * 0.75)
-        : (window.innerWidth * 0.96);
+        : computedToolsOffset;
 
       // Mathematical relationship:
       // REVEAL_START triggers so the background wipe boundary stays fixed behind ~75% of the Tools card:
@@ -796,7 +804,7 @@ export const HorizontalScroll: React.FC = () => {
           {CARDS.map((card, index) => (
             <div
               key={card.id}
-              id={`card-${card.id}`}
+              id={card.id}
               data-card-id={card.id}
               onMouseEnter={() => handleCardEnter(card.actionText)}
               onMouseLeave={handleCardLeave}

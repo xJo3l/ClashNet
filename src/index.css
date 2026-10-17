@@ -74,3 +74,137 @@
   overflow: hidden;
 }
 
+/* ------------------------------------------------------------- */
+/* ScrollCraft Engine & Devices Floor                            */
+/* ------------------------------------------------------------- */
+
+:root {
+  --sc-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --sc-d-fast: 160ms;
+  --sc-d-base: 240ms;
+  --sc-d-slow: 420ms;
+  --sc-accent: #f59e0b;
+  --sc-shadow-color: 220 40% 2%;
+  --sc-e1: 0 1px 2px hsl(var(--sc-shadow-color) / 0.08), 0 2px 6px -1px hsl(var(--sc-shadow-color) / 0.06);
+  --sc-e2: 0 4px 8px hsl(var(--sc-shadow-color) / 0.06), 0 12px 28px -4px hsl(var(--sc-shadow-color) / 0.08);
+  --sc-e3: 0 8px 16px hsl(var(--sc-shadow-color) / 0.06), 0 24px 50px -8px hsl(var(--sc-shadow-color) / 0.12);
+  --sc-edge: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* Flow reveal: fires once on scroll into view with subtle 14px rise */
+[data-sc-in],
+[data-sc-stagger] > * {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition: opacity 620ms var(--sc-ease-out), transform 620ms var(--sc-ease-out);
+  will-change: opacity, transform;
+}
+
+[data-sc-in].sc-in,
+[data-sc-stagger] > *.sc-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Flow wipe reveals: clip-path eating in from an edge or iris */
+[data-sc-reveal] {
+  will-change: clip-path;
+  transition: clip-path 850ms var(--sc-ease-out);
+}
+[data-sc-reveal="up"]:not(.sc-in) {
+  clip-path: inset(100% 0 0 0);
+}
+[data-sc-reveal="down"]:not(.sc-in) {
+  clip-path: inset(0 0 100% 0);
+}
+[data-sc-reveal="left"]:not(.sc-in) {
+  clip-path: inset(0 100% 0 0);
+}
+[data-sc-reveal="right"]:not(.sc-in) {
+  clip-path: inset(0 0 0 100%);
+}
+[data-sc-reveal="iris"]:not(.sc-in) {
+  clip-path: circle(0% at 50% 50%);
+}
+[data-sc-reveal].sc-in {
+  clip-path: inset(0 0 0 0);
+}
+[data-sc-reveal="iris"].sc-in {
+  clip-path: circle(120% at 50% 50%);
+}
+
+/* Kinetic split lines */
+.sc-split {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+.sc-split--line {
+  display: block;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.sc-split__i {
+  display: inline-block;
+  will-change: transform, opacity;
+  transform: translate3d(0, 105%, 0);
+  opacity: 0;
+  transition: transform 700ms var(--sc-ease-out), opacity 700ms var(--sc-ease-out);
+}
+.sc-in .sc-split__i,
+.sc-split__i.sc-revealed,
+.sc-is-split {
+  transform: translate3d(0, 0, 0) !important;
+  opacity: 1 !important;
+}
+
+/* Pointer devices: 3D tilt, magnetic hover, dynamic spotlight */
+[data-sc-tilt] {
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: box-shadow var(--sc-d-base) var(--sc-ease-out);
+}
+
+[data-sc-magnet] {
+  will-change: transform;
+  display: inline-flex;
+}
+
+[data-sc-spotlight] {
+  isolation: isolate;
+  position: relative;
+}
+
+[data-sc-spotlight]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: inherit;
+  background: radial-gradient(
+    28rem 28rem at calc(var(--sc-mx, 0.5) * 100%) calc(var(--sc-my, 0.5) * 100%),
+    rgba(245, 158, 11, 0.08),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity var(--sc-d-slow) var(--sc-ease-out);
+}
+
+[data-sc-spotlight]:hover::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-sc-in],
+  [data-sc-stagger] > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  [data-sc-tilt],
+  [data-sc-magnet] {
+    transform: none !important;
+  }
+}
+

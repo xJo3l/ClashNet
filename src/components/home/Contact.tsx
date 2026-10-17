@@ -28,7 +28,7 @@ export const Contact: React.FC = () => {
       <div className="max-w-6xl w-full mx-auto relative z-20 my-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left Column: Heading, Subtext & Coffee Space */}
-          <div className="lg:col-span-5 flex flex-col justify-center gap-8">
+          <div className="lg:col-span-5 flex flex-col justify-center gap-8" data-sc-in data-sc-stagger="70">
             <div>
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200/80 text-slate-600 font-montserrat font-bold text-[10px] tracking-[0.2em] uppercase self-start mb-6">
@@ -36,9 +36,11 @@ export const Contact: React.FC = () => {
                 Contact
               </div>
 
-              {/* Main Heading */}
+              {/* Main Heading with Kinetic Split Line Reveal */}
               <h2 className="font-cormorant font-normal text-4xl sm:text-5xl md:text-6xl text-slate-900 tracking-tight leading-[0.95] mb-4">
-                Get in touch
+                <span className="sc-split sc-split--line">
+                  <span className="sc-split__i">Get in touch</span>
+                </span>
               </h2>
 
               {/* Small descriptive text */}
@@ -47,8 +49,13 @@ export const Contact: React.FC = () => {
               </p>
             </div>
 
-            {/* Support / Coffee space - matched to clean pure white surface */}
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 transition-all duration-300 hover:border-amber-300 hover:shadow-md shadow-sm">
+            {/* Support / Coffee space - enhanced with reveal, 3D tilt and cursor spotlight */}
+            <div
+              data-sc-reveal="left"
+              data-sc-tilt="6"
+              data-sc-spotlight
+              className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 transition-all duration-300 hover:border-amber-300 hover:shadow-lg shadow-sm will-change-transform"
+            >
               <div className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-xl bg-amber-100/90 border border-amber-200/70 flex items-center justify-center flex-shrink-0 text-amber-700">
                   <svg
@@ -76,6 +83,7 @@ export const Contact: React.FC = () => {
                   </p>
                   <a
                     href="#donate"
+                    data-sc-magnet="0.25"
                     className="inline-flex items-center gap-1.5 text-xs font-montserrat font-bold tracking-wider uppercase text-amber-600 hover:text-amber-700 transition-colors"
                   >
                     Support creator
@@ -97,10 +105,15 @@ export const Contact: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: Name, Email & Message Form Box */}
-          <div className="lg:col-span-7">
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 md:p-10 shadow-[0_16px_48px_rgba(0,0,0,0.05)]">
-              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          {/* Right Column: Name, Email & Message Form Box with Upward Wipe Reveal, 3D Tilt & Magnetic Button */}
+          <div className="lg:col-span-7" data-sc-in>
+            <div
+              data-sc-reveal="up"
+              data-sc-tilt="3"
+              data-sc-spotlight
+              className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 md:p-10 shadow-[0_16px_48px_rgba(0,0,0,0.05)] transition-shadow duration-300 hover:shadow-xl will-change-transform"
+            >
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5" data-sc-in data-sc-stagger="55">
                 {/* Name Box */}
                 <div>
                   <label
@@ -161,35 +174,38 @@ export const Contact: React.FC = () => {
                   />
                 </div>
 
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={isSubmitted}
-                  className={`w-full py-3.5 rounded-xl font-montserrat font-bold text-xs uppercase tracking-[0.22em] transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.99] flex items-center justify-center gap-2 ${
-                    isSubmitted
-                      ? 'bg-emerald-600 text-white cursor-default'
-                      : 'bg-slate-900 hover:bg-black text-white'
-                  }`}
-                >
-                  {isSubmitted ? (
-                    <>
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="w-4 h-4"
-                      >
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                      Message Sent
-                    </>
-                  ) : (
-                    'Submit'
-                  )}
-                </button>
+                {/* Magnetic Submit Button */}
+                <div className="w-full flex">
+                  <button
+                    type="submit"
+                    disabled={isSubmitted}
+                    data-sc-magnet="0.28"
+                    className={`w-full py-3.5 rounded-xl font-montserrat font-bold text-xs uppercase tracking-[0.22em] transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.99] flex items-center justify-center gap-2 will-change-transform ${
+                      isSubmitted
+                        ? 'bg-emerald-600 text-white cursor-default'
+                        : 'bg-slate-900 hover:bg-black text-white hover:scale-[1.01]'
+                    }`}
+                  >
+                    {isSubmitted ? (
+                      <>
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-4 h-4"
+                        >
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Message Sent
+                      </>
+                    ) : (
+                      'Submit'
+                    )}
+                  </button>
+                </div>
               </form>
             </div>
           </div>
