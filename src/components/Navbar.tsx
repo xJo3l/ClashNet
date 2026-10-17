@@ -53,19 +53,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
         }
       }
 
+      const newsEl = document.getElementById('news');
       const aboutEl = document.getElementById('about');
       const whatsNewEl = document.getElementById('whats-new') || document.getElementById('camps');
 
-      if (aboutEl) {
-        const aboutRect = aboutEl.getBoundingClientRect();
+      const whiteStartEl = newsEl || aboutEl;
+      if (whiteStartEl) {
+        const whiteStartRect = whiteStartEl.getBoundingClientRect();
         const whatsNewRect = whatsNewEl ? whatsNewEl.getBoundingClientRect() : null;
 
-        // Navbar is black/dark theme ONLY while scrolling through the white About section.
-        // Once What's New (whats-new / camps) reaches the top, navbar switches back to full white.
-        const isPastAboutTop = aboutRect.top <= 120;
+        const isPastWhiteTop = whiteStartRect.top <= 86;
         const isPastWhatsNewTop = whatsNewRect ? whatsNewRect.top <= 86 : false;
 
-        setIsAboutSection(isPastAboutTop && !isPastWhatsNewTop);
+        setIsAboutSection(isPastWhiteTop && !isPastWhatsNewTop);
       }
     };
 

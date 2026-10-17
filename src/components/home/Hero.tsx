@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { About } from './About';
+import { News } from './News';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -10,7 +10,7 @@ export const Hero: React.FC = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const cloud1Ref = useRef<HTMLDivElement>(null);
   const cloud2Ref = useRef<HTMLDivElement>(null);
-  const aboutRef = useRef<HTMLDivElement>(null);
+  const newsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!heroRef.current) return;
@@ -42,11 +42,18 @@ export const Hero: React.FC = () => {
           // DISCOVER text: drifts gently upward as clouds rise
           const textEnd = isMobile ? -50 : isTablet ? -70 : -385;
 
-          // Explicitly initialize cloud and about positions off-screen below the viewport
-          gsap.set([cloud1Ref.current, cloud2Ref.current, aboutRef.current], {
+          // Explicitly initialize cloud and news positions off-screen below the viewport
+          gsap.set([cloud1Ref.current, cloud2Ref.current, newsRef.current], {
             yPercent: 100,
             y: 0,
             force3D: true,
+          });
+
+          // Pre-hide news content until clouds reach halfway
+          gsap.set('.news-content-wrapper', {
+            opacity: 0,
+            y: 55,
+            filter: 'blur(10px)',
           });
 
           // ScrollTrigger scrub over the full 300vh hero section (giving 200vh of scroll runway)
@@ -92,10 +99,10 @@ export const Hero: React.FC = () => {
             );
           }
 
-          // About section: rises from bottom into full screen view (same as Contact approach)
-          if (aboutRef.current) {
+          // News section: rises from bottom into full screen view attached to cloud animation
+          if (newsRef.current) {
             tl.fromTo(
-              aboutRef.current,
+              newsRef.current,
               { yPercent: 100, y: 0 },
               { yPercent: 0, y: 0, ease: 'none', force3D: true, duration: 1 },
               0
@@ -112,45 +119,19 @@ export const Hero: React.FC = () => {
             );
           }
 
-          // ── Text Revealing Animation in About Section ──
-          // 1. About label ("ClashNet" with sketchy loop) glides up and reveals
+          // ── Text/Content Revealing Animation in News Section (Like Before) ──
+          // The news content emerges smoothly when the clouds reach halfway of the screen (around 0.46)
           tl.fromTo(
-            '.about-label',
-            { opacity: 0, y: 35, scale: 0.9 },
-            { opacity: 1, y: 0, scale: 1, ease: 'power2.out', duration: 0.28 },
-            0.36
-          );
-
-          // 2. Desktop Statement: individual words emerge with smooth GPU opacity & transform
-          const words = heroRef.current?.querySelectorAll('.about-proximity-word');
-          if (words && words.length > 0) {
-            tl.fromTo(
-              words,
-              { opacity: 0, y: 35 },
-              {
-                opacity: 1,
-                y: 0,
-                stagger: 0.012,
-                ease: 'power2.out',
-                duration: 0.28,
-              },
-              0.40
-            );
-          } else {
-            tl.fromTo(
-              '.about-statement',
-              { opacity: 0, y: 35 },
-              { opacity: 1, y: 0, ease: 'power2.out', duration: 0.32 },
-              0.40
-            );
-          }
-
-          // 3. Mobile statement reveal
-          tl.fromTo(
-            '.about-mobile-statement',
-            { opacity: 0, y: 35 },
-            { opacity: 1, y: 0, ease: 'power2.out', duration: 0.32 },
-            0.40
+            '.news-content-wrapper',
+            { opacity: 0, y: 55, filter: 'blur(10px)' },
+            {
+              opacity: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              ease: 'power2.out',
+              duration: 0.38,
+            },
+            0.46
           );
         }
       );
@@ -262,13 +243,19 @@ export const Hero: React.FC = () => {
           />
         </div>
 
-        {/* About section - z-40 (IN FRONT of all clouds) */}
+        {/* News section - z-40 (IN FRONT of all clouds, attached to the cloud animation) */}
         <div
-          ref={aboutRef}
-          style={{ transform: 'translate3d(0, 100%, 0)' }}
-          className="absolute top-0 left-0 w-full h-full z-40 pointer-events-auto will-change-transform"
+          ref={newsRef}
+          style={{
+            transform: 'translate3d(0, 100%, 0)',
+            WebkitMaskImage:
+              'linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.25) 40px, rgba(0, 0, 0, 0.75) 90px, black 160px)',
+            maskImage:
+              'linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.25) 40px, rgba(0, 0, 0, 0.75) 90px, black 160px)',
+          }}
+          className="absolute top-0 left-0 w-full h-full z-40 pointer-events-auto will-change-transform overflow-y-auto"
         >
-          <About />
+          <News />
         </div>
       </div>
     </section>

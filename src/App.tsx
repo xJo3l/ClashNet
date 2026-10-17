@@ -5,7 +5,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
-import { Hero, HorizontalScroll, Contact } from './components/home';
+import { Hero, About, HorizontalScroll, Contact } from './components/home';
 import { Creators } from './components/Creators';
 import { Events } from './components/Events';
 
@@ -116,6 +116,7 @@ export const App: React.FC = () => {
           {/* Main content */}
           <main>
             <Hero />
+            <About />
             <HorizontalScroll />
 
             {/* Contact area with white background under ClashNet */}
